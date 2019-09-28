@@ -35,7 +35,6 @@ namespace PRDB_Sqlite.BLL
            
         }
 
-
         public ProbAttribute(ProbAttribute attr)
         {
             this.IDAttribute = attr.IDAttribute;
@@ -44,7 +43,6 @@ namespace PRDB_Sqlite.BLL
             this.PrimaryKey = attr.PrimaryKey;
             this.AttributeName = attr.AttributeName;
             this.probScheme = attr.probScheme;
-
         }
 
         #endregion
@@ -64,11 +62,6 @@ namespace PRDB_Sqlite.BLL
         {
             DALProbAttribute.Insert(this);
         }
-
-
-
-      
-
 
         internal int getMaxIdinTable()
         {

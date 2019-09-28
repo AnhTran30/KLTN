@@ -95,7 +95,6 @@ namespace PRDB_Sqlite.BLL
                 List.Add(schema.SchemeName.ToLower().Trim());
             return List;
         }
-        
 
         public List<string> ListOfRelationNameToLower()
         {
@@ -104,8 +103,6 @@ namespace PRDB_Sqlite.BLL
                 List.Add(relation.RelationName.ToLower().Trim());
             return List;
         }
-
-
 
         public List<string> ListOfQueryNameToLower()
         {

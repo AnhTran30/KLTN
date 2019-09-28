@@ -1679,15 +1679,10 @@ namespace PRDB_Sqlite.GUI
 
                 GridViewData.CurrentCell = GridViewData.Rows[nRow].Cells[0];
 
-
-
                 if (nRow == 0)
                 {
                     return;
                 }
-
-
-
 
                 for (int i = 0; i < nRow; i++)
                 {
@@ -1705,7 +1700,7 @@ namespace PRDB_Sqlite.GUI
                         else
                         {
                             
-                            if (!new ProbTriple().isProbTripleValue(GridViewData.Rows[i].Cells[j].Value.ToString()))
+                            if (!new ProbTriple().isMax(GridViewData.Rows[i].Cells[j].Value.ToString()))
                             {
                                 GridViewData.Rows[i].Cells[j].ErrorText = "Syntax Error! Cannot convert this value to a Probabilistic Triple!";
                                 GridViewData.CurrentCell = GridViewData.Rows[i].Cells[j];
@@ -1748,7 +1743,7 @@ namespace PRDB_Sqlite.GUI
                         }
                         //ktr xac xuat duy nhat
 
-                        if (triple.MinProb[0] != 1.0 || triple.MaxProb[0] != 1.0)
+                        if (triple.MinProb != 1.0 || triple.MaxProb != 1.0)
                         {
                             GridViewData.Rows[i].Cells[k].ErrorText = "This object is a primary key Its minprob and maxprob must be 1";
                             GridViewData.CurrentCell = GridViewData.Rows[i].Cells[k];
@@ -1854,7 +1849,7 @@ namespace PRDB_Sqlite.GUI
 
                     ProbTriple newProbTriple = new ProbTriple(value);
 
-                    if (!newProbTriple.isProbTripleValue(value))
+                    if (!newProbTriple.isMax(value))
                     {
                         GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "Syntax Error! Cannot convert this value to a Probabilistic Triple!";
                         return;
@@ -1873,7 +1868,7 @@ namespace PRDB_Sqlite.GUI
               
 
 
-                    ProbTriple probTriple = new ProbTriple(value, currentRelationOpen.Scheme.Attributes[e.ColumnIndex].Type.TypeName);
+                    ProbTriple probTriple = new ProbTriple(value);
                     GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = probTriple.GetStrValue();
                    
                                     
@@ -1912,7 +1907,7 @@ namespace PRDB_Sqlite.GUI
                     }
                     //ktr xac xuat duy nhat
 
-                    if (flagEditOneCellPrimaryKey == true && ( newProbTriple.MinProb[0] != 1.0 || newProbTriple.MaxProb[0] != 1.0) )
+                    if (flagEditOneCellPrimaryKey == true && ( newProbTriple.MinProb != 1.0 || newProbTriple.MaxProb != 1.0) )
                     {
                         GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "This object is a primary key Its minprob and maxprob must be 1";
                         return;
@@ -2214,8 +2209,8 @@ namespace PRDB_Sqlite.GUI
 
 
                    
-                    triple.MinProb.Add(Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMinProb"].Value));
-                    triple.MaxProb.Add(Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMaxProb"].Value));
+                    triple.MinProb =Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMinProb"].Value);
+                    triple.MaxProb= Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMaxProb"].Value);
 
                     if (currentRelationOpen.Scheme.Attributes[GridViewData.CurrentCell.ColumnIndex].Type.TypeName != "String")
                     {
@@ -2240,7 +2235,7 @@ namespace PRDB_Sqlite.GUI
 
 
 
-                if (!triple.isProbTripleValue(triple.GetStrValue()))
+                if (!triple.isMax(triple.GetStrValue()))
                 {
 
                     MessageBox.Show("Syntax Error! Cannot convert this value to a Probabilistic Triple!","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2301,7 +2296,7 @@ namespace PRDB_Sqlite.GUI
                     for (int i = 0; i < n; i++)
                     {
                         triple.Value.Add(value[i]);
-                        triple.MinProb.Add(minprob / n);
+                        triple.MinProb=(minprob / n);
                         triple.MaxProb.Add(maxprob / n);
                     }
 
@@ -2314,7 +2309,7 @@ namespace PRDB_Sqlite.GUI
                         UpdateDataRowNumber();
                     }
 
-                    if (!triple.isProbTripleValue(triple.GetStrValue()))
+                    if (!triple.isMax(triple.GetStrValue()))
                     {
 
                         MessageBox.Show("Syntax Error! Cannot convert this value to a Probabilistic Triple!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2323,22 +2318,10 @@ namespace PRDB_Sqlite.GUI
                     }
                     GridViewData.CurrentCell = GridViewData.Rows[UpdateRow].Cells[UpdateCell];
                     GridViewData.CurrentCell.Value = triple.GetStrValue();
-
-
-                  
                 }
                 catch
                 {
-
-
                 }
-
-
-
-
-
-
-
             }
 
         }
@@ -2355,7 +2338,6 @@ namespace PRDB_Sqlite.GUI
             
             }
         }
-
 
         private void UpdateValueRowNumber()
         {
@@ -2500,8 +2482,8 @@ namespace PRDB_Sqlite.GUI
                     {
                         GridViewValue.Rows.Add();
                         GridViewValue.Rows[i].Cells[0].Value = triple.Value[i];
-                        GridViewValue.Rows[i].Cells[1].Value = triple.MinProb[i];
-                        GridViewValue.Rows[i].Cells[2].Value = triple.MaxProb[i];
+                        GridViewValue.Rows[i].Cells[1].Value = triple.MinProb;
+                        GridViewValue.Rows[i].Cells[2].Value = triple.MaxProb;
 
                     }
 
@@ -2517,39 +2499,26 @@ namespace PRDB_Sqlite.GUI
                     GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = triple.GetStrValue();
 
 
-                    if (triple.UniformDistribution())
+                    double minProb = 0.0;
+                    double maxProb = 0.0;
+
+                    for (int i = 0; i < triple.Value.Count; i++)
                     {
-
-                        double minProb = 0.0;
-                        double maxProb = 0.0;
-
-                        for (int i = 0; i < triple.Value.Count; i++)
-                        {
-                            txtValue.Text += triple.Value[i] + System.Environment.NewLine;
-                            minProb += triple.MinProb[i];
-                            maxProb += triple.MaxProb[i];
-
-                        }
-                        txtMinProb.Text = minProb.ToString();
-                        txtMaxProb.Text = maxProb.ToString();
+                        txtValue.Text += triple.Value[i] + System.Environment.NewLine;
+                        minProb += triple.MinProb;
+                        maxProb += triple.MaxProb;
 
                     }
+                    txtMinProb.Text = minProb.ToString();
+                    txtMaxProb.Text = maxProb.ToString();
 
                 }
-
-
-
             }
             catch (Exception)
             {
-
-
-
             }
 
         }
-
-
 
         #endregion
 
@@ -2920,24 +2889,14 @@ namespace PRDB_Sqlite.GUI
         {
             try
             {
-
-
                 GridViewResult.Rows.Clear();
                 GridViewResult.Columns.Clear();
-
-                //if (txtQuery.Text.Trim().Length <= 0)
-                //{
-                //    MessageBox.Show("Query does not exist!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //    return;
-                //}
-
 
                 QueryExecution query = new QueryExecution(txtQuery.Text, this.probDatabase);
                 txtMessage.Text = "";
 
                 if (query.ExecuteQuery())
                 {
-
                     txtMessage.Text = string.Empty;
 
                     if (query.relationResult.tuples.Count <= 0)
@@ -2965,28 +2924,19 @@ namespace PRDB_Sqlite.GUI
 
                             foreach (ProbTriple triple in tuple.Triples)
                             {
-
                                 GridViewResult.Rows[i].Cells[j++].Value =  triple.GetStrValue();
-
                             }
                         }
 
                         xtraTabControlQueryResult.SelectedTabPageIndex = 0;
 
                     }
-
-
                 }
                 else
                 {
 
                     txtMessage.Text = query.MessageError;
                     xtraTabControlQueryResult.SelectedTabPageIndex = 1;
-
-
-
-
-
 
                 }
 

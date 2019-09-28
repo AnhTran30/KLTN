@@ -20,7 +20,6 @@ namespace PRDB_Sqlite.BLL
         {
             // TODO: Complete member initialization
             relations = probRelation;
-         
 
             int i = 0;
             while (i < conditionString.Length - 1)
@@ -57,19 +56,17 @@ namespace PRDB_Sqlite.BLL
                 return false;             
             }
 
+            //if (str[0] != '(')
+            //{
+            //    MessageError = "Incorrect syntax near the keyword 'where'.";
+            //    return false;
+            //}
 
-
-            if (str[0] != '(')
-            {
-                MessageError = "Incorrect syntax near the keyword 'where'.";
-                return false;
-            }
-
-            if (str[str.Length  -1] != ']')
-            {
-                MessageError = "Incorrect syntax near the keyword 'where'.";
-                return false;
-            }
+            //if (str[str.Length  -1] != ']')
+            //{
+            //    MessageError = "Incorrect syntax near the keyword 'where'.";
+            //    return false;
+            //}
                 
 
             while (indexI < str.Length -1)
@@ -140,14 +137,8 @@ namespace PRDB_Sqlite.BLL
                     return false;
                 }
 
-
                 indexI++;
             }
-
-
-     
-
-
 
             return true;
         }
@@ -223,8 +214,6 @@ namespace PRDB_Sqlite.BLL
 
             if (str.Contains("'"))
             {
-
-
                 int index = -1;
                 for (int i = 0; i < str.Length -1; i++)
                 {
@@ -264,16 +253,11 @@ namespace PRDB_Sqlite.BLL
                     MessageError = "Unclosed quotation mark before the character string " + valueError;                               
                     return false;
                 }
-                      
-                
-
-
             }
             else
             {
                 arrayStr.AddRange(str.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
             }
-            
 
             for (int i = 1; i < arrayStr.Count - 1; i++)
             {
@@ -290,7 +274,6 @@ namespace PRDB_Sqlite.BLL
                     return false;
                 }
 
-
             }
 
             return true;
@@ -301,7 +284,6 @@ namespace PRDB_Sqlite.BLL
         #region kiểm tra bộ có thỏa mãn điều kiện chọn
         public bool Satisfied(ProbTuple tuple)
         {
-
             this.tuple = tuple;
             string conditionStr = this.conditionString;
 
@@ -550,26 +532,26 @@ namespace PRDB_Sqlite.BLL
                     }
 
 
-                    for (int i = 0; i < countTripleOne; i++)
-                        for (int j = 0; j < countTripleTwo; j++)
-                            if (EQUAL(tuple.Triples[indexOne].Value[i].ToString().Trim(), tuple.Triples[indexTwo].Value[j].ToString().Trim(), typenameOne))
-                                switch (operaterStr)
-                                {
-                                    case "equal_in":
-                                        minProb += tuple.Triples[indexOne].MinProb[i] * tuple.Triples[indexTwo].MinProb[j];
-                                        maxProb = Math.Min(1, maxProb + tuple.Triples[indexOne].MaxProb[i] * tuple.Triples[indexTwo].MaxProb[j]);
-                                        break;
+                    //for (int i = 0; i < countTripleOne; i++)
+                    //    for (int j = 0; j < countTripleTwo; j++)
+                    //        if (EQUAL(tuple.Triples[indexOne].Value[i].ToString().Trim(), tuple.Triples[indexTwo].Value[j].ToString().Trim(), typenameOne))
+                    //            switch (operaterStr)
+                    //            {
+                    //                case "equal_in":
+                    //                    minProb += tuple.Triples[indexOne].MinProb[i] * tuple.Triples[indexTwo].MinProb[j];
+                    //                    maxProb = Math.Min(1, maxProb + tuple.Triples[indexOne].MaxProb[i] * tuple.Triples[indexTwo].MaxProb[j]);
+                    //                    break;
 
-                                    case "equal_ig":
-                                        minProb += Math.Min(0, tuple.Triples[indexOne].MinProb[i] + tuple.Triples[indexTwo].MinProb[j] - 1);
-                                        maxProb = Math.Min(1, maxProb + Math.Min(tuple.Triples[indexOne].MaxProb[i], tuple.Triples[indexTwo].MaxProb[j]));
-                                        break;
-                                    case "equal_me":
-                                        minProb = 0;
-                                        maxProb = Math.Min(1, maxProb + 0);
-                                        break;
-                                    default: break;
-                                }
+                    //                case "equal_ig":
+                    //                    minProb += Math.Min(0, tuple.Triples[indexOne].MinProb[i] + tuple.Triples[indexTwo].MinProb[j] - 1);
+                    //                    maxProb = Math.Min(1, maxProb + Math.Min(tuple.Triples[indexOne].MaxProb[i], tuple.Triples[indexTwo].MaxProb[j]));
+                    //                    break;
+                    //                case "equal_me":
+                    //                    minProb = 0;
+                    //                    maxProb = Math.Min(1, maxProb + 0);
+                    //                    break;
+                    //                default: break;
+                    //            }
                 }
                 else
                     if (SelectCondition.isCompareOperator(operaterStr) )     // Biểu thức so sánh giữa một thuộc tính với một giá trị
@@ -630,12 +612,12 @@ namespace PRDB_Sqlite.BLL
                          }
 
 
-                        for (int i = 0; i < countTripleOne; i++)
-                            if (this.CompareTriple(tuple.Triples[indexOne].Value[i].ToString().Trim(), valueTwo.Trim(), operaterStr, typenameOne)) // duyệt từng cặp xác xuất và so sánh
-                            {
-                                minProb += tuple.Triples[indexOne].MinProb[i];
-                                maxProb += tuple.Triples[indexOne].MaxProb[i];
-                            }
+                        //for (int i = 0; i < countTripleOne; i++)
+                        //    if (this.CompareTriple(tuple.Triples[indexOne].Value[i].ToString().Trim(), valueTwo.Trim(), operaterStr, typenameOne)) // duyệt từng cặp xác xuất và so sánh
+                        //    {
+                        //        minProb += tuple.Triples[indexOne].MinProb[i];
+                        //        maxProb += tuple.Triples[indexOne].MaxProb[i];
+                        //    }
                     }
                     else                     // Biểu thức kết hợp giữa hai khoảng xác suất
                     {
@@ -743,8 +725,6 @@ namespace PRDB_Sqlite.BLL
 
         #endregion
 
-            
-
         #region những hàm compare
         public static bool isCompareOperator(string S)
         {
@@ -848,9 +828,6 @@ namespace PRDB_Sqlite.BLL
         }
         #endregion
 
-
-
-
         private static bool CalculateCondition(List<string> Str)
         {
             List<string> stack = new List<string>();
@@ -934,11 +911,5 @@ namespace PRDB_Sqlite.BLL
             }
             return V;
         }
-  
-
-
-  
-
-    
     }
 }

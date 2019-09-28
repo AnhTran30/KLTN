@@ -9,16 +9,12 @@ namespace PRDB_Sqlite.DAL
 {
    public class DALProbTuple
     {
-       
-
         internal static List<ProbTuple> getAllTypleByRelationName(string relationname, int nTriples)
         {
             List<ProbTuple> probTuple = new List<ProbTuple>();
             DataBase db = new DataBase();
             DataTable dtb = db.GetDataTable("Select * From " + relationname);
-            
-
-
+         
             foreach (DataRow tuplerow in dtb.Rows)
             {
                 ProbTuple NewTuple = new ProbTuple();

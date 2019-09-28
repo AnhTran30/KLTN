@@ -10,18 +10,12 @@ namespace PRDB_Sqlite.BLL
     public class ProbScheme
     {
         #region Declare Properties
-
         //ID lược đồ quan hệ
-
         public int IDScheme { get; set; }
-
         //Tên lược đồ quan hệ
         public string SchemeName { get; set; }
         //Danh sách các thuộc tính của lược đồ
         public List<ProbAttribute> Attributes { get; set; }        
-
-
-
         #endregion
 
         #region Methods
