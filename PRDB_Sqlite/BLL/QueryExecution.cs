@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace PRDB_Sqlite.BLL
@@ -11,6 +12,7 @@ namespace PRDB_Sqlite.BLL
        public string queryString { get; set; }
        public List<ProbRelation> selectedRelations { get; set; }
        public ProbRelation relationResult { get; set; }
+
        public List<ProbAttribute> selectedAttributes;
        public ProbDatabase probDatabase { get; set; }
        public string conditionString { get; set; }
@@ -18,13 +20,13 @@ namespace PRDB_Sqlite.BLL
        private string OperationNaturalJoin = string.Empty;
        public string MessageError { get; set; }
        public ProbRelation DescartesAndNaturalJoin { get; set; }
+       public string[] AcronymRelationName { get; set; }
 
        public QueryExecution(string queryString, ProbDatabase probDatabase)
        {
            this.selectedRelations = new List<ProbRelation>();
            this.selectedAttributes = new List<ProbAttribute>();
            this.relationResult = new ProbRelation();
-           this.selectedAttributes = new List<ProbAttribute>();
            this.probDatabase = probDatabase;
            this.queryString = StandardizeQuery(queryString);
            this.flagNaturalJoin = false;
@@ -269,7 +271,6 @@ namespace PRDB_Sqlite.BLL
              
 
            #region check kí tự đặc biệt
-
            char[] SpecialCharacter = new char[] { '~', '!', '@', '#', '$', '%', '^', '&', '[', ']', '(', ')', '+', '`', ';', '<', '>', '?', '/', ':', '\"', '\'', '=', '{', '}', '\\', '|' };
            string specialcharacter = string.Empty;
            for (int i = 0; i < SpecialCharacter.Length; i++)
@@ -489,7 +490,6 @@ namespace PRDB_Sqlite.BLL
        }
        private List<ProbRelation> GetAllRelation(string valueString)
        {
-
            int posOne;
            int posTwo;
            string relationsString = string.Empty;
@@ -616,7 +616,6 @@ namespace PRDB_Sqlite.BLL
            {
                string[] listTmp = relations[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                ProbRelation tmp = this.probDatabase.Relations.SingleOrDefault(c => c.RelationName.ToLower().Equals(listTmp[0], StringComparison.OrdinalIgnoreCase));
-
                
                ProbRelation rela = new ProbRelation();
                if (listTmp.Length == 2)
@@ -732,7 +731,6 @@ namespace PRDB_Sqlite.BLL
            ProbRelation relation = new ProbRelation();
            relation.RelationName = probRelation.RelationName;            
 
-
            List<int> indexs = new List<int>();
            List<int> indexRemove = new List<int>();
            foreach (ProbAttribute attr in attributes)
@@ -798,11 +796,11 @@ namespace PRDB_Sqlite.BLL
                else
                {
                    SelectCondition Condition = new SelectCondition(this.selectedRelations[0], this.conditionString);
-                   if (!Condition.CheckConditionString())
-                   {
-                       this.MessageError = Condition.MessageError;
-                       return false;
-                   }
+                   //if (!Condition.CheckConditionString())
+                   //{
+                   //    this.MessageError = Condition.MessageError;
+                   //    return false;
+                   //}
 
                    foreach (ProbTuple tuple in this.selectedRelations[0].tuples)
                        if (Condition.Satisfied(tuple))
@@ -831,6 +829,478 @@ namespace PRDB_Sqlite.BLL
 
            return true;
        }
-    
-   }
+
+        internal bool ExcuteQueryV2()
+        {
+            try
+            {
+                if (!QueryAnalyzeV2()) return false;
+
+                if(this.selectedRelations.Count == 1)
+                {
+                    foreach (ProbAttribute attr in this.selectedRelations[0].Scheme.Attributes)
+                    {
+                        if (!attr.AttributeName.Contains("."))
+                            attr.AttributeName = String.Format("{0}.{1}", this.selectedRelations[0].RelationName, attr.AttributeName);
+                    }
+                }
+
+                if (!this.queryString.Contains(Common.Where))
+                {
+                    this.relationResult = getRelationBySelectAttributeV2(this.selectedRelations[0], this.selectedAttributes);
+                    return true;
+                }
+                else
+                {
+                    SelectCondition Condition = new SelectCondition(this.selectedRelations[0], this.conditionString);
+                    //if (!Condition.CheckConditionString())
+                    //{
+                    //    this.MessageError = Condition.MessageError;
+                    //    return false;
+                    //}
+
+                    foreach (ProbTuple tuple in this.selectedRelations[0].tuples)
+                        if (Condition.Satisfied(tuple))
+                            this.relationResult.tuples.Add(tuple);
+
+                    if (Condition.MessageError != string.Empty)
+                    {
+                        this.MessageError = Condition.MessageError;
+                        return false;
+                    }
+
+                    if (Condition.conditionString == string.Empty)
+                    {
+                        this.MessageError = Condition.MessageError;
+                        return false;
+                    }
+
+                    this.relationResult.Scheme = this.selectedRelations[0].Scheme;
+                    this.relationResult = getRelationBySelectAttribute(this.relationResult, this.selectedAttributes);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal bool QueryAnalyzeV2()
+        {
+            try
+            {
+                string s = this.queryString;
+                //Kiểm tra câu truy vấn có hợp lệ
+                if (!this.CheckStringQueryV2(s))
+                {
+                    return false;
+                }
+
+                //Get All Relation
+                this.selectedRelations = GetAllRelationV2(s);
+                if (this.selectedRelations == null)
+                {
+                    return false;
+                }
+
+                //Get All Attribute
+                this.selectedAttributes = GetAttributeV2(s);
+                if (this.selectedAttributes == null)
+                    return false;
+
+                this.conditionString = GetConditionV2(s);
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        internal bool CheckStringQueryV2(string query)
+        {
+            try
+            {
+                var indexSelect = query.IndexOf(Common.Select);
+                var indexFrom = query.IndexOf(Common.From);
+                var indexWhere = query.IndexOf(Common.Where);
+ 
+                if(indexSelect == -1 || indexFrom == -1)
+                {
+                    MessageError = "Syntax Error! The keyword must theo order 'Select From Where' ";
+                    return false;
+                }
+
+                if (indexSelect > indexFrom || (indexWhere != -1 && indexFrom > indexWhere))
+                {
+                    MessageError = "Syntax Error! The keyword must theo order 'Select From Where' ";
+                    return false;
+                }
+
+                var regex = new Regex("^[a-zA-Z *,.]*$");
+
+                var subQuery = query;
+
+                if (query.Contains(Common.Where))
+                {
+                    subQuery = query.Substring(query.IndexOf("select") + 6, query.IndexOf("where") - 1);
+                }
+
+                if (!regex.IsMatch(subQuery))
+                {
+                    MessageError = "Error: Do not input the special character in query statement";
+                    return false;
+                }
+
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+            
+        }
+
+        private List<ProbRelation> GetAllRelationV2(string valueString)
+        {
+            int posOne;
+            int posTwo;
+            string relationsString = string.Empty;
+            List<string> listOfRelationName = this.probDatabase.ListOfRelationNameToLower();
+            string[] seperator = { "," };
+            string[] relations;
+            List<ProbRelation> probRelations = new List<ProbRelation>();
+
+            //////////////////////// Get Relations ///////////////////////
+            posOne = valueString.IndexOf(Common.Where) + 4;
+
+            if (!valueString.Contains(Common.Where))
+                posTwo = valueString.Length - 1;
+            else
+                posTwo = valueString.IndexOf(Common.Where) - 1;
+
+            relationsString = valueString.Substring(posOne, posTwo - posOne + 1);   // Get Relation in the Query Text     
+
+            if (relationsString.Trim().Length <= 0)
+            {
+                MessageError = "No relation exists in the query !";
+                return null;
+            }
+
+            if (relationsString.Contains(","))
+            {
+                relations = relationsString.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
+            }
+            else
+            {
+                if (relationsString.Contains(" natural join in") || relationsString.Contains(" natural join ig") || relationsString.Contains(" natural join me"))
+                {
+                    relations = new string[2];
+
+                    if (relationsString.Contains(" natural join in"))
+                    {
+                        relations[0] = relationsString.Substring(0, relationsString.IndexOf(Common.NaturalJoinIn)).Trim();
+                        relations[1] = relationsString.Substring(relationsString.IndexOf(Common.NaturalJoinIn) + 15).Trim();
+                        OperationNaturalJoin = "in";
+                    }
+                    else if (relationsString.Contains(" natural join ig"))
+                    {
+                        relations[0] = relationsString.Substring(0, relationsString.IndexOf(Common.NaturalJoinIg)).Trim();
+                        relations[1] = relationsString.Substring(relationsString.IndexOf(Common.NaturalJoinIg) + 15).Trim();
+                        OperationNaturalJoin = "ig";
+                    }
+                    else
+                    {
+                        relations[0] = relationsString.Substring(0, relationsString.IndexOf(Common.NaturalJoinMe)).Trim();
+                        relations[1] = relationsString.Substring(relationsString.IndexOf(Common.NaturalJoinMe) + 15).Trim();
+                        OperationNaturalJoin = "me";
+                    }
+                    flagNaturalJoin = true;
+                }
+                else
+                {
+                    relations = new string[1];
+                    relations[0] = relationsString;
+                }  
+            }
+
+            for(int i=0; i < relations.Length; i++)
+            {
+                string[] listTmp = relations[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (!listOfRelationName.Contains(listTmp[0].ToLower()))
+                {
+                    MessageError = String.Format("Invalid relation name '{0}'.", listTmp[0]);
+                    return null;
+                }
+
+                if (listTmp.Length > 2)
+                {
+                    relations[i] = listTmp[0];
+                    this.AcronymRelationName[i] = listTmp[1];
+                }
+                else
+                {
+                    relations[i] = listTmp[0];
+                }
+            }
+
+            foreach(var relationName in relations)
+            {
+                ProbRelation probRelation = this.probDatabase.Relations.SingleOrDefault(c => c.RelationName.ToLower().Equals(relationName, StringComparison.OrdinalIgnoreCase));
+
+                foreach (ProbTuple item in probRelation.tuples)
+                {
+                    ProbTuple tuple = new ProbTuple(item);
+                    probRelation.tuples.Add(tuple);
+                }
+
+                probRelations.Add(probRelation);
+            }
+
+
+            if (probRelations.Count == 2)
+            {
+
+                if (probRelations[0].RelationName == probRelations[1].RelationName)
+                {
+                    MessageError = String.Format("The correlation name '{0}' is specified multiple times in a FROM clause.", probRelations[0].RenameRelationName);
+                    return null;
+                }
+            }
+
+            return probRelations;
+
+        }
+
+        private List<ProbAttribute> GetAttributeV2(string valueString)
+        {
+            List<ProbAttribute> listProbAttribute = new List<ProbAttribute>();
+            //////////////////////// Get Attributes //////////////////////
+            int posOne, posTwo, posThree;
+
+
+            // * là chọn tất cả các thuộc tính
+            if (valueString.Contains("*"))
+            {
+                posOne = valueString.IndexOf("*");  // start postion of attributes
+                posTwo = valueString.IndexOf("from ") - 1;
+                posThree = valueString.IndexOf(Common.Select) + 6;
+
+                if (posOne > posTwo)
+                {
+                    MessageError = "Incorrect syntax near 'from'.";
+                    return null;
+                }
+
+                if (posOne < valueString.IndexOf(Common.Select))
+                {
+                    MessageError = "Incorrect syntax near 'select'.";
+                    return null;
+                }
+
+                if (valueString.Contains(Common.Where) && posOne > valueString.IndexOf(Common.Where))
+                {
+                    MessageError = "Incorrect syntax near 'where'.";
+                    return null;
+                }
+
+                if (posOne != valueString.LastIndexOf("*"))
+                {
+                    MessageError = "Incorrect syntax near 'select'.";
+                    return null;
+                }
+
+                // end postion of attributes
+                string attributes = valueString.Substring(posOne, posTwo - posOne + 1);
+                string attributesBeforeStar = valueString.Substring(posThree, posOne - posThree + 1);
+
+                // Nếu như phia sau dấu * có bất kì kí tự nào thì sẽ thông báo lỗi
+                if (attributes.Trim().Length > 1 || attributesBeforeStar.Trim().Length > 1)
+                {
+                    MessageError = "Incorrect syntax near 'select'.";
+                    return null;
+                }
+
+                // thực hiện sao chép toàn bộ thuộc tính của các quan hệ vào danh sách thuộc tính chọn
+                for (int i = 0; i < this.selectedRelations.Count; i++)
+                {
+                    foreach (ProbAttribute attr in this.selectedRelations[i].Scheme.Attributes)
+                    {
+                        attr.AttributeName = String.Format("{0}.{1}", this.selectedRelations[i].RelationName, attr.AttributeName);
+                        listProbAttribute.Add(attr);
+                    }
+                }
+
+                return listProbAttribute;
+
+            }
+            else // ngược lại là xuất theo thuộc tính chỉ định
+            {
+                posOne = valueString.IndexOf("select") + 6;                                                   // start postion of attributes
+                posTwo = valueString.IndexOf("from ") - 1;                                                    // end postion of attributes
+
+                string attributes = valueString.Substring(posOne, posTwo - posOne + 1);
+
+                //kiểm tra cú pháp của chuổi thuộc tính
+                if (!QueryExecution.CheckStringAttributeV2(attributes))
+                {
+                    MessageError = "Incorrect syntax near 'select'.";
+                    return null;
+                }
+                else
+                {
+                    string[] seperator = { "," };
+                    string[] attribute = attributes.Split(seperator, StringSplitOptions.RemoveEmptyEntries); // split thành mảng các thuộc tính                    
+
+                    foreach (string str in attribute)
+                    {
+                        if (!str.Contains("."))
+                        {
+                            string attributeName = str.Trim();
+                            int countOne = 0;
+                            int countSameAttribute = 0;
+                            foreach (ProbRelation relation in this.selectedRelations)
+                            {
+                                List<string> listOfAttributeName = relation.Scheme.ListOfAttributeNameToLower();
+                                if (listOfAttributeName.Contains(attributeName.ToLower()))
+                                {
+                                    ProbAttribute attr = new ProbAttribute(relation.Scheme.Attributes[listOfAttributeName.IndexOf(attributeName)]);
+                                    attr.AttributeName = String.Format("{0}.{1}", relation.RelationName, attr.AttributeName);
+                                    listProbAttribute.Add(attr);
+                                    countSameAttribute++;
+                                }
+                                else
+                                {
+                                    countOne++;
+                                }
+                            }
+
+                            if (countOne == this.selectedRelations.Count)
+                            {
+                                MessageError = String.Format(" Invalid attribute name '{0}'.", attributeName);
+                                return null;
+                            }
+
+                            if (countSameAttribute == this.selectedRelations.Count && this.selectedRelations.Count >= 2)
+                            {
+                                MessageError = String.Format(" Ambiguous attribute name '{0}'.", attributeName);
+                                return null;
+                            }
+                        }
+                        else
+                        {
+                            string[] array = str.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (array.Length != 2)
+                            {
+                                MessageError = "Incorrect syntax near the keyword 'select'.";
+                                return null;
+                            }
+
+                            ProbRelation relation = this.selectedRelations.SingleOrDefault(c => c.RelationName.Trim() == array[0].Trim());
+
+                            if (relation == null)
+                            {
+                                MessageError = String.Format("The multi-part identifier '{0}' could not be bound.", str);
+                                return null;
+                            }
+
+                            ProbAttribute attr = new ProbAttribute(relation.Scheme.Attributes.SingleOrDefault(c => c.AttributeName.Trim().ToLower() == array[1].Trim()));
+                            attr.AttributeName = String.Format("{0}.{1}", relation.RelationName, attr.AttributeName);
+
+                            if (attr == null)
+                            {
+                                MessageError = "Invalid attribute name '" + array[1] + "'.";
+                                return null;
+                            }
+
+                            listProbAttribute.Add(attr);
+                        }
+                    }
+
+                    return listProbAttribute;
+                }
+            }
+        }
+
+        private static bool CheckStringAttributeV2(string stringAttribute)
+        {
+
+            string subString = stringAttribute;
+
+            if (subString.Trim().Length <= 0)
+                return false;
+
+            if (subString.Contains(",,"))
+                return false;
+
+            if (subString.LastIndexOf(",") == subString.Length - 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static string GetConditionV2(string valueString)
+        {
+
+            string conditionString = string.Empty;
+            int posOne;
+
+            ///////////////////// Get Select Condition /////////////////
+            if (valueString.Contains("where "))
+            {
+                posOne = valueString.IndexOf("where") + 5;
+                conditionString = valueString.Substring(posOne);   // Get Select Condition in the Query Text
+            }
+
+            return conditionString;
+        }
+
+        private static ProbRelation getRelationBySelectAttributeV2(ProbRelation probRelation, List<ProbAttribute> attributes)
+        {
+            ProbRelation relation = new ProbRelation();
+            relation.RelationName = probRelation.RelationName;
+
+            List<int> indexs = new List<int>();
+            List<int> indexRemove = new List<int>();
+            foreach (ProbAttribute attr in attributes)
+            {
+                for (int i = 0; i < probRelation.Scheme.Attributes.Count; i++)
+                {
+                    if (probRelation.Scheme.Attributes[i].AttributeName.Trim().ToLower() == attr.AttributeName.Trim().ToLower())
+                    {
+                        indexs.Add(i);
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < probRelation.Scheme.Attributes.Count; i++)
+            {
+                if (attributes.Any(x => x.AttributeName.Trim().ToLower().Contains(probRelation.Scheme.Attributes[i].AttributeName.Trim().ToLower()))) 
+                {
+                    indexs.Add(i);
+                }
+            }
+
+            foreach (ProbTuple item in probRelation.tuples)
+            {
+                ProbTuple tuple = new ProbTuple();
+                for (int i = 0; i < indexs.Count; i++)
+                {
+                    tuple.Triples.Add(item.Triples[indexs[i]]);
+                }
+                relation.tuples.Add(tuple);
+            }
+
+            relation.Scheme.Attributes = attributes;
+
+            return relation;
+        }
+    }
 }

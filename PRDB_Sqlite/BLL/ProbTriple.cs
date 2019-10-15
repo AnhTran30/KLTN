@@ -103,7 +103,6 @@ namespace PRDB_Sqlite.BLL
         public ProbTriple(ProbTriple triple)
         {
             // TODO: Complete member initialization
-
             this.Value = new List<string>();
             this.MinProb = triple.MinProb;
             this.MaxProb = triple.MaxProb;
@@ -121,15 +120,30 @@ namespace PRDB_Sqlite.BLL
             foreach (var item in Value)
             {
                 strValue += item;
-                strValue += ",";
+                strValue += ", ";
             }
-            strValue.TrimEnd(',');
+            if (strValue.EndsWith(", "))
+            {
+                strValue = strValue.Remove(strValue.Length - 2);
+            }
             if (this.MinProb != 1)
             {
-                strValue += "{"+strValue+"}[ " + this.MinProb.ToString() + ", " + this.MaxProb + "]";
+                strValue = "{"+strValue+"}[ " + this.MinProb.ToString() + ", " + this.MaxProb + "]";
 
             }
             return strValue;
+        }
+
+        public bool isProbTripleValue(string value)
+        {
+            if (!value.Contains("{") && !value.Contains("}") && !value.Contains("[") && !value.Contains("]"))
+                return true;
+            else
+            {
+                if (!value.Contains("{") || !value.Contains("}") || !value.Contains("[") || !value.Contains("]"))
+                    return false;
+                return true;
+            }
         }
         #endregion
     }

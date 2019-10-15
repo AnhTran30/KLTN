@@ -46,6 +46,7 @@
             // labelControl1
             // 
             this.labelControl1.Appearance.Font = new System.Drawing.Font("Tahoma", 22F);
+            this.labelControl1.Appearance.Options.UseFont = true;
             this.labelControl1.Location = new System.Drawing.Point(114, 12);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(260, 35);
@@ -114,7 +115,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(437, 197);
+            this.ClientSize = new System.Drawing.Size(441, 197);
             this.Controls.Add(this.cbo_SchemeName);
             this.Controls.Add(this.txtRelationName);
             this.Controls.Add(this.btnCancel);
@@ -126,7 +127,7 @@
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(453, 235);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(453, 235);
+            this.MinimumSize = new System.Drawing.Size(443, 229);
             this.Name = "frm__new_relation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Create New Relation";

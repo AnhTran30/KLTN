@@ -43,105 +43,93 @@ namespace PRDB_Sqlite.BLL
         }
 
         #region check Expression
-        public bool CheckConditionString()
-        {
-            string str = this.conditionString.ToLower();
-            int indexI = 0;                           
+        //public bool CheckConditionString()
+        //{
+        //    string str = this.conditionString.ToLower();
+        //    int indexI = 0;                           
             
-            str = str.Trim();
+        //    str = str.Trim();
 
-            if (!str.Contains('(') || !str.Contains(')') || !str.Contains('[') || !str.Contains(']'))
-            {
-                MessageError = "Incorrect syntax near the keyword 'where'.";
-                return false;             
-            }
-
-            //if (str[0] != '(')
-            //{
-            //    MessageError = "Incorrect syntax near the keyword 'where'.";
-            //    return false;
-            //}
-
-            //if (str[str.Length  -1] != ']')
-            //{
-            //    MessageError = "Incorrect syntax near the keyword 'where'.";
-            //    return false;
-            //}
+        //    //if (!str.Contains('(') || !str.Contains(')') || !str.Contains('[') || !str.Contains(']'))
+        //    //{
+        //    //    MessageError = "Incorrect syntax near the keyword 'where'.";
+        //    //    return false;             
+        //    //}
                 
 
-            while (indexI < str.Length -1)
-            {
-                if (str[indexI] == '(')
-                {
-                    int indexJ = indexI + 1;
-                    while (indexJ < str.Length)
-                    {
-                        if (str[indexJ] == '(' || str[indexJ] == '[' || str[indexJ] == ']')
-                        {
-                            MessageError = "Incorrect syntax near the keyword 'where'.";
-                            return false;
-                        }
-                        if (str[indexJ] == ')')
-                            break;
-                        indexJ++;
-                    }
-                    if (indexJ == str.Length)
-                    {
-                        MessageError = "Incorrect syntax near the keyword 'where'.";
-                        return false;
-                    }
-                }
+        //    while (indexI < str.Length -1)
+        //    {
+        //        if (str[indexI] == '(')
+        //        {
+        //            int indexJ = indexI + 1;
+        //            while (indexJ < str.Length)
+        //            {
+        //                if (str[indexJ] == '(' || str[indexJ] == '[' || str[indexJ] == ']')
+        //                {
+        //                    MessageError = "Incorrect syntax near the keyword 'where'.";
+        //                    return false;
+        //                }
+        //                if (str[indexJ] == ')')
+        //                    break;
+        //                indexJ++;
+        //            }
+        //            if (indexJ == str.Length)
+        //            {
+        //                MessageError = "Incorrect syntax near the keyword 'where'.";
+        //                return false;
+        //            }
+        //        }
 
 
-                if (str[indexI] == '[')
-                {
-                    int indexJ = indexI + 1;
+        //        if (str[indexI] == '[')
+        //        {
+        //            int indexJ = indexI + 1;
 
-                    while (indexJ < str.Length)
-                    {
-                        if (str[indexJ] == '(' || str[indexJ] == '[' || str[indexJ] == ')')
-                        {
-                            MessageError = "Incorrect syntax near the keyword 'where'.";
-                            return false;
-                        }
-                        if (str[indexJ] == ']')
-                            break;
-                        indexJ++;
-                    }
+        //            while (indexJ < str.Length)
+        //            {
+        //                if (str[indexJ] == '(' || str[indexJ] == '[' || str[indexJ] == ')')
+        //                {
+        //                    MessageError = "Incorrect syntax near the keyword 'where'.";
+        //                    return false;
+        //                }
+        //                if (str[indexJ] == ']')
+        //                    break;
+        //                indexJ++;
+        //            }
                  
-                    if (indexJ == str.Length)
-                    {
-                        MessageError = "Incorrect syntax near the keyword 'where'.";
-                        return false;
-                    }
-                }
+        //            if (indexJ == str.Length)
+        //            {
+        //                MessageError = "Incorrect syntax near the keyword 'where'.";
+        //                return false;
+        //            }
+        //        }
 
-                if (str[indexI] == '(' && str[indexI + 1] == '(')
-                {
-                    MessageError = "Incorrect syntax near the keyword 'where'.";
-                    return false;
-                }
-                if (str[indexI] == ')' && str[indexI + 1] == ')')
-                {
-                    MessageError = "Incorrect syntax near the keyword 'where'.";
-                    return false;
-                }
-                if (str[indexI] == '[' && str[indexI + 1] == '[')
-                {
-                    MessageError = "Incorrect syntax near the keyword 'where'.";
-                    return false;
-                }
-                if (str[indexI] == ']' && str[indexI + 1] == ']')
-                {
-                    MessageError = "Incorrect syntax near the keyword 'where'.";
-                    return false;
-                }
+        //        if (str[indexI] == '(' && str[indexI + 1] == '(')
+        //        {
+        //            MessageError = "Incorrect syntax near the keyword 'where'.";
+        //            return false;
+        //        }
+        //        if (str[indexI] == ')' && str[indexI + 1] == ')')
+        //        {
+        //            MessageError = "Incorrect syntax near the keyword 'where'.";
+        //            return false;
+        //        }
+        //        if (str[indexI] == '[' && str[indexI + 1] == '[')
+        //        {
+        //            MessageError = "Incorrect syntax near the keyword 'where'.";
+        //            return false;
+        //        }
+        //        if (str[indexI] == ']' && str[indexI + 1] == ']')
+        //        {
+        //            MessageError = "Incorrect syntax near the keyword 'where'.";
+        //            return false;
+        //        }
 
-                indexI++;
-            }
+        //        indexI++;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
         private static string CutSpareSpace(string S)
         {
             string result = "";

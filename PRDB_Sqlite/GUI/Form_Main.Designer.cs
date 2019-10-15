@@ -201,6 +201,8 @@
             this.CTMenuQuery_RenameQuery = new System.Windows.Forms.ToolStripMenuItem();
             this.ImageList_TreeView = new System.Windows.Forms.ImageList(this.components);
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.ribbonPageGroup6 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
             this.splitContainerControl1.SuspendLayout();
@@ -250,14 +252,11 @@
             // ribbonControl1
             // 
             this.ribbonControl1.ApplicationButtonText = null;
-            // 
-            // 
-            // 
             this.ribbonControl1.ExpandCollapseItem.Id = 0;
-            this.ribbonControl1.ExpandCollapseItem.Name = "";
             this.ribbonControl1.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.ribbonControl1.ExpandCollapseItem,
+            this.ribbonControl1.SearchEditItem,
             this.barButtonItemNewDB,
             this.barButtonItemOpenDB,
             this.barButtonItemSaveDB,
@@ -304,8 +303,7 @@
             this.ribbonPageRelation,
             this.ribbonPageQuery,
             this.ribbonAbout});
-            this.ribbonControl1.SelectedPage = this.ribbonPageQuery;
-            this.ribbonControl1.Size = new System.Drawing.Size(1155, 144);
+            this.ribbonControl1.Size = new System.Drawing.Size(1155, 142);
             this.ribbonControl1.SelectedPageChanging += new DevExpress.XtraBars.Ribbon.RibbonPageChangingEventHandler(this.ribbonControl1_SelectedPageChanging);
             this.ribbonControl1.SelectedPageChanged += new System.EventHandler(this.ribbonControl1_SelectedPageChanged);
             // 
@@ -313,50 +311,50 @@
             // 
             this.barButtonItemNewDB.Caption = "New Database";
             this.barButtonItemNewDB.Id = 1;
-            this.barButtonItemNewDB.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemNewDB.LargeGlyph")));
+            this.barButtonItemNewDB.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemNewDB.ImageOptions.LargeImage")));
             this.barButtonItemNewDB.Name = "barButtonItemNewDB";
-            this.barButtonItemNewDB.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemNewDB.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemNewDB.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemNewDB_ItemClick);
             // 
             // barButtonItemOpenDB
             // 
             this.barButtonItemOpenDB.Caption = "Open Existing Database";
             this.barButtonItemOpenDB.Id = 2;
-            this.barButtonItemOpenDB.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemOpenDB.LargeGlyph")));
+            this.barButtonItemOpenDB.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemOpenDB.ImageOptions.LargeImage")));
             this.barButtonItemOpenDB.Name = "barButtonItemOpenDB";
-            this.barButtonItemOpenDB.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemOpenDB.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemOpenDB.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemOpenDB_ItemClick);
             // 
             // barButtonItemSaveDB
             // 
             this.barButtonItemSaveDB.Caption = "Save Database";
             this.barButtonItemSaveDB.Id = 3;
-            this.barButtonItemSaveDB.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemSaveDB.LargeGlyph")));
+            this.barButtonItemSaveDB.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemSaveDB.ImageOptions.LargeImage")));
             this.barButtonItemSaveDB.Name = "barButtonItemSaveDB";
-            this.barButtonItemSaveDB.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemSaveDB.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemSaveDB.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemSaveDB_ItemClick);
             // 
             // barButtonItemCloseDb
             // 
             this.barButtonItemCloseDb.Caption = "Close Database\r\n";
             this.barButtonItemCloseDb.Id = 4;
-            this.barButtonItemCloseDb.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemCloseDb.LargeGlyph")));
+            this.barButtonItemCloseDb.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemCloseDb.ImageOptions.LargeImage")));
             this.barButtonItemCloseDb.Name = "barButtonItemCloseDb";
-            this.barButtonItemCloseDb.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemCloseDb.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemCloseDb.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemCloseDb_ItemClick);
             // 
             // barButtonItemExit
             // 
             this.barButtonItemExit.Caption = "Exit";
             this.barButtonItemExit.Id = 5;
-            this.barButtonItemExit.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemExit.LargeGlyph")));
+            this.barButtonItemExit.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemExit.ImageOptions.LargeImage")));
             this.barButtonItemExit.Name = "barButtonItemExit";
-            this.barButtonItemExit.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemExit.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemExit.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemExit_ItemClick);
             // 
             // barButtonItem6
@@ -369,50 +367,50 @@
             // 
             this.barButtonItemNewScheme.Caption = "New Schema";
             this.barButtonItemNewScheme.Id = 7;
-            this.barButtonItemNewScheme.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemNewScheme.LargeGlyph")));
+            this.barButtonItemNewScheme.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemNewScheme.ImageOptions.LargeImage")));
             this.barButtonItemNewScheme.Name = "barButtonItemNewScheme";
-            this.barButtonItemNewScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemNewScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemNewScheme.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemNewScheme_ItemClick);
             // 
             // barButtonItemEditScheme
             // 
             this.barButtonItemEditScheme.Caption = "Edit Schema";
             this.barButtonItemEditScheme.Id = 8;
-            this.barButtonItemEditScheme.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemEditScheme.LargeGlyph")));
+            this.barButtonItemEditScheme.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemEditScheme.ImageOptions.LargeImage")));
             this.barButtonItemEditScheme.Name = "barButtonItemEditScheme";
-            this.barButtonItemEditScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemEditScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemEditScheme.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemSaveScheme_ItemClick);
             // 
             // barButtonItemOpenScheme
             // 
             this.barButtonItemOpenScheme.Caption = "Open Schema";
             this.barButtonItemOpenScheme.Id = 9;
-            this.barButtonItemOpenScheme.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemOpenScheme.LargeGlyph")));
+            this.barButtonItemOpenScheme.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemOpenScheme.ImageOptions.LargeImage")));
             this.barButtonItemOpenScheme.Name = "barButtonItemOpenScheme";
-            this.barButtonItemOpenScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemOpenScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemOpenScheme.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemOpenScheme_ItemClick);
             // 
             // barButtonItemDeleteScheme
             // 
             this.barButtonItemDeleteScheme.Caption = "Delete Schema\r\n";
             this.barButtonItemDeleteScheme.Id = 10;
-            this.barButtonItemDeleteScheme.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemDeleteScheme.LargeGlyph")));
+            this.barButtonItemDeleteScheme.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemDeleteScheme.ImageOptions.LargeImage")));
             this.barButtonItemDeleteScheme.Name = "barButtonItemDeleteScheme";
-            this.barButtonItemDeleteScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemDeleteScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemDeleteScheme.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemDeleteScheme_ItemClick);
             // 
             // barButtonItemCloseCurrentScheme
             // 
             this.barButtonItemCloseCurrentScheme.Caption = "Close Current Schema";
             this.barButtonItemCloseCurrentScheme.Id = 11;
-            this.barButtonItemCloseCurrentScheme.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemCloseCurrentScheme.LargeGlyph")));
+            this.barButtonItemCloseCurrentScheme.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemCloseCurrentScheme.ImageOptions.LargeImage")));
             this.barButtonItemCloseCurrentScheme.Name = "barButtonItemCloseCurrentScheme";
-            this.barButtonItemCloseCurrentScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemCloseCurrentScheme.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemCloseCurrentScheme.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemCloseCurrentScheme_ItemClick);
             // 
             // barButtonItem7
@@ -424,51 +422,51 @@
             // barButtonItemNewRelation
             // 
             this.barButtonItemNewRelation.Caption = "New Relation";
-            this.barButtonItemNewRelation.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemNewRelation.Glyph")));
             this.barButtonItemNewRelation.Id = 13;
+            this.barButtonItemNewRelation.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItemNewRelation.ImageOptions.Image")));
             this.barButtonItemNewRelation.Name = "barButtonItemNewRelation";
-            this.barButtonItemNewRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemNewRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemNewRelation.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemNewRelation_ItemClick);
             // 
             // barButtonItemEditRelation
             // 
             this.barButtonItemEditRelation.Caption = "Edit Relation";
-            this.barButtonItemEditRelation.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemEditRelation.Glyph")));
             this.barButtonItemEditRelation.Id = 14;
+            this.barButtonItemEditRelation.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItemEditRelation.ImageOptions.Image")));
             this.barButtonItemEditRelation.Name = "barButtonItemEditRelation";
-            this.barButtonItemEditRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemEditRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemEditRelation.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemEditRelation_ItemClick);
             // 
             // barButtonItemOpenRelation
             // 
             this.barButtonItemOpenRelation.Caption = "Open Relation";
-            this.barButtonItemOpenRelation.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemOpenRelation.Glyph")));
             this.barButtonItemOpenRelation.Id = 15;
+            this.barButtonItemOpenRelation.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItemOpenRelation.ImageOptions.Image")));
             this.barButtonItemOpenRelation.Name = "barButtonItemOpenRelation";
-            this.barButtonItemOpenRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemOpenRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemOpenRelation.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemOpenRelation_ItemClick);
             // 
             // barButtonItemDeleteRelation
             // 
             this.barButtonItemDeleteRelation.Caption = "Delete Relation\r\n";
-            this.barButtonItemDeleteRelation.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemDeleteRelation.Glyph")));
             this.barButtonItemDeleteRelation.Id = 16;
+            this.barButtonItemDeleteRelation.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItemDeleteRelation.ImageOptions.Image")));
             this.barButtonItemDeleteRelation.Name = "barButtonItemDeleteRelation";
-            this.barButtonItemDeleteRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemDeleteRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemDeleteRelation.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemDeleteRelation_ItemClick);
             // 
             // barButtonItemCloseCurrentRelation
             // 
             this.barButtonItemCloseCurrentRelation.Caption = "Close Current Relation";
-            this.barButtonItemCloseCurrentRelation.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemCloseCurrentRelation.Glyph")));
             this.barButtonItemCloseCurrentRelation.Id = 17;
+            this.barButtonItemCloseCurrentRelation.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItemCloseCurrentRelation.ImageOptions.Image")));
             this.barButtonItemCloseCurrentRelation.Name = "barButtonItemCloseCurrentRelation";
-            this.barButtonItemCloseCurrentRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemCloseCurrentRelation.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemCloseCurrentRelation.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemCloseCurrentRelation_ItemClick);
             // 
             // barButtonItem8
@@ -481,41 +479,41 @@
             // 
             this.barButtonItemNewQuery.Caption = "New Query";
             this.barButtonItemNewQuery.Id = 19;
-            this.barButtonItemNewQuery.LargeGlyph = global::PRDB_Sqlite.Properties.Resources.query_add1;
+            this.barButtonItemNewQuery.ImageOptions.LargeImage = global::PRDB_Sqlite.Properties.Resources.query_add1;
             this.barButtonItemNewQuery.Name = "barButtonItemNewQuery";
-            this.barButtonItemNewQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemNewQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemNewQuery.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemNewQuery_ItemClick);
             // 
             // barButtonItemSaveQuery
             // 
             this.barButtonItemSaveQuery.Caption = "Save Query";
             this.barButtonItemSaveQuery.Enabled = false;
-            this.barButtonItemSaveQuery.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemSaveQuery.Glyph")));
             this.barButtonItemSaveQuery.Id = 20;
+            this.barButtonItemSaveQuery.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItemSaveQuery.ImageOptions.Image")));
             this.barButtonItemSaveQuery.Name = "barButtonItemSaveQuery";
-            this.barButtonItemSaveQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemSaveQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemSaveQuery.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemSaveQuery_ItemClick);
             // 
             // barButtonItemOpenQuery
             // 
             this.barButtonItemOpenQuery.Caption = "Open Query";
-            this.barButtonItemOpenQuery.Glyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemOpenQuery.Glyph")));
             this.barButtonItemOpenQuery.Id = 21;
+            this.barButtonItemOpenQuery.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItemOpenQuery.ImageOptions.Image")));
             this.barButtonItemOpenQuery.Name = "barButtonItemOpenQuery";
-            this.barButtonItemOpenQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemOpenQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemOpenQuery.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemOpenQuery_ItemClick);
             // 
             // barButtonItemDeleteQuery
             // 
             this.barButtonItemDeleteQuery.Caption = "Delete Query\r\n";
             this.barButtonItemDeleteQuery.Id = 22;
-            this.barButtonItemDeleteQuery.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemDeleteQuery.LargeGlyph")));
+            this.barButtonItemDeleteQuery.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemDeleteQuery.ImageOptions.LargeImage")));
             this.barButtonItemDeleteQuery.Name = "barButtonItemDeleteQuery";
-            this.barButtonItemDeleteQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemDeleteQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemDeleteQuery.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemDeleteQuery_ItemClick);
             // 
             // barButtonItemExcuteQuery
@@ -523,11 +521,11 @@
             this.barButtonItemExcuteQuery.Caption = "Excute Query";
             this.barButtonItemExcuteQuery.Enabled = false;
             this.barButtonItemExcuteQuery.Id = 23;
+            this.barButtonItemExcuteQuery.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemExcuteQuery.ImageOptions.LargeImage")));
             this.barButtonItemExcuteQuery.ItemShortcut = new DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F5);
-            this.barButtonItemExcuteQuery.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemExcuteQuery.LargeGlyph")));
             this.barButtonItemExcuteQuery.Name = "barButtonItemExcuteQuery";
-            this.barButtonItemExcuteQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemExcuteQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemExcuteQuery.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemExcuteQuery_ItemClick);
             // 
             // barButtonItemCloseCurrentQuery
@@ -535,10 +533,10 @@
             this.barButtonItemCloseCurrentQuery.Caption = "Close Current Query";
             this.barButtonItemCloseCurrentQuery.Enabled = false;
             this.barButtonItemCloseCurrentQuery.Id = 24;
-            this.barButtonItemCloseCurrentQuery.LargeGlyph = ((System.Drawing.Image)(resources.GetObject("barButtonItemCloseCurrentQuery.LargeGlyph")));
+            this.barButtonItemCloseCurrentQuery.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItemCloseCurrentQuery.ImageOptions.LargeImage")));
             this.barButtonItemCloseCurrentQuery.Name = "barButtonItemCloseCurrentQuery";
-            this.barButtonItemCloseCurrentQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText)
-                        | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.barButtonItemCloseCurrentQuery.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.barButtonItemCloseCurrentQuery.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemCloseCurrentQuery_ItemClick);
             // 
             // barButtonGroup1
@@ -549,127 +547,127 @@
             // 
             // barButtonItem_Hoi_Ignor
             // 
-            this.barButtonItem_Hoi_Ignor.Appearance.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Hoi_Ignor.Appearance.Options.UseFont = true;
-            this.barButtonItem_Hoi_Ignor.AppearanceDisabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Hoi_Ignor.AppearanceDisabled.Options.UseFont = true;
             this.barButtonItem_Hoi_Ignor.Caption = "⊕_ig (ignorance)";
             this.barButtonItem_Hoi_Ignor.Id = 26;
+            this.barButtonItem_Hoi_Ignor.ItemAppearance.Disabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Hoi_Ignor.ItemAppearance.Disabled.Options.UseFont = true;
+            this.barButtonItem_Hoi_Ignor.ItemAppearance.Normal.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Hoi_Ignor.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Hoi_Ignor.Name = "barButtonItem_Hoi_Ignor";
             this.barButtonItem_Hoi_Ignor.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Hoi_Ignor_ItemClick);
             // 
             // barButtonItem_Hoi_independence
             // 
-            this.barButtonItem_Hoi_independence.Appearance.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold);
-            this.barButtonItem_Hoi_independence.Appearance.Options.UseFont = true;
-            this.barButtonItem_Hoi_independence.AppearanceDisabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Hoi_independence.AppearanceDisabled.Options.UseFont = true;
             this.barButtonItem_Hoi_independence.Caption = "⊗_in (independence)";
             this.barButtonItem_Hoi_independence.Id = 27;
+            this.barButtonItem_Hoi_independence.ItemAppearance.Disabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Hoi_independence.ItemAppearance.Disabled.Options.UseFont = true;
+            this.barButtonItem_Hoi_independence.ItemAppearance.Normal.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold);
+            this.barButtonItem_Hoi_independence.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Hoi_independence.Name = "barButtonItem_Hoi_independence";
             this.barButtonItem_Hoi_independence.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Hoi_independence_ItemClick);
             // 
             // barButtonItem_Hoi_mutualexclusion
             // 
-            this.barButtonItem_Hoi_mutualexclusion.Appearance.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Hoi_mutualexclusion.Appearance.Options.UseFont = true;
-            this.barButtonItem_Hoi_mutualexclusion.AppearanceDisabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Hoi_mutualexclusion.AppearanceDisabled.Options.UseFont = true;
             this.barButtonItem_Hoi_mutualexclusion.Caption = "⊗_me (mutual exclusion)";
             this.barButtonItem_Hoi_mutualexclusion.Id = 28;
+            this.barButtonItem_Hoi_mutualexclusion.ItemAppearance.Disabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Hoi_mutualexclusion.ItemAppearance.Disabled.Options.UseFont = true;
+            this.barButtonItem_Hoi_mutualexclusion.ItemAppearance.Normal.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Hoi_mutualexclusion.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Hoi_mutualexclusion.Name = "barButtonItem_Hoi_mutualexclusion";
             this.barButtonItem_Hoi_mutualexclusion.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Hoi_mutualexclusion_ItemClick);
             // 
             // barButtonItem_Tuyen_ignorance
             // 
-            this.barButtonItem_Tuyen_ignorance.Appearance.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tuyen_ignorance.Appearance.Options.UseFont = true;
-            this.barButtonItem_Tuyen_ignorance.AppearanceDisabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tuyen_ignorance.AppearanceDisabled.Options.UseFont = true;
             this.barButtonItem_Tuyen_ignorance.Caption = "⊕_ig (ignorance)";
             this.barButtonItem_Tuyen_ignorance.Id = 29;
+            this.barButtonItem_Tuyen_ignorance.ItemAppearance.Disabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tuyen_ignorance.ItemAppearance.Disabled.Options.UseFont = true;
+            this.barButtonItem_Tuyen_ignorance.ItemAppearance.Normal.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tuyen_ignorance.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Tuyen_ignorance.Name = "barButtonItem_Tuyen_ignorance";
             this.barButtonItem_Tuyen_ignorance.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Tuyen_ignorance_ItemClick);
             // 
             // barButtonItem_Tuyen_independence
             // 
-            this.barButtonItem_Tuyen_independence.Appearance.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tuyen_independence.Appearance.Options.UseFont = true;
-            this.barButtonItem_Tuyen_independence.AppearanceDisabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tuyen_independence.AppearanceDisabled.Options.UseFont = true;
             this.barButtonItem_Tuyen_independence.Caption = "⊕_in (independence)";
             this.barButtonItem_Tuyen_independence.Id = 30;
+            this.barButtonItem_Tuyen_independence.ItemAppearance.Disabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tuyen_independence.ItemAppearance.Disabled.Options.UseFont = true;
+            this.barButtonItem_Tuyen_independence.ItemAppearance.Normal.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tuyen_independence.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Tuyen_independence.Name = "barButtonItem_Tuyen_independence";
             this.barButtonItem_Tuyen_independence.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Tuyen_independence_ItemClick);
             // 
             // barButtonItem_Tuyen_mutualexclusion
             // 
-            this.barButtonItem_Tuyen_mutualexclusion.Appearance.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tuyen_mutualexclusion.Appearance.Options.UseFont = true;
-            this.barButtonItem_Tuyen_mutualexclusion.AppearanceDisabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tuyen_mutualexclusion.AppearanceDisabled.Options.UseFont = true;
             this.barButtonItem_Tuyen_mutualexclusion.Caption = "⊕_me (mutual exclusion)";
             this.barButtonItem_Tuyen_mutualexclusion.Id = 31;
+            this.barButtonItem_Tuyen_mutualexclusion.ItemAppearance.Disabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tuyen_mutualexclusion.ItemAppearance.Disabled.Options.UseFont = true;
+            this.barButtonItem_Tuyen_mutualexclusion.ItemAppearance.Normal.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tuyen_mutualexclusion.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Tuyen_mutualexclusion.Name = "barButtonItem_Tuyen_mutualexclusion";
             this.barButtonItem_Tuyen_mutualexclusion.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Tuyen_mutualexclusion_ItemClick);
             // 
             // barButtonItem_Tru_ignorance
             // 
-            this.barButtonItem_Tru_ignorance.Appearance.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tru_ignorance.Appearance.Options.UseFont = true;
-            this.barButtonItem_Tru_ignorance.AppearanceDisabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tru_ignorance.AppearanceDisabled.Options.UseFont = true;
             this.barButtonItem_Tru_ignorance.Caption = "⊖_ig (ignorance)";
             this.barButtonItem_Tru_ignorance.Id = 32;
+            this.barButtonItem_Tru_ignorance.ItemAppearance.Disabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tru_ignorance.ItemAppearance.Disabled.Options.UseFont = true;
+            this.barButtonItem_Tru_ignorance.ItemAppearance.Normal.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tru_ignorance.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Tru_ignorance.Name = "barButtonItem_Tru_ignorance";
             this.barButtonItem_Tru_ignorance.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Tru_ignorance_ItemClick);
             // 
             // barButtonItem_Tru_independence
             // 
-            this.barButtonItem_Tru_independence.Appearance.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tru_independence.Appearance.Options.UseFont = true;
-            this.barButtonItem_Tru_independence.AppearanceDisabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tru_independence.AppearanceDisabled.Options.UseFont = true;
             this.barButtonItem_Tru_independence.Caption = "⊖_in (independence)";
             this.barButtonItem_Tru_independence.Id = 33;
+            this.barButtonItem_Tru_independence.ItemAppearance.Disabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tru_independence.ItemAppearance.Disabled.Options.UseFont = true;
+            this.barButtonItem_Tru_independence.ItemAppearance.Normal.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tru_independence.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Tru_independence.Name = "barButtonItem_Tru_independence";
             this.barButtonItem_Tru_independence.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Tru_independence_ItemClick);
             // 
             // barButtonItem_Tru_mutualexclusion
             // 
-            this.barButtonItem_Tru_mutualexclusion.Appearance.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tru_mutualexclusion.Appearance.Options.UseFont = true;
-            this.barButtonItem_Tru_mutualexclusion.AppearanceDisabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barButtonItem_Tru_mutualexclusion.AppearanceDisabled.Options.UseFont = true;
             this.barButtonItem_Tru_mutualexclusion.Caption = "⊖_me (mutual exclusion)";
             this.barButtonItem_Tru_mutualexclusion.Id = 34;
+            this.barButtonItem_Tru_mutualexclusion.ItemAppearance.Disabled.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tru_mutualexclusion.ItemAppearance.Disabled.Options.UseFont = true;
+            this.barButtonItem_Tru_mutualexclusion.ItemAppearance.Normal.Font = new System.Drawing.Font("Lucida Sans Unicode", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barButtonItem_Tru_mutualexclusion.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Tru_mutualexclusion.Name = "barButtonItem_Tru_mutualexclusion";
             this.barButtonItem_Tru_mutualexclusion.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Tru_mutualexclusion_ItemClick);
             // 
             // barButtonItem_Bang_ignorance
             // 
-            this.barButtonItem_Bang_ignorance.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
-            this.barButtonItem_Bang_ignorance.Appearance.Options.UseFont = true;
             this.barButtonItem_Bang_ignorance.Caption = "EQUAL_ig - ignorance";
             this.barButtonItem_Bang_ignorance.Id = 35;
+            this.barButtonItem_Bang_ignorance.ItemAppearance.Normal.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
+            this.barButtonItem_Bang_ignorance.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Bang_ignorance.Name = "barButtonItem_Bang_ignorance";
             this.barButtonItem_Bang_ignorance.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Bang_ignorance_ItemClick);
             // 
             // barButtonItem_Bang_independence
             // 
-            this.barButtonItem_Bang_independence.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
-            this.barButtonItem_Bang_independence.Appearance.Options.UseFont = true;
             this.barButtonItem_Bang_independence.Caption = "EQUAL_in - independence";
             this.barButtonItem_Bang_independence.Id = 36;
+            this.barButtonItem_Bang_independence.ItemAppearance.Normal.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
+            this.barButtonItem_Bang_independence.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Bang_independence.Name = "barButtonItem_Bang_independence";
             this.barButtonItem_Bang_independence.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Bang_independence_ItemClick);
             // 
             // barButtonItem_Bang_mutualexclusion
             // 
-            this.barButtonItem_Bang_mutualexclusion.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
-            this.barButtonItem_Bang_mutualexclusion.Appearance.Options.UseFont = true;
             this.barButtonItem_Bang_mutualexclusion.Caption = "EQUAL_me - mutual exclusion";
             this.barButtonItem_Bang_mutualexclusion.Id = 37;
+            this.barButtonItem_Bang_mutualexclusion.ItemAppearance.Normal.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
+            this.barButtonItem_Bang_mutualexclusion.ItemAppearance.Normal.Options.UseFont = true;
             this.barButtonItem_Bang_mutualexclusion.Name = "barButtonItem_Bang_mutualexclusion";
             this.barButtonItem_Bang_mutualexclusion.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem_Bang_mutualexclusion_ItemClick);
             // 
@@ -874,14 +872,14 @@
             // splitContainerControl1
             // 
             this.splitContainerControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainerControl1.Location = new System.Drawing.Point(0, 144);
+            this.splitContainerControl1.Location = new System.Drawing.Point(0, 142);
             this.splitContainerControl1.Name = "splitContainerControl1";
             this.splitContainerControl1.Panel1.Controls.Add(this.TreeView);
             this.splitContainerControl1.Panel1.Controls.Add(this.ToolStripTitleOV);
             this.splitContainerControl1.Panel1.Text = "Panel1";
             this.splitContainerControl1.Panel2.Controls.Add(this.xtraTabDatabase);
             this.splitContainerControl1.Panel2.Text = "Panel2";
-            this.splitContainerControl1.Size = new System.Drawing.Size(1155, 418);
+            this.splitContainerControl1.Size = new System.Drawing.Size(1155, 420);
             this.splitContainerControl1.SplitterPosition = 248;
             this.splitContainerControl1.TabIndex = 1;
             this.splitContainerControl1.Text = "splitContainerControl1";
@@ -893,7 +891,7 @@
             this.TreeView.ForeColor = System.Drawing.Color.Blue;
             this.TreeView.Location = new System.Drawing.Point(0, 25);
             this.TreeView.Name = "TreeView";
-            this.TreeView.Size = new System.Drawing.Size(248, 393);
+            this.TreeView.Size = new System.Drawing.Size(248, 395);
             this.TreeView.TabIndex = 1;
             // 
             // ToolStripTitleOV
@@ -928,7 +926,7 @@
             this.xtraTabDatabase.Location = new System.Drawing.Point(0, 0);
             this.xtraTabDatabase.Name = "xtraTabDatabase";
             this.xtraTabDatabase.SelectedTabPage = this.xtraTabPageScheme;
-            this.xtraTabDatabase.Size = new System.Drawing.Size(903, 418);
+            this.xtraTabDatabase.Size = new System.Drawing.Size(903, 420);
             this.xtraTabDatabase.TabIndex = 0;
             this.xtraTabDatabase.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.xtraTabPageScheme,
@@ -939,7 +937,7 @@
             // 
             this.xtraTabPageScheme.Controls.Add(this.gridControlScheme);
             this.xtraTabPageScheme.Name = "xtraTabPageScheme";
-            this.xtraTabPageScheme.Size = new System.Drawing.Size(898, 393);
+            this.xtraTabPageScheme.Size = new System.Drawing.Size(898, 395);
             this.xtraTabPageScheme.Text = "Scheme";
             // 
             // gridControlScheme
@@ -951,7 +949,7 @@
             this.gridControlScheme.Name = "gridControlScheme";
             this.gridControlScheme.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemCheckEdit1});
-            this.gridControlScheme.Size = new System.Drawing.Size(898, 393);
+            this.gridControlScheme.Size = new System.Drawing.Size(898, 395);
             this.gridControlScheme.TabIndex = 1;
             this.gridControlScheme.UseEmbeddedNavigator = true;
             this.gridControlScheme.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -966,7 +964,6 @@
             this.gridColumnDomain,
             this.gridColumnDescription});
             this.gridView.GridControl = this.gridControlScheme;
-            this.gridView.GroupFooterShowMode = DevExpress.XtraGrid.Views.Grid.GroupFooterShowMode.Hidden;
             this.gridView.Name = "gridView";
             this.gridView.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
             this.gridView.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
@@ -974,6 +971,7 @@
             this.gridView.OptionsBehavior.ReadOnly = true;
             this.gridView.OptionsNavigation.AutoFocusNewRow = true;
             this.gridView.OptionsNavigation.EnterMoveNextColumn = true;
+            this.gridView.OptionsView.GroupFooterShowMode = DevExpress.XtraGrid.Views.Grid.GroupFooterShowMode.Hidden;
             this.gridView.OptionsView.ShowAutoFilterRow = true;
             this.gridView.OptionsView.ShowGroupPanel = false;
             // 
@@ -1024,7 +1022,7 @@
             this.xtraTabPageRelation.Controls.Add(this.splitContainerControl2);
             this.xtraTabPageRelation.Controls.Add(this.splitterControl1);
             this.xtraTabPageRelation.Name = "xtraTabPageRelation";
-            this.xtraTabPageRelation.Size = new System.Drawing.Size(898, 393);
+            this.xtraTabPageRelation.Size = new System.Drawing.Size(898, 395);
             this.xtraTabPageRelation.Text = "Relation";
             // 
             // splitContainerControl2
@@ -1040,7 +1038,7 @@
             this.splitContainerControl2.Panel2.Controls.Add(this.BindingNavigatorValue);
             this.splitContainerControl2.Panel2.Controls.Add(this.PanelControlValue);
             this.splitContainerControl2.Panel2.Text = "Panel2";
-            this.splitContainerControl2.Size = new System.Drawing.Size(894, 393);
+            this.splitContainerControl2.Size = new System.Drawing.Size(894, 395);
             this.splitContainerControl2.SplitterPosition = 234;
             this.splitContainerControl2.TabIndex = 1;
             // 
@@ -1181,9 +1179,9 @@
             // 
             // GridViewData
             // 
-            this.GridViewData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.GridViewData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.GridViewData.BackgroundColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -1234,7 +1232,7 @@
             this.GridViewValue.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GridViewValue.Location = new System.Drawing.Point(0, 34);
             this.GridViewValue.Name = "GridViewValue";
-            this.GridViewValue.Size = new System.Drawing.Size(894, 121);
+            this.GridViewValue.Size = new System.Drawing.Size(894, 123);
             this.GridViewValue.TabIndex = 16;
             this.GridViewValue.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridViewValue_CellEndEdit);
             this.GridViewValue.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.GridViewValue_RowsAdded);
@@ -1272,7 +1270,7 @@
             this.txtValue.Location = new System.Drawing.Point(0, 34);
             this.txtValue.MenuManager = this.ribbonControl1;
             this.txtValue.Name = "txtValue";
-            this.txtValue.Size = new System.Drawing.Size(894, 121);
+            this.txtValue.Size = new System.Drawing.Size(894, 123);
             this.txtValue.TabIndex = 10;
             this.txtValue.Visible = false;
             // 
@@ -1508,7 +1506,7 @@
             this.splitterControl1.Cursor = System.Windows.Forms.Cursors.HSplit;
             this.splitterControl1.Location = new System.Drawing.Point(0, 0);
             this.splitterControl1.Name = "splitterControl1";
-            this.splitterControl1.Size = new System.Drawing.Size(4, 393);
+            this.splitterControl1.Size = new System.Drawing.Size(4, 395);
             this.splitterControl1.TabIndex = 0;
             this.splitterControl1.TabStop = false;
             // 
@@ -1516,7 +1514,7 @@
             // 
             this.xtraTabPageQuery.Controls.Add(this.splitContainerControl3);
             this.xtraTabPageQuery.Name = "xtraTabPageQuery";
-            this.xtraTabPageQuery.Size = new System.Drawing.Size(898, 393);
+            this.xtraTabPageQuery.Size = new System.Drawing.Size(898, 395);
             this.xtraTabPageQuery.Text = "Query";
             // 
             // splitContainerControl3
@@ -1529,7 +1527,7 @@
             this.splitContainerControl3.Panel1.Text = "Panel1";
             this.splitContainerControl3.Panel2.Controls.Add(this.xtraTabControlQueryResult);
             this.splitContainerControl3.Panel2.Text = "Panel2";
-            this.splitContainerControl3.Size = new System.Drawing.Size(898, 393);
+            this.splitContainerControl3.Size = new System.Drawing.Size(898, 395);
             this.splitContainerControl3.SplitterPosition = 211;
             this.splitContainerControl3.TabIndex = 0;
             this.splitContainerControl3.Text = "splitContainerControl3";
@@ -1552,7 +1550,7 @@
             this.xtraTabControlQueryResult.Location = new System.Drawing.Point(0, 0);
             this.xtraTabControlQueryResult.Name = "xtraTabControlQueryResult";
             this.xtraTabControlQueryResult.SelectedTabPage = this.xtraTabPageQueryResult;
-            this.xtraTabControlQueryResult.Size = new System.Drawing.Size(898, 178);
+            this.xtraTabControlQueryResult.Size = new System.Drawing.Size(898, 180);
             this.xtraTabControlQueryResult.TabIndex = 0;
             this.xtraTabControlQueryResult.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.xtraTabPageQueryResult,
@@ -1562,7 +1560,7 @@
             // 
             this.xtraTabPageQueryResult.Controls.Add(this.GridViewResult);
             this.xtraTabPageQueryResult.Name = "xtraTabPageQueryResult";
-            this.xtraTabPageQueryResult.Size = new System.Drawing.Size(893, 153);
+            this.xtraTabPageQueryResult.Size = new System.Drawing.Size(893, 155);
             this.xtraTabPageQueryResult.Text = "Query Result";
             // 
             // GridViewResult
@@ -1582,14 +1580,14 @@
             this.GridViewResult.Location = new System.Drawing.Point(0, 0);
             this.GridViewResult.Name = "GridViewResult";
             this.GridViewResult.ReadOnly = true;
-            this.GridViewResult.Size = new System.Drawing.Size(893, 153);
+            this.GridViewResult.Size = new System.Drawing.Size(893, 155);
             this.GridViewResult.TabIndex = 2;
             // 
             // MessageQuery
             // 
             this.MessageQuery.Controls.Add(this.txtMessage);
             this.MessageQuery.Name = "MessageQuery";
-            this.MessageQuery.Size = new System.Drawing.Size(893, 153);
+            this.MessageQuery.Size = new System.Drawing.Size(893, 155);
             this.MessageQuery.Text = "Message";
             // 
             // txtMessage
@@ -1602,7 +1600,7 @@
             this.txtMessage.Multiline = true;
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.ReadOnly = true;
-            this.txtMessage.Size = new System.Drawing.Size(893, 153);
+            this.txtMessage.Size = new System.Drawing.Size(893, 155);
             this.txtMessage.TabIndex = 1;
             // 
             // toolStripLabel1
@@ -1725,7 +1723,7 @@
             this.CTMenuRelation_NewRelation,
             this.CTMenuRelation_DeleteRelations});
             this.ContextMenu_Relation.Name = "ContextMenu_Table";
-            this.ContextMenu_Relation.Size = new System.Drawing.Size(200, 48);
+            this.ContextMenu_Relation.Size = new System.Drawing.Size(200, 70);
             // 
             // CTMenuRelation_NewRelation
             // 
@@ -1806,7 +1804,7 @@
             this.CTMenuQuery_DeleteQuery,
             this.CTMenuQuery_RenameQuery});
             this.contextMenu_QueryNode.Name = "ContextMenu_Query";
-            this.contextMenu_QueryNode.Size = new System.Drawing.Size(167, 92);
+            this.contextMenu_QueryNode.Size = new System.Drawing.Size(167, 70);
             // 
             // CTMenuQueryNode_OpenQuery
             // 
@@ -1844,6 +1842,18 @@
             // errorProvider
             // 
             this.errorProvider.ContainerControl = this;
+            // 
+            // ribbonPageGroup6
+            // 
+            this.ribbonPageGroup6.Name = "ribbonPageGroup6";
+            this.ribbonPageGroup6.Text = "ribbonPageGroup6";
+            // 
+            // ribbonPage1
+            // 
+            this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+            this.ribbonPageGroup6});
+            this.ribbonPage1.Name = "ribbonPage1";
+            this.ribbonPage1.Text = "ribbonPage1";
             // 
             // Form_Main
             // 
@@ -1905,6 +1915,7 @@
             this.contextMenu_QueryNode.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -2074,6 +2085,7 @@
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.ToolStripLabel toolStripLabel2;
         private System.Windows.Forms.ToolStripLabel toolStripLabel3;
-       
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup6;
+        private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage1;
     }
 }

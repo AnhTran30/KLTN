@@ -155,10 +155,12 @@ namespace PRDB_Sqlite.BLL
                     value = value.Replace(" ", "");
                 }
 
-                int j1, j2;
-                j1 = value.IndexOf('{');
-                j2 = value.IndexOf('}');
-                value = value.Substring(j1 + 1, j2 - j1 - 1).Trim();
+                if(value.Contains("{") && value.Contains("}") && value.Contains("[") && value.Contains("]"))
+                {
+                    var j1 = value.IndexOf('{');
+                    var j2 = value.IndexOf('}');
+                    value = value.Substring(j1 + 1, j2 - j1 - 1).Trim();
+                }
 
                 string[] seperator = { "," };
 
@@ -181,8 +183,8 @@ namespace PRDB_Sqlite.BLL
                         case "Binary": return (isBinaryType(tem));
                         case "Currency": return (isCurrencyType(tem));
                         case "UserDefined":
-                               return CheckDomain(tem.ToString().Trim());
-                        default: break;       
+                            return CheckDomain(tem.ToString().Trim());
+                        default: break;
                     }
                 }
             }

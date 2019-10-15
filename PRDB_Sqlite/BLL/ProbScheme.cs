@@ -94,7 +94,7 @@ namespace PRDB_Sqlite.BLL
 
         internal List<int> ListIndexPrimaryKey()
         {
-            List<int> indexs = new List<int>();
+            var indexs = new List<int>();
 
             for (int i = 0; i < this.Attributes.Count; i++)
             {

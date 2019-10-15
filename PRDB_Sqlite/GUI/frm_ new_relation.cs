@@ -46,8 +46,6 @@ namespace PRDB_Sqlite.GUI
                     return;
                 }
 
-
-
                 if (txtRelationName.Text.ToLower() == "select" || txtRelationName.Text.ToLower() == "from" || txtRelationName.Text.ToLower() == "where")
                 {
                     errorProvider.SetError(txtRelationName, "Relation name is not valid ( not match with keyword 'select', 'from', 'where')  ");
@@ -64,9 +62,6 @@ namespace PRDB_Sqlite.GUI
                         return;
                     }
                 }
-
-
-
 
                 ProbScheme scheme = this.probDatabase.Schemes.SingleOrDefault(c => c.SchemeName.ToLower() == cbo_SchemeName.Properties.Items[cbo_SchemeName.SelectedIndex].ToString());
                 ProbRelation relation = new ProbRelation();
@@ -90,12 +85,7 @@ namespace PRDB_Sqlite.GUI
             {
                 MessageBox.Show(EX.Message);
             }
-         
-                
-
-
-
-
+        
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
