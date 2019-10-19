@@ -853,11 +853,6 @@ namespace PRDB_Sqlite.BLL
                 else
                 {
                     SelectCondition Condition = new SelectCondition(this.selectedRelations[0], this.conditionString);
-                    //if (!Condition.CheckConditionString())
-                    //{
-                    //    this.MessageError = Condition.MessageError;
-                    //    return false;
-                    //}
 
                     foreach (ProbTuple tuple in this.selectedRelations[0].tuples)
                         if (Condition.Satisfied(tuple))

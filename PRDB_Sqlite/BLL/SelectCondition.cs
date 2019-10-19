@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace PRDB_Sqlite.BLL
@@ -316,6 +317,94 @@ namespace PRDB_Sqlite.BLL
             return CalculateCondition(rpn);
         }
 
+        public bool Satisfiedv2(ProbTuple tuple)
+        {
+            this.tuple = tuple;
+            string conditionStr = this.conditionString;
+            string[] subConditionHaveProbability;
+            string[] subCondition;
+
+            Regex regexPro = new Regex(@"\([^\(\)]+\)\[[^\(\)]+\]");
+
+            var conditionProbabilities = regexPro.Matches(conditionStr); 
+
+            for(int i = 0; i < conditionProbabilities.Count; i++)
+            {
+                subConditionHaveProbability = new string[conditionProbabilities.Count];
+                subConditionHaveProbability[i] = conditionProbabilities[i].ToString();
+                conditionStr = conditionStr.Replace(conditionProbabilities[i].ToString(), "ConditionProb_" + i.ToString());
+            }
+
+            var count1 = 0;
+            var count2 = 0;
+            var degree = 0;
+
+            // dem so lan va so bac cua ky tu '(' 
+            for (int i = 0; i < conditionStr.Length; i++)
+            {
+                if (conditionStr[i] == '(')
+                {
+                    count1++;
+                    var tmp = 1;
+                    for (int j = i + 1; j < conditionStr.Length; j++)
+                    {
+                        if (conditionStr[j] == '(')
+                            tmp++;
+                        if (conditionStr[j] == ')') break;
+                    }
+                    degree = degree >= tmp ? degree : tmp;
+                }
+                if (conditionStr[i] == ')') count2++;
+            }
+
+            if (count1 != count2)
+            {
+                MessageError = string.Format("Incorrect syntax near the keyword.");
+                return false;
+            }
+
+            Regex regexCondition = new Regex(@"\([^\(\)]+\)");
+
+            var timeCondition = 1;
+            for(int i=0; i < degree; i++)
+            {
+                var listCondition = regexCondition.Matches(conditionStr);
+                for (int j = 0; j < listCondition.Count; j++)
+                {
+                    subCondition = new string[listCondition.Count];
+                    subCondition[j] = listCondition[j].ToString();
+                    conditionStr = conditionStr.Replace(listCondition[i].ToString(), "Condition_" + timeCondition.ToString());
+                    timeCondition++;
+                }
+            }
+
+            string[] listConditionProb;
+            var option = conditionStr.Split(new char[] { ' ' },StringSplitOptions.RemoveEmptyEntries );
+            listConditionProb = new string[option.Count()];
+            for (int i = 0; i < option.Count(); i++)
+            {
+                if (Common.ConditionNormalString.Contains(option[i]))
+                {
+                    listConditionProb[i] = option[i];
+                    continue;
+                }
+                
+            }
+            var count3 = 0;
+            foreach(var item in option)
+            {
+                if (Common.ConditionNormalString.Contains(item))
+                {
+                    count3++;
+                    listConditionProb[count3] = item;
+                    count3++;
+                    continue;
+                }
+                listConditionProb[count3] += item;
+            }
+                
+        }
+
         private bool ExpressionValue(string Str)
         {
             // Get Probabilistic Interval
@@ -572,10 +661,6 @@ namespace PRDB_Sqlite.BLL
                                 MessageError = "Unclosed quotation mark at the character string " + valueTwo;
                                 return string.Empty;
                             }
-
-
-
-
 
                             valueTwo = valueTwo.Remove(0, 1);
                             valueTwo = valueTwo.Remove(valueTwo.Length - 1,1);

@@ -18,7 +18,7 @@ namespace PRDB_Sqlite
         public static string NaturalJoinIg = "natural join ig";
         public static string NaturalJoinMe = "natural join me";
         public static string[] ConditionSpecialString = new string[] { "<", ">", "<=", ">=", "=", "!=", "*"};
-        public static string[] ConditionNormalString = new string[] { "is", "not", "null", "like"};
+        public static string[] ConditionNormalString = new string[] { "or", "and", "in" , "is", "not", "null", "like", "some", "exists", "between", "any", "all" };
         public static char[] SpecialCharacter = new char[] { '~', '!', '@', '#', '$', '%', '^', '&', '[', ']', '(', ')', '+', '`', ';', '<', '>', '?', '/', ':', '\"', '\'', '=', '{', '}', '\\', '|' };
         public static string SpecialcharacterString
         {
