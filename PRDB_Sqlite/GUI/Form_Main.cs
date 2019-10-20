@@ -2376,8 +2376,8 @@ namespace PRDB_Sqlite.GUI
                     {
                         GridViewValue.Rows.Add();
                         GridViewValue.Rows[i].Cells[0].Value = triple.Value[i];
-                        GridViewValue.Rows[i].Cells[1].Value = triple.MinProb;
-                        GridViewValue.Rows[i].Cells[2].Value = triple.MaxProb;
+                        GridViewValue.Rows[i].Cells[1].Value = Math.Round(triple.MinProb / triple.Value.Count, 3);
+                        GridViewValue.Rows[i].Cells[2].Value = Math.Round(triple.MaxProb / triple.Value.Count, 3);
                     }
 
                     UpdateValueRowNumber();
@@ -2783,7 +2783,7 @@ namespace PRDB_Sqlite.GUI
                 QueryExecution query = new QueryExecution(txtQuery.Text, this.probDatabase);
                 txtMessage.Text = "";
 
-                if (query.ExecuteQuery())
+                if (query.ExcuteQueryV2())
                 {
                     txtMessage.Text = string.Empty;
 

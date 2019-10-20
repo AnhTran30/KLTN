@@ -133,9 +133,7 @@ namespace PRDB_Sqlite.BLL
                     case "UserDefined":
                         return CheckDomain(value.ToString().Trim());
                     default: break;
-
                 }
-                
             }
             catch
             {

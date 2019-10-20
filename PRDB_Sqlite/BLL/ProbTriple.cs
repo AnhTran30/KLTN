@@ -73,7 +73,7 @@ namespace PRDB_Sqlite.BLL
 
                     foreach(var item in listValue)
                     {
-                        this.Value.Add(item);
+                        this.Value.Add(item.Trim());
                     }
                     
                 } 

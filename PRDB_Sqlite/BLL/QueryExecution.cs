@@ -855,7 +855,7 @@ namespace PRDB_Sqlite.BLL
                     SelectCondition Condition = new SelectCondition(this.selectedRelations[0], this.conditionString);
 
                     foreach (ProbTuple tuple in this.selectedRelations[0].tuples)
-                        if (Condition.Satisfied(tuple))
+                        if (Condition.Satisfiedv2(tuple))
                             this.relationResult.tuples.Add(tuple);
 
                     if (Condition.MessageError != string.Empty)
@@ -878,6 +878,7 @@ namespace PRDB_Sqlite.BLL
             {
                 return false;
             }
+            return true;
         }
 
         internal bool QueryAnalyzeV2()
@@ -970,7 +971,7 @@ namespace PRDB_Sqlite.BLL
             List<ProbRelation> probRelations = new List<ProbRelation>();
 
             //////////////////////// Get Relations ///////////////////////
-            posOne = valueString.IndexOf(Common.Where) + 4;
+            posOne = valueString.IndexOf(Common.From) + 4;
 
             if (!valueString.Contains(Common.Where))
                 posTwo = valueString.Length - 1;
@@ -1043,20 +1044,49 @@ namespace PRDB_Sqlite.BLL
                 }
             }
 
-            foreach(var relationName in relations)
-            {
-                ProbRelation probRelation = this.probDatabase.Relations.SingleOrDefault(c => c.RelationName.ToLower().Equals(relationName, StringComparison.OrdinalIgnoreCase));
+            //foreach(var relationName in relations)
+            //{
+            //    ProbRelation probRelation = this.probDatabase.Relations.SingleOrDefault(c => c.RelationName.ToLower().Equals(relationName));
+            //    try
+            //    {
+            //        foreach (ProbTuple item in probRelation.tuples)
+            //        {
+            //            ProbTuple tuple = new ProbTuple(item);
+            //            probRelation.tuples.Add(tuple);
+            //        }
+            //    }
+            //    catch(Exception e)
+            //    {
+            //        MessageError = e.Message;
+            //    }
 
-                foreach (ProbTuple item in probRelation.tuples)
+
+            //    probRelations.Add(probRelation);
+            //}
+
+            for (int i = 0; i < relations.Length; i++)
+            {
+                string[] listTmp = relations[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                ProbRelation tmp = this.probDatabase.Relations.SingleOrDefault(c => c.RelationName.ToLower().Equals(listTmp[0], StringComparison.OrdinalIgnoreCase));
+
+                ProbRelation rela = new ProbRelation();
+                if (listTmp.Length == 2)
+                {
+                    rela.RelationName = listTmp[1];
+                }
+                else
+                    rela.RelationName = tmp.RelationName;
+
+                rela.Scheme = new ProbScheme(-1, tmp.Scheme.SchemeName, tmp.Scheme.Attributes);
+
+                foreach (ProbTuple item in tmp.tuples)
                 {
                     ProbTuple tuple = new ProbTuple(item);
-                    probRelation.tuples.Add(tuple);
+                    rela.tuples.Add(tuple);
                 }
 
-                probRelations.Add(probRelation);
+                probRelations.Add(rela);
             }
-
-
             if (probRelations.Count == 2)
             {
 
@@ -1263,17 +1293,6 @@ namespace PRDB_Sqlite.BLL
 
             List<int> indexs = new List<int>();
             List<int> indexRemove = new List<int>();
-            foreach (ProbAttribute attr in attributes)
-            {
-                for (int i = 0; i < probRelation.Scheme.Attributes.Count; i++)
-                {
-                    if (probRelation.Scheme.Attributes[i].AttributeName.Trim().ToLower() == attr.AttributeName.Trim().ToLower())
-                    {
-                        indexs.Add(i);
-                        break;
-                    }
-                }
-            }
 
             for (int i = 0; i < probRelation.Scheme.Attributes.Count; i++)
             {

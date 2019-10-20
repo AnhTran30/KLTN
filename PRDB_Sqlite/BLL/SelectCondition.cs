@@ -16,6 +16,8 @@ namespace PRDB_Sqlite.BLL
         static public string[] Operator = new string[15] { "_<", "_>", "<=", ">=", "_=", "!=", "⊗_in", "⊗_ig", "⊗_me", "⊕_in", "⊕_ig", "⊕_me", "equal_in", "equal_ig", "equal_me" };
         private readonly List<ProbAttribute> Attributes = new List<ProbAttribute>();
         public string MessageError { get; set; }
+        public Dictionary<string, bool> dictProb = new Dictionary<string, bool>();
+        public Dictionary<string, bool> dictCon = new Dictionary<string, bool>();
 
         public SelectCondition(ProbRelation probRelation, string conditionString)
         {
@@ -326,11 +328,10 @@ namespace PRDB_Sqlite.BLL
 
             Regex regexPro = new Regex(@"\([^\(\)]+\)\[[^\(\)]+\]");
 
-            var conditionProbabilities = regexPro.Matches(conditionStr); 
-
-            for(int i = 0; i < conditionProbabilities.Count; i++)
+            var conditionProbabilities = regexPro.Matches(conditionStr);
+            subConditionHaveProbability = new string[conditionProbabilities.Count];
+            for (int i = 0; i < conditionProbabilities.Count; i++)
             {
-                subConditionHaveProbability = new string[conditionProbabilities.Count];
                 subConditionHaveProbability[i] = conditionProbabilities[i].ToString();
                 conditionStr = conditionStr.Replace(conditionProbabilities[i].ToString(), "ConditionProb_" + i.ToString());
             }
@@ -365,21 +366,55 @@ namespace PRDB_Sqlite.BLL
 
             Regex regexCondition = new Regex(@"\([^\(\)]+\)");
 
+
+            var totalLength = GetTotalSubCondition(conditionStr, degree, regexCondition);
+            subCondition = new string[totalLength];
+
             var timeCondition = 1;
-            for(int i=0; i < degree; i++)
+            for (int i = 0; i < degree; i++)
             {
                 var listCondition = regexCondition.Matches(conditionStr);
+
                 for (int j = 0; j < listCondition.Count; j++)
                 {
-                    subCondition = new string[listCondition.Count];
-                    subCondition[j] = listCondition[j].ToString();
+                    var tmp = listCondition[j].ToString();
+                    tmp = tmp.Remove(0, 1);
+                    tmp = tmp.Remove(tmp.Length - 1, 1);
+                    subCondition[j] = tmp;
+
                     conditionStr = conditionStr.Replace(listCondition[i].ToString(), "Condition_" + timeCondition.ToString());
                     timeCondition++;
                 }
             }
 
+            CalculateConditionProb(subConditionHaveProbability);
+            CalculateConditionStr(subCondition);
+            var listConditionProb = GetArrayCondition(conditionStr);
+
+            return CalculateTotalCondition(listConditionProb);
+
+        }
+
+        private static int GetTotalSubCondition(string conditionStr, int degree, Regex regexCondition)
+        {
+            var timeCondition = 1;
+            for (int i = 0; i < degree; i++)
+            {
+                var listCondition = regexCondition.Matches(conditionStr);
+
+                for (int j = 0; j < listCondition.Count; j++)
+                {
+                    timeCondition++;
+                }
+            }
+
+            return timeCondition;
+        }
+
+        private string[] GetArrayCondition(string conditionStr)
+        {
             string[] listConditionProb;
-            var option = conditionStr.Split(new char[] { ' ' },StringSplitOptions.RemoveEmptyEntries );
+            var option = conditionStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             listConditionProb = new string[option.Count()];
             for (int i = 0; i < option.Count(); i++)
             {
@@ -388,10 +423,11 @@ namespace PRDB_Sqlite.BLL
                     listConditionProb[i] = option[i];
                     continue;
                 }
-                
+
             }
+
             var count3 = 0;
-            foreach(var item in option)
+            foreach (var item in option)
             {
                 if (Common.ConditionNormalString.Contains(item))
                 {
@@ -402,7 +438,224 @@ namespace PRDB_Sqlite.BLL
                 }
                 listConditionProb[count3] += item;
             }
-                
+            
+            return listConditionProb.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+        }
+
+        private void CalculateConditionProb(string[] subConditionHaveProbability)
+        {
+            subConditionHaveProbability = subConditionHaveProbability.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            for (int i = 0; i < subConditionHaveProbability.Count(); i++)
+            {
+                try
+                {
+                    if(!subConditionHaveProbability[i].Contains("(") && !subConditionHaveProbability[i].Contains("(") && !subConditionHaveProbability[i].Contains("[") && !subConditionHaveProbability[i].Contains("]"))
+                    {
+                        MessageError = "Incorrect syntax near 'where'.";
+                        return;
+                    }
+
+                    var j1 = subConditionHaveProbability[i].IndexOf('{');
+                    var j2 = subConditionHaveProbability[i].IndexOf('}');
+                    var j3 = subConditionHaveProbability[i].IndexOf('[');
+                    var j4 = subConditionHaveProbability[i].LastIndexOf(',');
+                    var j5 = subConditionHaveProbability[i].IndexOf(']');
+
+                    var minProb = double.Parse(subConditionHaveProbability[i].Substring(j3 + 1, j4 - j3 - 1));
+                    var maxProb = double.Parse(subConditionHaveProbability[i].Substring(j4 + 1, j5 - j4 - 1));
+                    var valueString = subConditionHaveProbability[i].Substring(j1 + 1, j2 - j1 - 1);
+
+                    var operatorStrOfTriple = IsOperatior(valueString);
+                    if (string.IsNullOrEmpty(operatorStrOfTriple))
+                    {
+                        MessageError = string.Format("Incorrect syntax near the keyword {0}.", valueString);
+                        return;
+                    }
+                    string[] seperator = { operatorStrOfTriple };
+                    string[] attribute = valueString.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (attribute.Count() != 2)
+                    {
+                        MessageError = string.Format("Incorrect syntax near the keyword {0}.", operatorStrOfTriple);
+                        return;
+                    }
+                    var attributeName = attribute[0];
+                    var attributeValue = attribute[1];
+                    dictProb.Add("ConditionProb_" + i.ToString(), GetProbIntervalV2(attributeName.Trim(), attributeValue.Trim(), operatorStrOfTriple, maxProb, minProb));
+                }
+                catch
+                {
+                    MessageError = "Incorrect syntax near 'where'.";
+                    return;
+                }
+            }
+        }
+
+        private void CalculateConditionStr(string[] subCondition)
+        {
+            Dictionary<string, bool> dict = new Dictionary<string, bool>();
+
+            subCondition = subCondition.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            try
+            {
+                for (int i = 0; i < subCondition.Count(); i++)
+                {
+                    var listConditionProb = GetArrayCondition(subCondition[i]);
+                    string result = string.Empty;
+                    for (int j = 0; j < listConditionProb.Count(); j++)
+                    {
+                        if (Common.ConditionNormalString.Contains(listConditionProb[i]))
+                        {
+                            var s = CompareCharacters(listConditionProb[i]);
+                            if (string.IsNullOrEmpty(s))
+                            {
+                                MessageError = string.Format("Incorrect syntax near the keyword.");
+                                return;
+                            }
+                            result += s;
+                        }
+                        else
+                        {
+                            if (listConditionProb[i].Contains("ConditionProb_"))
+                            {
+                                var position = "ConditionProb_" + j.ToString();
+                                foreach (var item in dictProb)
+                                {
+                                    if (item.Key == position)
+                                    {
+                                        result += item.Value ? "1" : "0";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (listConditionProb[i].Contains("Condition_"))
+                                {
+                                    var position = "Condition_" + j.ToString();
+                                    foreach (var item in dict)
+                                    {
+                                        if (item.Key == position)
+                                        {
+                                            result += item.Value ? "1" : "0";
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    var operatorStr = IsOperatior(listConditionProb[i]);
+                                    if (!string.IsNullOrEmpty(operatorStr))
+                                    {
+                                        string[] seperator = { operatorStr };
+                                        string[] attribute = listConditionProb[i].Split(seperator, StringSplitOptions.RemoveEmptyEntries);
+
+                                        if (attribute.Count() != 2)
+                                        {
+                                            MessageError = string.Format("Incorrect syntax near the keyword {0}.", operatorStr);
+                                            return;
+                                        }
+                                        var attributeName = attribute[0];
+                                        var attributeValue = attribute[1];
+                                        result += GetProbIntervalV2(attributeName.Trim(), attributeValue.Trim(), operatorStr) ? "1" : "0";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    dict.Add("Condition_" + i.ToString(), CalculationCon(result));
+                }
+                dictCon = dict;
+            }
+            catch
+            {
+                MessageError = "Incorrect syntax near 'where'.";
+                return;
+            }
+            
+        }
+
+        private bool CalculateTotalCondition(string[] listConditionProb)
+        {
+            var totalOfList = listConditionProb.Count();
+            string result = string.Empty;
+
+            for (int i = 0; i < totalOfList; i++)
+            {
+                if (Common.ConditionNormalString.Contains(listConditionProb[i]))
+                {
+                    var s = CompareCharacters(listConditionProb[i]);
+                    if (string.IsNullOrEmpty(s))
+                    {
+                        MessageError = string.Format("Incorrect syntax near the keyword.");
+                        return false;
+                    }
+                    result += s;
+                }
+                else
+                {
+                    var operatorStr = IsOperatior(listConditionProb[i]);
+                    if (!string.IsNullOrEmpty(operatorStr))
+                    {
+                        string[] seperator = { operatorStr };
+                        string[] attribute = listConditionProb[i].Split(seperator, StringSplitOptions.RemoveEmptyEntries);
+
+                        if(attribute.Count() != 2)
+                        {
+                            MessageError = string.Format("Incorrect syntax near the keyword {0}.", operatorStr);
+                            return false;
+                        }
+                        var attributeName = attribute[0];
+                        var attributeValue = attribute[1];
+                        result += GetProbIntervalV2(attributeName.Trim(), attributeValue.Trim(), operatorStr) ? "1" : "0";
+                    }
+                    else
+                    {
+                        if (listConditionProb[i].Contains("ConditionProb_"))
+                        {
+                            foreach (var item in dictProb)
+                            {
+                                if (item.Key == listConditionProb[i].Trim())
+                                {
+                                    result += item.Value ? "1" : "0";
+                                }
+                            }
+                        }
+                        if (listConditionProb[i].Contains("Condition_"))
+                        {
+                            foreach (var item in dictCon)
+                            {
+                                if (item.Key == listConditionProb[i].Trim())
+                                {
+                                    result += item.Value ? "1" : "0";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return CalculationCon(result);
+        }
+
+        private string IsOperatior(string s)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                if (s.Contains(Operator[i]))
+                    return Operator[i];
+            }
+            return string.Empty;
+        }
+        private string CompareCharacters(string s)
+        {
+            switch (s)
+            {
+                case "or": return "|";
+                case "and": return "&";
+                case "not": return "!";
+                //bo xung them
+                default: return string.Empty;
+            }
         }
 
         private bool ExpressionValue(string Str)
@@ -589,8 +842,8 @@ namespace PRDB_Sqlite.BLL
                 {
                     
 
-                    indexOne = IndexOf(valueOne);
-                    indexTwo = IndexOf(valueTwo);
+                    indexOne = IndexOfAttribute(valueOne);
+                    indexTwo = IndexOfAttribute(valueTwo);
                     if (indexOne == -1 || indexTwo == -1)
                          return string.Empty;
                     
@@ -633,7 +886,7 @@ namespace PRDB_Sqlite.BLL
                 else
                     if (SelectCondition.isCompareOperator(operaterStr) )     // Biểu thức so sánh giữa một thuộc tính với một giá trị
                     {                        
-                        indexOne = this.IndexOf(valueOne); // vị trí của thuộc tính trong ds các thuộc tính
+                        indexOne = this.IndexOfAttribute(valueOne); // vị trí của thuộc tính trong ds các thuộc tính
                         if (indexOne == -1)
                             return string.Empty;
 
@@ -664,7 +917,6 @@ namespace PRDB_Sqlite.BLL
 
                             valueTwo = valueTwo.Remove(0, 1);
                             valueTwo = valueTwo.Remove(valueTwo.Length - 1,1);
-
                         }
 
 
@@ -735,7 +987,134 @@ namespace PRDB_Sqlite.BLL
             return (String.Format("[{0},{1}]", minProb, maxProb));
 
         }
-        public int IndexOf(string S)
+        private bool GetProbIntervalV2(string valueOne, string valueTwo, string operaterStr, double? maxProbOfCon = null, double? minProbOfCon = null)
+        {
+            double minProb = 0, maxProb = 0;
+            int indexOne, indexTwo, countTripleOne, countTripleTwo;
+            ProbTuple tuple = this.tuple;
+            string typenameOne;
+
+            try
+            {
+                if (SelectCondition.isCompareOperator(operaterStr))     // Biểu thức so sánh giữa một thuộc tính với một giá trị
+                {
+                    indexOne = this.IndexOfAttribute(valueOne); // vị trí của thuộc tính trong ds các thuộc tính
+                    if (indexOne == -1)
+                        return false;
+
+                    if (valueTwo.Contains("'"))
+                    {
+
+                        int count = valueTwo.Split(new char[] { '\'' }).Length - 1;
+
+
+                        if (valueTwo.Substring(0, 1) != "'")
+                        {
+                            MessageError = "Unclosed quotation mark before the character string " + valueTwo;
+                            return false;
+                        }
+
+                        if (valueTwo.Substring(valueTwo.Length - 1, 1) != "'")
+                        {
+                            MessageError = "Unclosed quotation mark after the character string " + valueTwo;
+                            return false;
+                        }
+
+
+                        if (count != 2)
+                        {
+                            MessageError = "Unclosed quotation mark at the character string " + valueTwo;
+                            return false;
+                        }
+
+                        valueTwo = valueTwo.Remove(0, 1);
+                        valueTwo = valueTwo.Remove(valueTwo.Length - 1, 1);
+                    }
+
+                    #region ProbDataType
+                    ProbDataType dataType = new ProbDataType();
+                    dataType.TypeName = Attributes[indexOne].Type.TypeName;
+                    dataType.DataType = Attributes[indexOne].Type.DataType;
+                    dataType.Domain = Attributes[indexOne].Type.Domain;
+                    dataType.DomainString = Attributes[indexOne].Type.DomainString;
+                    #endregion
+
+                    if (!dataType.CheckDataTypeOfVariables(valueTwo))
+                    {
+                        MessageError = String.Format("Conversion failed when converting the varchar value {0} to data type {1}.", valueTwo, dataType.DataType);
+                        return false;
+                    }
+
+                    #region ProbDataType
+                    countTripleOne = tuple.Triples[indexOne].Value.Count; // số lượng các cặp xác xuất trong thuộc tính
+                    var listValue = tuple.Triples[indexOne].Value;
+                    var minProbV = tuple.Triples[indexOne].MinProb;
+                    var maxProbV = tuple.Triples[indexOne].MaxProb;
+                    #endregion
+
+                    if (maxProbV == 1 && minProbV == 1 && !maxProbOfCon.HasValue && !minProbOfCon.HasValue) 
+                    {
+                        var kp =  listValue.Any(x => CompareTriple(x,valueTwo, operaterStr, dataType.TypeName));
+                        return kp;
+                    }
+                    else
+                    {
+                        var count = listValue.Where(x => CompareTriple(x, valueTwo, operaterStr, dataType.TypeName)).Count();
+                        if (count > 0)
+                        {
+                            minProb = (count / countTripleOne) * minProbV;
+                            maxProb = (count / countTripleOne) * maxProb;
+
+                            if (maxProbOfCon.HasValue && minProbOfCon.HasValue)
+                            {
+                                return  minProb <= minProbOfCon.Value && maxProbOfCon <= maxProb;
+                            }
+                        }
+                        return false;
+                    }
+                }
+                else                     // Biểu thức kết hợp giữa hai khoảng xác suất
+                {
+                    double minProbOne, minProbTwo, maxProbOne, maxProbTwo;
+                    string[] StrProb;
+
+                    valueOne = valueOne.Replace("[", "");  // [L,U]
+                    valueOne = valueOne.Replace("]", "");
+
+                    StrProb = valueOne.Split(',');
+                    minProbOne = Convert.ToDouble(StrProb[0]);
+                    maxProbOne = Convert.ToDouble(StrProb[1]);
+
+                    valueTwo = valueTwo.Replace("[", "");  // [L,U]
+                    valueTwo = valueTwo.Replace("]", "");
+
+                    StrProb = valueTwo.Split(',');
+                    minProbTwo = Convert.ToDouble(StrProb[0]);
+                    maxProbTwo = Convert.ToDouble(StrProb[1]);
+
+                    switch (operaterStr)
+                    {
+                        case "⊗_ig": minProb = Math.Max(0, minProbOne + minProbTwo - 1); maxProb = Math.Min(maxProbOne, maxProbTwo); break;
+                        case "⊗_in": minProb = minProbOne * minProbTwo; maxProb = maxProbOne * maxProbTwo; break;
+                        case "⊗_me": minProb = 0; maxProb = 0; break;
+                        case "⊕_ig": minProb = Math.Max(minProbOne, minProbTwo); maxProb = Math.Min(1, maxProbOne + maxProbTwo); break;
+                        case "⊕_in": minProb = minProbOne + minProbTwo - (minProbOne * minProbTwo); maxProb = maxProbOne + maxProbTwo - (maxProbOne * maxProbTwo); break;
+                        case "⊕_me": minProb = Math.Min(1, minProbOne + minProbTwo); maxProb = Math.Min(1, maxProbOne + maxProbTwo); break;
+                        default:
+                            MessageError = "Incorrect syntax near 'where'.";
+                            break;
+
+                    }
+                }
+            }
+            catch
+            {
+                MessageError = "Incorrect syntax near 'where'.";
+                return false;
+            }
+            return false;
+        }
+        public int IndexOfAttribute(string S)
         {
             string value = S.Trim().ToLower();
             int indexAttributeS = -1;
@@ -753,7 +1132,6 @@ namespace PRDB_Sqlite.BLL
                     MessageError = String.Format("The multi-part identifier {0} could not be bound.", value);
                     return -1;
                 }
-
 
                 for (int i = 0; i < Attributes.Count; i++)
                 {
@@ -984,5 +1362,66 @@ namespace PRDB_Sqlite.BLL
             }
             return V;
         }
+        private static bool CalculationCon(string s1)
+        {
+            string valueOne, valueTwo;
+            string[] listOperation = s1.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            List<bool> result = new List<bool>();
+
+            foreach (var item in listOperation)
+            {
+                List<string> stack = new List<string>();
+                for (int i = 0; i < item.Length; i++)
+                {
+                    if (item[i].ToString().CompareTo("!") == 0)
+                    {
+                        if (item[i + 1].ToString().CompareTo("1") == 0 || item[i + 1].ToString().CompareTo("0") == 0)
+                        {
+                            valueOne = item[i + 1].ToString().CompareTo("1") == 0 ? "0" : "1";
+                            stack.Add(valueOne);
+                            i = i + 1;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else if (item[i].ToString().CompareTo("&") == 0)
+                    {
+                        valueOne = stack[stack.Count - 1].ToString();
+                        stack.RemoveAt(stack.Count - 1);
+                        int d = 0;
+                        if (item[i + 1].ToString().CompareTo("!") == 0 && (item[i + 2].ToString().CompareTo("1") == 0 || item[i + 2].ToString().CompareTo("0") == 0))
+                        {
+                            valueTwo = item[i + 2].ToString().CompareTo("1") == 0 ? "0" : "1";
+                            d = 2;
+                        }
+                        else
+                        {
+                            valueTwo = item[i + 1].ToString();
+                            d = 1;
+                        }
+                        bool v1 = (valueOne.CompareTo("1") == 0) ? true : false;
+                        bool v2 = (valueTwo.CompareTo("1") == 0) ? true : false;
+                        switch (item[i].ToString())
+                        {
+                            case "&": stack.Add(v1 && v2 ? "1" : "0"); break;
+                            case "|": stack.Add(v1 || v2 ? "1" : "0"); break;
+                            default: break;
+                        }
+                        i = i + d;
+                    }
+                    else
+                    {
+                        stack.Add(item[i].ToString());
+                    }
+                }
+
+                result.Add(stack[0].CompareTo("1") == 0);
+            }
+
+            return (result.Any(x=>x));
+        }
+
     }
 }

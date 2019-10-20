@@ -8,7 +8,7 @@ namespace PRDB_Sqlite
 {
     public class Common
     {
-        public static string Select = "string";
+        public static string Select = "select";
         public static string Where = "where";
         public static string From = "from";
         public static string InnerJoin = "inner join";

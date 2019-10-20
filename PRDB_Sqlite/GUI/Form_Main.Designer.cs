@@ -1723,7 +1723,7 @@
             this.CTMenuRelation_NewRelation,
             this.CTMenuRelation_DeleteRelations});
             this.ContextMenu_Relation.Name = "ContextMenu_Table";
-            this.ContextMenu_Relation.Size = new System.Drawing.Size(200, 70);
+            this.ContextMenu_Relation.Size = new System.Drawing.Size(200, 48);
             // 
             // CTMenuRelation_NewRelation
             // 
