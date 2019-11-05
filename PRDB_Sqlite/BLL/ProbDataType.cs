@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace PRDB_Sqlite.BLL
 {
-   public class ProbDataType
+    public class ProbDataType
     {
         #region Properties
 
@@ -37,7 +35,7 @@ namespace PRDB_Sqlite.BLL
 
             foreach (string item in type.Domain)
             {
-                Domain.Add(item);   
+                Domain.Add(item);
             }
         }
 
@@ -153,7 +151,7 @@ namespace PRDB_Sqlite.BLL
                     value = value.Replace(" ", "");
                 }
 
-                if(value.Contains("{") && value.Contains("}") && value.Contains("[") && value.Contains("]"))
+                if (value.Contains("{") && value.Contains("}") && value.Contains("[") && value.Contains("]"))
                 {
                     var j1 = value.IndexOf('{');
                     var j2 = value.IndexOf('}');
@@ -186,9 +184,9 @@ namespace PRDB_Sqlite.BLL
                     }
                 }
             }
-            catch 
-            { 
-                return false; 
+            catch
+            {
+                return false;
             }
             return true;
         }
@@ -230,8 +228,8 @@ namespace PRDB_Sqlite.BLL
 
             switch (this.DataType)
             {
-                case "Int16": 
-                case "Int32": 
+                case "Int16":
+                case "Int32":
                 case "Int64":
                 case "Byte": return "{ 0 }[ 0,0]";
                 case "String": return "{ Empty }[ 0,0]";

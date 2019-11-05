@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.SQLite;
 using System.Data;
-using System.Windows.Forms;
+using System.Data.SQLite;
 
 namespace PRDB_Sqlite.DAL
 {
-    public   class DataBase
+    public class DataBase
     {
 
         #region declare Properties
-     
-        public  SQLiteConnection connection { get; set; }
-        public  SQLiteCommand command { get; set; }
-        public  SQLiteDataAdapter adapter { get; set; }
-        public string  errorMessage { get; set; }
-        public Object [] valueCollection { get; set; }
+
+        public SQLiteConnection connection { get; set; }
+        public SQLiteCommand command { get; set; }
+        public SQLiteDataAdapter adapter { get; set; }
+        public string errorMessage { get; set; }
+        public Object[] valueCollection { get; set; }
         #endregion
 
         #region Connection
@@ -28,7 +24,7 @@ namespace PRDB_Sqlite.DAL
             this.connection = new SQLiteConnection(Resource.ConnectionString);
             this.command = new SQLiteCommand();
             this.adapter = new SQLiteDataAdapter();
-        }     
+        }
 
 
         public DataBase(string connectionString)
@@ -36,7 +32,7 @@ namespace PRDB_Sqlite.DAL
             this.connection = new SQLiteConnection(connectionString);
             this.command = new SQLiteCommand();
             this.adapter = new SQLiteDataAdapter();
-        }       
+        }
         private void OpenConnection()
         {
             try
@@ -69,7 +65,7 @@ namespace PRDB_Sqlite.DAL
         #endregion
 
         #region Query
-  
+
         public DataSet GetDataSet(string QueryString, string TblName)
         {
             DataSet dts = new DataSet();
@@ -184,13 +180,13 @@ namespace PRDB_Sqlite.DAL
             {
                 CloseConnection();
             }
-            
+
             return false;
         }
 
 
         #endregion
-        
+
         #region Update
         public bool CreateTable(string stringCreateTable)
         {
@@ -225,7 +221,7 @@ namespace PRDB_Sqlite.DAL
                 command.Connection = connection;
                 command.CommandText = "DROP TABLE IF EXISTS " + TableName;
                 command.CommandType = CommandType.Text;
-              
+
                 int result = command.ExecuteNonQuery();
                 if (result < 0) return false;
             }
@@ -291,19 +287,19 @@ namespace PRDB_Sqlite.DAL
             int id;
             try
             {
-                command.CommandText = "SELECT max(ID) FROM " + table ;
+                command.CommandText = "SELECT max(ID) FROM " + table;
                 command.Connection = connection;
 
                 object tmp = command.ExecuteScalar();
-                if(tmp.ToString() != "")
-                    id =  Convert.ToInt16(tmp) + 1;
+                if (tmp.ToString() != "")
+                    id = Convert.ToInt16(tmp) + 1;
                 else
                     id = 1;
 
             }
             catch (SQLiteException sqliteEx)
             {
-                errorMessage = sqliteEx.Message;              
+                errorMessage = sqliteEx.Message;
                 return 1;
             }
             finally
@@ -348,7 +344,7 @@ namespace PRDB_Sqlite.DAL
             }
             finally
             {
-                CloseConnection();   
+                CloseConnection();
             }
             return number;
         }

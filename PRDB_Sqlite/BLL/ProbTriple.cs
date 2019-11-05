@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 
 namespace PRDB_Sqlite.BLL
 {
@@ -11,10 +8,10 @@ namespace PRDB_Sqlite.BLL
         #region Properties
         // Tập các giá trị
         public List<string> Value { get; set; }
-      
+
         // Tập xác suất cận dưới
         public double MinProb { get; set; }
-     
+
         // Tập xác suất cận trên
         public double MaxProb { get; set; }
 
@@ -25,7 +22,7 @@ namespace PRDB_Sqlite.BLL
             this.Value = new List<string>();
             this.MinProb = 1;
             this.MaxProb = 1;
-           
+
         }
 
         // Tạo bộ ba xác suất từ chuỗi text
@@ -37,9 +34,9 @@ namespace PRDB_Sqlite.BLL
                 this.MinProb = 1;
                 this.MaxProb = 1;
 
-                if(!value.Contains("{") && !value.Contains("}") && !value.Contains("[") && !value.Contains("]"))
+                if (!value.Contains("{") && !value.Contains("}") && !value.Contains("[") && !value.Contains("]"))
                 {
-                   
+
                     if (Value.Contains(","))
                     {
                         string[] seperator = { "," };
@@ -71,16 +68,16 @@ namespace PRDB_Sqlite.BLL
                     string[] seperator = { "," };
                     string[] listValue = valueString.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
 
-                    foreach(var item in listValue)
+                    foreach (var item in listValue)
                     {
                         this.Value.Add(item.Trim());
                     }
-                    
-                } 
+
+                }
             }
             catch
             {
-               
+
             }
         }
 
@@ -128,7 +125,7 @@ namespace PRDB_Sqlite.BLL
             }
             if (this.MinProb != 1)
             {
-                strValue = "{"+strValue+"}[ " + this.MinProb.ToString() + ", " + this.MaxProb + "]";
+                strValue = "{" + strValue + "}[ " + this.MinProb.ToString() + ", " + this.MaxProb + "]";
 
             }
             return strValue;

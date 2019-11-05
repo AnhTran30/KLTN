@@ -1,9 +1,7 @@
-﻿using System;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data;
-using PRDB_Sqlite.BLL;
 namespace PRDB_Sqlite.DAL
 {
     public class DALProbAttribute
@@ -13,7 +11,7 @@ namespace PRDB_Sqlite.DAL
             List<ProbAttribute> probAttributes = new List<ProbAttribute>();
             DataBase db = new DataBase();
             DataTable dtb = db.GetDataTable("SELECT * FROM SystemAttribute Where SchemeID=" + IDScheme);
-            
+
             if (dtb != null)
                 foreach (DataRow attrRow in dtb.Rows)
                 {
@@ -41,7 +39,7 @@ namespace PRDB_Sqlite.DAL
         internal static void Insert(ProbAttribute probAttribute)
         {
             DataBase db = new DataBase();
-            string  SQL = "";
+            string SQL = "";
             SQL += "INSERT INTO SystemAttribute VALUES ( ";
             SQL += probAttribute.IDAttribute + ",";
             SQL += "'" + probAttribute.PrimaryKey + "'" + ",";

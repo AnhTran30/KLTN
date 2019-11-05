@@ -1,12 +1,7 @@
-﻿using System;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
 
 namespace PRDB_Sqlite.GUI
 {
@@ -34,19 +29,19 @@ namespace PRDB_Sqlite.GUI
             List<ProbAttribute> probAttributes = new List<ProbAttribute>();
 
             int nRow = gridViewDesign.Rows.Count - 1;
-           
+
             for (int i = 0; i < nRow; i++)
             {
-                ProbAttribute  attribute = new ProbAttribute();
+                ProbAttribute attribute = new ProbAttribute();
                 attribute.PrimaryKey = Convert.ToBoolean(gridViewDesign.Rows[i].Cells[0].Value);
                 attribute.AttributeName = gridViewDesign.Rows[i].Cells[1].Value.ToString();
                 attribute.Type.TypeName = gridViewDesign.Rows[i].Cells[2].Value.ToString();
                 attribute.Type.GetDomain(gridViewDesign.Rows[i].Cells[3].Value.ToString());
                 attribute.Description = (gridViewDesign.Rows[i].Cells[4].Value == null ? "" : gridViewDesign.Rows[i].Cells[4].Value.ToString());
                 attribute.Type.GetDataType();
-                probAttributes.Add(attribute);             
+                probAttributes.Add(attribute);
             }
-            return probAttributes;        
+            return probAttributes;
         }
 
 
@@ -66,21 +61,21 @@ namespace PRDB_Sqlite.GUI
             {
                 errorProvider.SetError(txtSchemeName, "Schema name is not valid ( not match with keyword 'select', 'from', 'where')  ");
                 return;
-            
+
             }
 
 
 
             foreach (var item in this.probDatabase.ListOfSchemeNameToLower())
             {
-                if(item.Equals(txtSchemeName.Text.ToLower()))
+                if (item.Equals(txtSchemeName.Text.ToLower()))
                 {
                     errorProvider.SetError(txtSchemeName, "This schema name has already existed in the database, please try again !");
-                     return;
+                    return;
                 }
             }
 
-                       
+
 
             errorProvider.SetError(txtSchemeName, null);
 
@@ -94,7 +89,7 @@ namespace PRDB_Sqlite.GUI
 
             //insert scheme
             ProbScheme scheme = new ProbScheme(txtSchemeName.Text);
-            scheme.IDScheme = scheme.getMaxIdinTable();          
+            scheme.IDScheme = scheme.getMaxIdinTable();
             scheme.Insert();
             scheme.Attributes = getAllAttributeFromDataGridView(GridViewDesign);
 
@@ -102,13 +97,13 @@ namespace PRDB_Sqlite.GUI
             //insert attribute
             int attributeID = new ProbAttribute().getMaxIdinTable();
             foreach (ProbAttribute attr in scheme.Attributes)
-            {                        
-                 attr.probScheme = scheme;
-                 attr.IDAttribute = attributeID;
-                 attr.Insert();
-                 attributeID++;
+            {
+                attr.probScheme = scheme;
+                attr.IDAttribute = attributeID;
+                attr.Insert();
+                attributeID++;
             }
-            
+
 
             /// add scheme 
             this.listProbScheme.Add(scheme);
@@ -117,14 +112,14 @@ namespace PRDB_Sqlite.GUI
 
             if (MessageBox.Show("Add successfully. Do you want add new schema ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
             {
-                
+
                 txtSchemeName.Text = "";
                 GridViewDesign.Rows.Clear();
                 txtSchemeName.Focus();
             }
             else
                 this.Close();
-                
+
 
 
         }
@@ -137,74 +132,74 @@ namespace PRDB_Sqlite.GUI
 
         public bool CheckValidatedDataGridView(DataGridView gridView)
         {
-           
-                int nRow = gridView.Rows.Count - 1;
-            
-                if (nRow <= 0)
+
+            int nRow = gridView.Rows.Count - 1;
+
+            if (nRow <= 0)
+            {
+                MessageBox.Show("Error: Unable to create Schema. Schema attribute is required !", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+
+
+
+            for (int i = 0; i < nRow; i++)
+            {
+
+                gridView.Rows[i].Cells[1].ErrorText = null;
+                gridView.Rows[i].Cells[2].ErrorText = null;
+
+
+                if (gridView.Rows[i].Cells[1].Value == null)
                 {
-                    MessageBox.Show("Error: Unable to create Schema. Schema attribute is required !", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    gridView.Rows[i].Cells[1].ErrorText = "Required !";
+                    gridView.CurrentCell = gridView.Rows[i].Cells[1];
                     return false;
                 }
 
 
 
-
-                for (int i = 0; i < nRow ; i++)
+                string attributeName = gridView.Rows[i].Cells[1].Value.ToString().Trim();
+                if (attributeName.ToLower() == "select" || attributeName.ToLower() == "from" || attributeName.ToLower() == "where")
                 {
-
-                    gridView.Rows[i].Cells[1].ErrorText = null;
-                    gridView.Rows[i].Cells[2].ErrorText = null;
-                    
-                                            
-                        if (gridView.Rows[i].Cells[1].Value == null )
-                        {
-                            gridView.Rows[i].Cells[1].ErrorText = "Required !";
-                            gridView.CurrentCell = gridView.Rows[i].Cells[1];
-                            return false;
-                        }
+                    gridView.Rows[i].Cells[1].ErrorText = "Attribute name is not valid ( not match with keyword 'select', 'from', 'where')";
+                    return false;
+                }
 
 
 
-                        string attributeName = gridView.Rows[i].Cells[1].Value.ToString().Trim();
-                        if (attributeName.ToLower() == "select" || attributeName.ToLower() == "from" || attributeName.ToLower() == "where")
-                        {
-                            gridView.Rows[i].Cells[1].ErrorText = "Attribute name is not valid ( not match with keyword 'select', 'from', 'where')";
-                            return false;
-                        }
+                for (int j = 0; j < gridView.Rows.Count - 1; j++)
+                {
+                    if (i != j && gridView.Rows[j].Cells[1].Value != null && gridView.Rows[j].Cells[1].Value.ToString().ToLower().CompareTo(gridView.Rows[i].Cells[1].Value.ToString().ToLower()) == 0 && i != j)
+                    {
+                        gridView.Rows[i].Cells[1].ErrorText = "There is already an attribute with the same name!";
+                        gridView.ClearSelection();
+                        gridView.CurrentCell = gridView.Rows[i].Cells[1];
+                        return false;
+                    }
+
+                }
 
 
 
-                        for (int j = 0; j < gridView.Rows.Count - 1; j++)
-                        {
-                            if (i != j &&  gridView.Rows[j].Cells[1].Value != null && gridView.Rows[j].Cells[1].Value.ToString().ToLower().CompareTo(gridView.Rows[i].Cells[1].Value.ToString().ToLower()) == 0 && i != j)
-                            {
-                                gridView.Rows[i].Cells[1].ErrorText = "There is already an attribute with the same name!";
-                                gridView.ClearSelection();
-                                gridView.CurrentCell = gridView.Rows[i].Cells[1];
-                                return false;
-                            }
-
-                        }
+                if (gridView.Rows[i].Cells[2].Value == null)
+                {
+                    gridView.Rows[i].Cells[2].ErrorText = "Required !";
+                    gridView.CurrentCell = gridView.Rows[i].Cells[1];
+                    return false;
+                }
 
 
 
-                        if (gridView.Rows[i].Cells[2].Value == null )
-                        {
-                            gridView.Rows[i].Cells[2].ErrorText = "Required !";
-                            gridView.CurrentCell = gridView.Rows[i].Cells[1];
-                            return false;
-                        }
+            }
 
-                      
-
-                }                
-                      
             return true;
-           
+
         }
 
 
-         private void GridViewDesign_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void GridViewDesign_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
             {
@@ -212,7 +207,7 @@ namespace PRDB_Sqlite.GUI
                 {
 
                     Form_InputType frm;
-                    
+
                     if (GridViewDesign.Rows[e.RowIndex].Cells[2].Value != null)
                     {
                         frm = new Form_InputType(GridViewDesign.Rows[e.RowIndex].Cells[2].Value.ToString(), GridViewDesign.Rows[e.RowIndex].Cells[3].Value.ToString());
@@ -240,7 +235,7 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
+
             }
 
         }
@@ -307,7 +302,7 @@ namespace PRDB_Sqlite.GUI
             try
             {
                 GridViewDesign.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = null;
-                
+
 
                 if (GridViewDesign.CurrentCell.Value != null)
                 {
@@ -342,16 +337,16 @@ namespace PRDB_Sqlite.GUI
                 }
 
 
-               
+
 
 
             }
             catch (Exception)
             {
-                
-                
+
+
             }
-         
+
 
 
 
@@ -363,7 +358,7 @@ namespace PRDB_Sqlite.GUI
             if (GridViewDesign.CurrentRow != null)
                 lblDesignRowNumberIndicator.Text = (GridViewDesign.CurrentRow.Index + 1) + " / " + GridViewDesign.Rows.Count;
             else lblDesignRowNumberIndicator.Text = "1 / " + GridViewDesign.Rows.Count;
-  
+
         }
 
         private void btn_Design_Next_Click(object sender, EventArgs e)
@@ -400,10 +395,10 @@ namespace PRDB_Sqlite.GUI
         }
 
 
-     
 
-      
 
-       
+
+
+
     }
 }

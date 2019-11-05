@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace PRDB_Sqlite.GUI
 {
@@ -16,7 +10,7 @@ namespace PRDB_Sqlite.GUI
         public BLL.ProbDatabase probDatabase;
         public string currentSchemeName;
         public ProbScheme currentScheme;
-      
+
         public string scheme = string.Empty;
         public frm_edit_scheme()
         {
@@ -39,7 +33,7 @@ namespace PRDB_Sqlite.GUI
             this.probDatabase = probDatabase_2;
             this.scheme = scheme;
         }
-        
+
         private void frm_edit_scheme_Load(object sender, EventArgs e)
         {
             comboBox_SchemeName.Properties.Items.Clear();
@@ -57,12 +51,12 @@ namespace PRDB_Sqlite.GUI
 
             currentScheme = this.probDatabase.Schemes.SingleOrDefault(c => c.SchemeName.ToLower() == currentSchemeName);
 
-        
+
 
             // check inherited
             if (new ProbScheme(currentSchemeName).isInherited(this.probDatabase.Relations) == true)
             {
-              
+
                 lblInfomation.Visible = true;
                 lblCurrentName.Enabled = false;
                 GridViewDesign.ReadOnly = true;
@@ -111,7 +105,7 @@ namespace PRDB_Sqlite.GUI
             if (this.GridViewDesign.CurrentRow != null)
                 lblDesignRowNumberIndicator.Text = (GridViewDesign.CurrentRow.Index + 1) + " / " + GridViewDesign.Rows.Count;
             else lblDesignRowNumberIndicator.Text = "1 / " + GridViewDesign.Rows.Count;
-   
+
         }
 
         private void btn_Design_Home_Click(object sender, EventArgs e)
@@ -193,13 +187,13 @@ namespace PRDB_Sqlite.GUI
 
             errorProvider.SetError(txtSchemeName, null);
 
-            
+
 
             if (new frm_new_scheme().CheckValidatedDataGridView(this.GridViewDesign) == false)
             {
                 return;
             }
-            
+
             currentScheme.SchemeName = txtSchemeName.Text;
             currentScheme.Update();
 
@@ -224,7 +218,7 @@ namespace PRDB_Sqlite.GUI
                 attr.Insert();
                 ID++;
             }
-                 
+
 
 
             if (MessageBox.Show("Edit successfully, Do you want edit another schema  ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
@@ -236,7 +230,7 @@ namespace PRDB_Sqlite.GUI
             }
             else
                 this.Close();
-            
+
 
         }
 
@@ -244,7 +238,7 @@ namespace PRDB_Sqlite.GUI
         {
             this.Close();
         }
-              
+
         private void GridViewDesign_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -297,9 +291,9 @@ namespace PRDB_Sqlite.GUI
             if (GridViewDesign.CurrentRow != null)
                 lblDesignRowNumberIndicator.Text = (GridViewDesign.CurrentRow.Index + 1) + " / " + GridViewDesign.Rows.Count;
             else lblDesignRowNumberIndicator.Text = "1 / " + GridViewDesign.Rows.Count;
-  
+
         }
-        
+
         private void GridViewDesign_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -311,7 +305,7 @@ namespace PRDB_Sqlite.GUI
                     if (GridViewDesign.Rows[e.RowIndex].Cells[2].Value != null)
                     {
                         frm = new Form_InputType(GridViewDesign.Rows[e.RowIndex].Cells[2].Value.ToString(), GridViewDesign.Rows[e.RowIndex].Cells[3].Value.ToString());
-               
+
                     }
                     else
                     {
@@ -335,10 +329,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-            }           
 
-           
+            }
+
+
         }
 
         private void Btn_Design_DeleteRow_Click(object sender, EventArgs e)

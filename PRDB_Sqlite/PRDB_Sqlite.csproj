@@ -81,6 +81,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\ConditionModel.cs" />
+    <Compile Include="BLL\JoinRelationModel.cs" />
     <Compile Include="BLL\ProbAttribute.cs">
       <SubType>Code</SubType>
     </Compile>

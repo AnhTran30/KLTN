@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using PRDB_Sqlite.GUI;
+using System;
 using System.Windows.Forms;
-using PRDB_Sqlite.GUI;
 
 namespace PRDB_Sqlite
 {

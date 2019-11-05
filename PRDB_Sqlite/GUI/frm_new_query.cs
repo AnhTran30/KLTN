@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
 
 namespace PRDB_Sqlite.GUI
 {
@@ -44,7 +38,7 @@ namespace PRDB_Sqlite.GUI
                     return;
                 }
             }
-            
+
 
             this.queryName = txtQueryName.Text.Trim().ToLower();
 
@@ -64,13 +58,13 @@ namespace PRDB_Sqlite.GUI
             else
                 this.Close();
 
-               
+
 
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-           
+
             this.Close();
         }
     }

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace PRDB_Sqlite.GUI
 {
@@ -61,10 +55,10 @@ namespace PRDB_Sqlite.GUI
 
             if (this.CurrentNameRelation == txtNewNameRelation.Text.Trim().ToLower())
             {
-                return;                
+                return;
             }
 
-            
+
             if (this.CurrentNameRelation != txtNewNameRelation.Text.Trim().ToLower())
             {
                 foreach (var item in this.probDatabase.ListOfRelationNameToLower())
@@ -77,7 +71,7 @@ namespace PRDB_Sqlite.GUI
                 }
             }
 
-            ProbRelation relation = this.probDatabase.Relations.SingleOrDefault(c=> c.RelationName.ToLower() == CurrentNameRelation);
+            ProbRelation relation = this.probDatabase.Relations.SingleOrDefault(c => c.RelationName.ToLower() == CurrentNameRelation);
             this.probDatabase.Relations.Remove(relation);
             relation.DropTableByTableName();
             relation.DeleteRelationById();

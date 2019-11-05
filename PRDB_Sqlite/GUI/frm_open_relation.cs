@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
 
 namespace PRDB_Sqlite.GUI
 {
@@ -35,7 +29,7 @@ namespace PRDB_Sqlite.GUI
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            this.relationName =    cbo_RelationName.Properties.Items[cbo_RelationName.SelectedIndex].ToString();
+            this.relationName = cbo_RelationName.Properties.Items[cbo_RelationName.SelectedIndex].ToString();
             this.Close();
         }
 

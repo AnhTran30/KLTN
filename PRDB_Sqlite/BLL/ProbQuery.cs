@@ -1,14 +1,11 @@
-﻿using System;
+﻿using PRDB_Sqlite.DAL;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PRDB_Sqlite.DAL;
 
 namespace PRDB_Sqlite.BLL
 {
     public class ProbQuery
     {
-      
+
 
         #region Properties
 
@@ -22,9 +19,9 @@ namespace PRDB_Sqlite.BLL
 
         public ProbQuery()
         {
-          this.IDQuery = -1;
-          this.QueryString = "";
-          this.QueryName = "";
+            this.IDQuery = -1;
+            this.QueryString = "";
+            this.QueryName = "";
         }
 
         public ProbQuery(string p)
@@ -35,13 +32,13 @@ namespace PRDB_Sqlite.BLL
             this.QueryString = "";
         }
 
-        public ProbQuery(string p, int Id , string QueryString)
+        public ProbQuery(string p, int Id, string QueryString)
         {
             // TODO: Complete member initialization
             this.QueryName = p;
             this.IDQuery = Id;
             this.QueryString = QueryString;
-                 
+
         }
 
         public void GetQueryString(string query)
@@ -85,7 +82,7 @@ namespace PRDB_Sqlite.BLL
 
         internal ProbQuery getQueryByName()
         {
-          return  DALProbQuery.getQueryByName(this);
+            return DALProbQuery.getQueryByName(this);
         }
 
         internal void DeleteById()

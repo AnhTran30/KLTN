@@ -1,11 +1,6 @@
-﻿using System;
+﻿using PRDB_Sqlite.DAL;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.SQLite;
 using System.Data;
-using PRDB_Sqlite.DAL;
-using System.Windows.Forms;
 
 
 namespace PRDB_Sqlite.BLL
@@ -45,7 +40,7 @@ namespace PRDB_Sqlite.BLL
             }
             // Đặt chuỗi kết nối
             this.ConnectString = "Data Source=" + DBPath + ";Version=3;";
-        
+
             this.DBName = CutExtension(DBName);
             this.Relations = new List<ProbRelation>();
             this.Queries = new List<ProbQuery>();
@@ -60,14 +55,14 @@ namespace PRDB_Sqlite.BLL
             this.Relations = probDatabase.Relations;
             this.Queries = probDatabase.Queries;
             this.Schemes = probDatabase.Schemes;
-            
+
         }
 
         public ProbDatabase()
         {
             // TODO: Complete member initialization
         }
-                
+
         public bool CreateNewDatabase()
         {
             return DALProbDatabase.CreateNewDatabase(this);
@@ -112,17 +107,17 @@ namespace PRDB_Sqlite.BLL
             return List;
         }
 
-   
+
 
         #endregion
 
-        
-        
+
+
         internal bool SaveDatabase()
         {
             return DALProbDatabase.SaveDatabase(this);
         }
 
-        
+
     }
 }

@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraBars.Ribbon;
 using PRDB_Sqlite.BLL;
-using System.Data.SQLite;
-using PRDB_Sqlite.DAL;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using DevExpress.XtraBars.Ribbon;
+using System.Windows.Forms;
 
 namespace PRDB_Sqlite.GUI
 {
@@ -27,7 +21,7 @@ namespace PRDB_Sqlite.GUI
 
 
         #region * TreeView
-        TreeNode NodeDB, NodeScheme, NodeRelation, NodeQuery, NewNode,NodeAttribute;
+        TreeNode NodeDB, NodeScheme, NodeRelation, NodeQuery, NewNode, NodeAttribute;
         #endregion
 
         #region * Images
@@ -40,10 +34,10 @@ namespace PRDB_Sqlite.GUI
 
         #region * Variables
         ImageIndex DB_ImgIndex, Folder_ImgIndex, Scheme_ImgIndex, Relation_ImgIndex, Query_ImgIndex, Attribute_ImgIndex;
-        static public string[] Operator = new string[17] {"and","or", "<", ">", "<=", ">=", "=", "!=", "⊗_in", "⊗_ig", "⊗_me", "⊕_in", "⊕_ig", "⊕_me", "equal_in", "equal_ig", "equal_me" };
+        static public string[] Operator = new string[17] { "and", "or", "<", ">", "<=", ">=", "=", "!=", "⊗_in", "⊗_ig", "⊗_me", "⊕_in", "⊕_ig", "⊕_me", "equal_in", "equal_ig", "equal_me" };
         public ProbTriple row { get; set; }
 
-     
+
         #endregion
 
         public Form_Main()
@@ -53,16 +47,16 @@ namespace PRDB_Sqlite.GUI
 
         private void Form_Main_Load(object sender, EventArgs e)
         {
-            
+
             this.gridControlScheme.EmbeddedNavigator.Buttons.Append.Visible = false;
             this.gridControlScheme.EmbeddedNavigator.Buttons.Edit.Visible = false;
             this.gridControlScheme.EmbeddedNavigator.Buttons.EndEdit.Visible = false;
             this.gridControlScheme.EmbeddedNavigator.Buttons.CancelEdit.Visible = false;
             this.gridControlScheme.EmbeddedNavigator.Buttons.Remove.Visible = false;
 
-            
+
             LoadPRDB();
-          
+
 
         }
 
@@ -70,7 +64,7 @@ namespace PRDB_Sqlite.GUI
 
         private void LoadPRDB()
         {
-            BindingNavigatorData.Visible = true;           
+            BindingNavigatorData.Visible = true;
             BindingNavigatorValue.Visible = true;
             SwitchValueState(true);
             ActivateDatabase(false);
@@ -89,7 +83,7 @@ namespace PRDB_Sqlite.GUI
 
         private void ResetMenuBar(bool state)
         {
-           
+
             barButtonItemSaveDB.Enabled = state;
             barButtonItemCloseDb.Enabled = state;
             ribbonPageScheme.Visible = state;
@@ -127,11 +121,11 @@ namespace PRDB_Sqlite.GUI
             barButtonItemExcuteQuery.Enabled = false;
             barButtonItemSaveQuery.Enabled = false;
             barButtonItemCloseCurrentQuery.Enabled = false;
-        
+
             ribbonPageGroupEquality.Visible = false;
             ribbonPageGroupConjuntion.Visible = false;
             ribbonPageGroupDisjunction.Visible = false;
-            ribbonPageGroupDifference.Visible = false;         
+            ribbonPageGroupDifference.Visible = false;
             xtraTabPageQuery.PageEnabled = false;
 
         }
@@ -179,7 +173,7 @@ namespace PRDB_Sqlite.GUI
             catch (Exception)
             {
             }
-           
+
         }
         private void Load_TreeView()
         {
@@ -191,7 +185,7 @@ namespace PRDB_Sqlite.GUI
 
                 NodeDB = new TreeNode();
                 NodeDB.Text = probDatabase.DBName.ToUpper();
-                NodeDB.ToolTipText = "Database " + probDatabase.DBName.ToUpper() ;
+                NodeDB.ToolTipText = "Database " + probDatabase.DBName.ToUpper();
                 NodeDB.ContextMenuStrip = ContextMenu_Database;
                 NodeDB.ImageIndex = DB_ImgIndex.UnselectedState;
                 NodeDB.SelectedImageIndex = DB_ImgIndex.SelectedState;
@@ -210,7 +204,7 @@ namespace PRDB_Sqlite.GUI
                 NodeRelation.ToolTipText = "Relations";
                 NodeRelation.ContextMenuStrip = ContextMenu_Relation;
                 NodeRelation.ImageIndex = Folder_ImgIndex.UnselectedState;
-                NodeRelation.SelectedImageIndex = Folder_ImgIndex.UnselectedState;               
+                NodeRelation.SelectedImageIndex = Folder_ImgIndex.UnselectedState;
                 NodeDB.Nodes.Add(NodeRelation);
 
                 NodeQuery = new TreeNode();
@@ -223,7 +217,7 @@ namespace PRDB_Sqlite.GUI
 
                 LoadTreeViewNode();
             }
-            catch 
+            catch
             {
             }
         }
@@ -240,22 +234,22 @@ namespace PRDB_Sqlite.GUI
                 try
                 {
                     string nodeName = e.Node.Name;
-                    if (e.Node.Parent.Text == "Schemas" )
+                    if (e.Node.Parent.Text == "Schemas")
                     {
                         OpenSchemeByNameScheme(nodeName);
                     }
                     else
-                        if (e.Node.Parent.Text == "Relations" )
-                        {
-                                OpenRelationByName(nodeName);
-                        }
-                        else
-                            if (e.Node.Parent.Text == "Queries" )
-                            {
-                                OpenQueryByName(nodeName);
-                            }
+                        if (e.Node.Parent.Text == "Relations")
+                    {
+                        OpenRelationByName(nodeName);
+                    }
+                    else
+                            if (e.Node.Parent.Text == "Queries")
+                    {
+                        OpenQueryByName(nodeName);
+                    }
                 }
-                catch 
+                catch
                 {
                 }
             }
@@ -266,9 +260,9 @@ namespace PRDB_Sqlite.GUI
         {
             try
             {
-                
 
-                if( NodeAttribute != null)
+
+                if (NodeAttribute != null)
                     NodeAttribute.Nodes.Clear();
 
                 for (int i = 0; i < NodeScheme.GetNodeCount(true); i++)
@@ -277,33 +271,33 @@ namespace PRDB_Sqlite.GUI
                     ProbScheme schme = this.probDatabase.Schemes.SingleOrDefault(c => c.SchemeName == schemeName);
                     foreach (ProbAttribute attr in schme.Attributes)
                     {
-                          NodeAttribute = new TreeNode();
-                          NodeAttribute.Text = attr.AttributeName;
-                          NodeAttribute.Name = attr.AttributeName;
-                          NodeAttribute.ToolTipText = "Attribute " + attr.AttributeName;
+                        NodeAttribute = new TreeNode();
+                        NodeAttribute.Text = attr.AttributeName;
+                        NodeAttribute.Name = attr.AttributeName;
+                        NodeAttribute.ToolTipText = "Attribute " + attr.AttributeName;
 
-                          if (attr.PrimaryKey == true)
-                          {
-                              NodeAttribute.ImageIndex = 5;
-                              NodeAttribute.SelectedImageIndex = 5;
-                          }
-                          else
-                          {
-                              NodeAttribute.ImageIndex = 6;
-                              NodeAttribute.SelectedImageIndex = 6;
-                      
-                          }
-                          NodeScheme.Nodes[i].Nodes.Add(NodeAttribute);
+                        if (attr.PrimaryKey == true)
+                        {
+                            NodeAttribute.ImageIndex = 5;
+                            NodeAttribute.SelectedImageIndex = 5;
+                        }
+                        else
+                        {
+                            NodeAttribute.ImageIndex = 6;
+                            NodeAttribute.SelectedImageIndex = 6;
+
+                        }
+                        NodeScheme.Nodes[i].Nodes.Add(NodeAttribute);
                     }
 
                 }
             }
             catch (Exception)
             {
-                
-               
+
+
             }
-            
+
         }
 
 
@@ -346,15 +340,15 @@ namespace PRDB_Sqlite.GUI
 
 
 
-             
+
 
             }
             catch
             {
-               
-                
+
+
             }
-          
+
 
 
 
@@ -380,12 +374,12 @@ namespace PRDB_Sqlite.GUI
                 }
                 LoadAttributeScheme();
             }
-            catch 
+            catch
             {
-                
-               
+
+
             }
-         
+
         }
 
         public void LoadRelationNode()
@@ -406,10 +400,10 @@ namespace PRDB_Sqlite.GUI
                 }
                 LoadAttributeRelation();
             }
-            catch 
-            { 
+            catch
+            {
             }
-          
+
         }
 
         public void LoadQueryNode()
@@ -430,7 +424,7 @@ namespace PRDB_Sqlite.GUI
                 }
 
             }
-            catch 
+            catch
             {
 
             }
@@ -444,23 +438,23 @@ namespace PRDB_Sqlite.GUI
                 LoadRelationNode();
                 LoadQueryNode();
             }
-            catch 
+            catch
             {
             }
-                  
-        }   
+
+        }
         #endregion
 
 
         #region New,Open, Save, Close, Exit Database, CTMenuDB close, Rename
 
         private string GetRootPath(string path)
-        { 
-            
+        {
+
             string root = "";
             try
             {
-               
+
                 for (int i = 0; i < path.Length; i++)
                     if (path[i] == '\\')
                     {
@@ -472,11 +466,11 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-               
+
+
             }
             return root;
-           
+
         }
 
 
@@ -513,7 +507,7 @@ namespace PRDB_Sqlite.GUI
                 }
                 DialogSave.Dispose();
             }
-            catch 
+            catch
             {
 
             }
@@ -534,7 +528,7 @@ namespace PRDB_Sqlite.GUI
 
                 if (DialogOpen.ShowDialog() == DialogResult.OK)
                 {
-                 
+
                     this.probDatabase = new ProbDatabase(DialogOpen.FileName);
                     Resource.ConnectionString = this.probDatabase.ConnectString;
                     this.probDatabase = probDatabase.OpenExistingDatabase();
@@ -548,13 +542,13 @@ namespace PRDB_Sqlite.GUI
                         this.Load_TreeView();
                         this.ActivateDatabase(true);
                     }
-                    
+
                 }
                 DialogOpen.Dispose();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                
+
             }
         }
 
@@ -564,8 +558,8 @@ namespace PRDB_Sqlite.GUI
             {
                 if (this.probDatabase == null)
                 {
-                     MessageBox.Show("Error : Cannot find the Database, please try again!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                     return;
+                    MessageBox.Show("Error : Cannot find the Database, please try again!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
 
                 if (!probDatabase.SaveDatabase())
@@ -584,8 +578,8 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-                
+
+
             }
         }
 
@@ -616,15 +610,15 @@ namespace PRDB_Sqlite.GUI
             {
                 if (this.probDatabase == null)
                 {
-                     MessageBox.Show("Error : Cannot find the Database, please try again!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                     return;
+                    MessageBox.Show("Error : Cannot find the Database, please try again!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
 
                 DialogResult result = MessageBox.Show("Are you sure want to close this Database ?", "Close database " + probDatabase.DBName + "...", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     this.TreeView.Nodes.Clear();
-                    this.probDatabase = null;                   
+                    this.probDatabase = null;
                     ActivateDatabase(false);
                 }
             }
@@ -652,7 +646,7 @@ namespace PRDB_Sqlite.GUI
 
 
         #endregion
-     
+
         #region New, Open, Save, Delete, Close, CTMenu Scheme
         private void OpenSchemeByNameScheme(string schemeName)
         {
@@ -663,7 +657,7 @@ namespace PRDB_Sqlite.GUI
                 xtraTabPageScheme.Text = "Schema " + schemeName;
 
                 currentScheme = this.probDatabase.Schemes.SingleOrDefault(c => c.SchemeName.ToLower() == schemeName);
-                
+
                 //add attribute into GridViewDesign
                 gridControlScheme.DataSource = null;
                 gridControlScheme.DataSource = currentScheme.Attributes;
@@ -675,11 +669,11 @@ namespace PRDB_Sqlite.GUI
 
                 barButtonItemCloseCurrentScheme.Enabled = true;
                 ribbonControl1.SelectedPage = ribbonPageScheme;
-             }
-            catch 
+            }
+            catch
             {
             }
-        
+
         }
         private void OpenScheme()
         {
@@ -704,10 +698,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-                
+
+
             }
-          
+
         }
         private void DeleteScheme()
         {
@@ -716,10 +710,10 @@ namespace PRDB_Sqlite.GUI
                 if (this.probDatabase == null)
                 {
                     MessageBox.Show("Error : Cannot find the Database, please try again!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                     return;
+                    return;
                 }
                 frm_Delete_Scheme frm = new frm_Delete_Scheme(this.probDatabase);
-                frm.ShowDialog();                
+                frm.ShowDialog();
                 this.probDatabase = frm.probDatabase;
 
                 if (!this.probDatabase.ListOfSchemeNameToLower().Contains((xtraTabPageScheme.Text.Substring(xtraTabPageScheme.Text.IndexOf("Schema") + 1)).Trim().ToLower()))
@@ -730,21 +724,21 @@ namespace PRDB_Sqlite.GUI
                     barButtonItemCloseCurrentScheme.Enabled = false;
 
                 }
-                
-                if(xtraTabPageScheme.Text == "Schema")
+
+                if (xtraTabPageScheme.Text == "Schema")
                     barButtonItemCloseCurrentScheme.Enabled = false;
                 else
                     barButtonItemCloseCurrentScheme.Enabled = true;
-                
+
                 LoadSchemeNode();
 
             }
             catch (Exception)
             {
-                
-               
+
+
             }
-          
+
         }
 
         private void DeleteScheme(string SchemeName)
@@ -759,7 +753,7 @@ namespace PRDB_Sqlite.GUI
                 frm_Delete_Scheme frm = new frm_Delete_Scheme(this.probDatabase, SchemeName);
                 frm.ShowDialog();
                 this.probDatabase = frm.probDatabase;
-                if (!this.probDatabase.ListOfSchemeNameToLower().Contains( (xtraTabPageScheme.Text.Substring(xtraTabPageScheme.Text.IndexOf("Schema") + 1)).Trim().ToLower()))
+                if (!this.probDatabase.ListOfSchemeNameToLower().Contains((xtraTabPageScheme.Text.Substring(xtraTabPageScheme.Text.IndexOf("Schema") + 1)).Trim().ToLower()))
                 {
 
                     xtraTabPageScheme.Text = "Schema";
@@ -777,10 +771,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-             
+
+
             }
-           
+
         }
 
         private void EditScheme()
@@ -790,7 +784,7 @@ namespace PRDB_Sqlite.GUI
                 if (this.probDatabase == null)
                 {
                     MessageBox.Show("Error : Cannot find the Database, please try again!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      
+
                     return;
                 }
 
@@ -802,14 +796,14 @@ namespace PRDB_Sqlite.GUI
                     xtraTabPageScheme.Text = "Schema " + currentScheme.SchemeName;
                 }
 
-                
+
 
                 this.probDatabase = frm.probDatabase;
                 this.LoadSchemeNode();
 
 
-             }
-            catch 
+            }
+            catch
             {
             }
         }
@@ -825,9 +819,9 @@ namespace PRDB_Sqlite.GUI
                     return;
                 }
 
-                frm_edit_scheme frm = new frm_edit_scheme(this.probDatabase,schemeName);
+                frm_edit_scheme frm = new frm_edit_scheme(this.probDatabase, schemeName);
                 frm.ShowDialog();
-                           
+
 
                 this.probDatabase = frm.probDatabase;
                 this.LoadSchemeNode();
@@ -836,7 +830,7 @@ namespace PRDB_Sqlite.GUI
                     xtraTabPageScheme.Text = "Schema " + currentScheme.SchemeName;
                 }
                 xtraTabDatabase.SelectedTabPage = xtraTabDatabase.TabPages[0];
-                
+
             }
             catch (Exception Ex)
             {
@@ -853,10 +847,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-                
+
+
             }
-           
+
         }
 
         private void CreateNewScheme()
@@ -874,25 +868,25 @@ namespace PRDB_Sqlite.GUI
                 frm_new_scheme frm = new frm_new_scheme(probDatabase);
                 frm.ShowDialog();
 
-                 foreach (ProbScheme scheme in frm.listProbScheme)
-                 {                     
-                     this.probDatabase.Schemes.Add(scheme);
-                     TreeNode NewNode = new TreeNode();
-                     NewNode.Name = scheme.SchemeName;
-                     NewNode.Text = scheme.SchemeName;
-                     NewNode.ToolTipText = "Schema " + scheme.SchemeName;
-                     NewNode.ContextMenuStrip = ContextMenu_SchemaNode;
-                     NewNode.ImageIndex = Scheme_ImgIndex.UnselectedState;
-                     NewNode.SelectedImageIndex = Scheme_ImgIndex.UnselectedState;
-                     NodeScheme.Nodes.Add(NewNode);   
+                foreach (ProbScheme scheme in frm.listProbScheme)
+                {
+                    this.probDatabase.Schemes.Add(scheme);
+                    TreeNode NewNode = new TreeNode();
+                    NewNode.Name = scheme.SchemeName;
+                    NewNode.Text = scheme.SchemeName;
+                    NewNode.ToolTipText = "Schema " + scheme.SchemeName;
+                    NewNode.ContextMenuStrip = ContextMenu_SchemaNode;
+                    NewNode.ImageIndex = Scheme_ImgIndex.UnselectedState;
+                    NewNode.SelectedImageIndex = Scheme_ImgIndex.UnselectedState;
+                    NodeScheme.Nodes.Add(NewNode);
 
-                 }
-                 LoadAttributeScheme();
+                }
+                LoadAttributeScheme();
 
             }
-            catch 
+            catch
             {
-               
+
             }
         }
 
@@ -908,9 +902,9 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
+
             }
-           
+
         }
         private void barButtonItemOpenScheme_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -920,11 +914,11 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-               
+
+
             }
 
-           
+
         }
         private void barButtonItemDeleteScheme_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -933,12 +927,12 @@ namespace PRDB_Sqlite.GUI
                 DeleteScheme();
 
             }
-            catch 
+            catch
             {
-                
-               
+
+
             }
-            
+
         }
 
         private void barButtonItemCloseCurrentScheme_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -949,7 +943,7 @@ namespace PRDB_Sqlite.GUI
 
 
         }
-              
+
         private void CTMenuSchema_NewSchema_Click(object sender, EventArgs e)
         {
             try
@@ -958,10 +952,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-                
+
+
             }
-           
+
         }
 
         private void CTMenuSchema_DelSchemas_Click(object sender, EventArgs e)
@@ -972,10 +966,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-               
+
+
             }
-           
+
         }
 
         private void openSchemeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -986,10 +980,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-                
+
+
             }
-            
+
         }
 
         private void deleteSchemeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1000,9 +994,9 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
+
             }
-            
+
         }
 
         private void closeCurrentSchemeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1014,9 +1008,9 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
+
             }
-           
+
         }
 
         private void CTMenuSchNode_OpenSchema_Click(object sender, EventArgs e)
@@ -1079,7 +1073,7 @@ namespace PRDB_Sqlite.GUI
                 if (this.probDatabase == null)
                 {
                     MessageBox.Show("Error : Cannot find the Database, please try again!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      
+
                     return;
                 }
 
@@ -1097,11 +1091,11 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-               
+
+
             }
 
-           
+
 
         }
 
@@ -1113,11 +1107,11 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
+
             }
-           
+
         }
-        
+
         private void OpenRelationByName(string RelationName)
         {
             try
@@ -1152,21 +1146,21 @@ namespace PRDB_Sqlite.GUI
                             GridViewData.Rows[i].Cells[j].Value = tuple.Triples[j].GetStrValue();
                     }
                     UpdateDataRowNumber();
-                   
+
                 }
                 barButtonItemCloseCurrentRelation.Enabled = true;
                 ribbonControl1.SelectedPage = ribbonPageRelation;
-             
+
             }
             catch (Exception)
             {
-                
-                
+
+
             }
 
-           
 
-    
+
+
         }
 
         private void UpdateDataRowNumber()
@@ -1211,10 +1205,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-               
+
+
             }
-           
+
 
 
         }
@@ -1267,9 +1261,9 @@ namespace PRDB_Sqlite.GUI
                 case "ribbonAbout":
                     frm_About frm = new frm_About();
                     frm.ShowDialog();
-                    
+
                     break;
-            
+
             }
 
 
@@ -1280,16 +1274,16 @@ namespace PRDB_Sqlite.GUI
         {
             try
             {
-                
+
                 string relationName = TreeView.SelectedNode.Name;
                 OpenRelationByName(relationName);
-               
-             
+
+
             }
             catch (Exception)
             {
             }
-         
+
         }
 
         private void barButtonItemDeleteRelation_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -1331,10 +1325,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-                
+
+
             }
-        
+
 
         }
 
@@ -1356,10 +1350,10 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-               
+
+
             }
-           
+
         }
 
         private void CTMenuRelation_DeleteRelations_Click(object sender, EventArgs e)
@@ -1388,7 +1382,7 @@ namespace PRDB_Sqlite.GUI
                         UpdateDataRowNumber();
 
 
-                     
+
 
                         if (xtraTabPageScheme.Text.Trim() == "Relation")
                             barButtonItemCloseCurrentRelation.Enabled = false;
@@ -1438,9 +1432,9 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-               
+
             }
-           
+
         }
 
         private void CTMenuRelNode_RenameRelation_Click(object sender, EventArgs e)
@@ -1461,20 +1455,20 @@ namespace PRDB_Sqlite.GUI
 
                 frm_rename_relation frm = new frm_rename_relation(this.probDatabase);
                 frm.ShowDialog();
-                                
+
                 this.probDatabase = frm.probDatabase;
 
                 xtraTabPageRelation.Text = "Relation " + this.currentRelationOpen.RelationName;
 
                 LoadRelationNode();
-                
+
 
 
             }
             catch (Exception)
             {
-                
-                
+
+
             }
 
         }
@@ -1603,7 +1597,7 @@ namespace PRDB_Sqlite.GUI
         private void Btn_Data_UpdateData_Click(object sender, EventArgs e)
         {
             SaveRelation();
-           
+
         }
 
 
@@ -1638,12 +1632,12 @@ namespace PRDB_Sqlite.GUI
 
                             string defaultValue = currentRelationOpen.Scheme.Attributes[j].Type.getDefaultValue();
                             GridViewData.Rows[i].Cells[j].Value = defaultValue;
-                            GridViewData.CurrentCell = GridViewData.Rows[i].Cells[j];                         
-                            
+                            GridViewData.CurrentCell = GridViewData.Rows[i].Cells[j];
+
                         }
                         else
                         {
-                            
+
                             if (!new ProbTriple().isProbTripleValue(GridViewData.Rows[i].Cells[j].Value.ToString()))
                             {
                                 GridViewData.Rows[i].Cells[j].ErrorText = "Syntax Error! Cannot convert this value to a Probabilistic Triple!";
@@ -1656,7 +1650,7 @@ namespace PRDB_Sqlite.GUI
                                 GridViewData.Rows[i].Cells[j].ErrorText = "Attribute value does not match the data type !";
                                 GridViewData.CurrentCell = GridViewData.Rows[i].Cells[j];
                                 return;
-                            }              
+                            }
                         }
                     }
 
@@ -1730,7 +1724,7 @@ namespace PRDB_Sqlite.GUI
                     {
                         ProbTriple triple = new ProbTriple(GridViewData.Rows[i].Cells[j].Value.ToString().Trim());
                         tuple.Triples.Add(triple);
-                                                  
+
 
                     }
                     currentRelationOpen.tuples.Add(tuple);
@@ -1741,7 +1735,7 @@ namespace PRDB_Sqlite.GUI
             }
             catch
             {
-                
+
             }
         }
 
@@ -1753,7 +1747,7 @@ namespace PRDB_Sqlite.GUI
         {
 
             try
-            {               
+            {
 
                 GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = null;
                 if (GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null)
@@ -1779,7 +1773,7 @@ namespace PRDB_Sqlite.GUI
 
                     #region check primarykey
                     List<int> indexPrimaryKey = currentRelationOpen.Scheme.ListIndexPrimaryKey();
-                                     
+
                     int count = 0;
                     bool flagEditOneCellPrimaryKey = false;
 
@@ -1787,19 +1781,19 @@ namespace PRDB_Sqlite.GUI
                     foreach (int index in indexPrimaryKey)
                     {
                         ProbTriple triple = new ProbTriple();
-                        if(GridViewData.Rows[e.RowIndex].Cells[index].Value != null)
-                              triple = new ProbTriple(GridViewData.Rows[e.RowIndex].Cells[index].Value.ToString());
+                        if (GridViewData.Rows[e.RowIndex].Cells[index].Value != null)
+                            triple = new ProbTriple(GridViewData.Rows[e.RowIndex].Cells[index].Value.ToString());
 
                         if (checkPrimeryKey(index, e.RowIndex, triple))
-                         {
-                                count++;
-                         }
+                        {
+                            count++;
+                        }
                         if (index == e.ColumnIndex)
                             flagEditOneCellPrimaryKey = true;
                     }
 
-                    
-                   //ktr khoang xac xuat
+
+                    //ktr khoang xac xuat
                     if (flagEditOneCellPrimaryKey == true && newProbTriple.Value.Count != 1)
                     {
                         GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "This object is a primary key it only accepts single value ";
@@ -1807,7 +1801,7 @@ namespace PRDB_Sqlite.GUI
                     }
                     //ktr xac xuat duy nhat
 
-                    if (flagEditOneCellPrimaryKey == true && ( newProbTriple.MinProb != 1.0 || newProbTriple.MaxProb != 1.0) )
+                    if (flagEditOneCellPrimaryKey == true && (newProbTriple.MinProb != 1.0 || newProbTriple.MaxProb != 1.0))
                     {
                         GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "This object is a primary key Its minprob and maxprob must be 1";
                         return;
@@ -1823,10 +1817,10 @@ namespace PRDB_Sqlite.GUI
                             if (indexPrimaryKey[i] == e.ColumnIndex)
                             {
                                 GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = " Cannot insert duplicate key in this object ";
-                               
+
                                 GridViewData.CurrentCell = GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex];
                                 return;
-                            }                            
+                            }
                         }
 
                         GridViewData.Rows[e.RowIndex].Cells[indexPrimaryKey[indexPrimaryKey.Count - 1]].ErrorText = " Cannot insert duplicate key in this object ";
@@ -1836,30 +1830,30 @@ namespace PRDB_Sqlite.GUI
                     }
 
                     #endregion
-                    
+
                 }
                 else
                 {
                     string defaultValue = currentRelationOpen.Scheme.Attributes[e.ColumnIndex].Type.getDefaultValue();
-                    GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = defaultValue;                                                   
+                    GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = defaultValue;
 
                 }
             }
-            catch (Exception )
+            catch (Exception)
             {
-                
+
 
             }
 
         }
 
         private bool checkPrimeryKey(int index, int row, ProbTriple triple)
-        { 
-            
-            int nRow = GridViewData.Rows.Count;         
+        {
+
+            int nRow = GridViewData.Rows.Count;
 
             for (int i = 0; i < nRow; i++)
-            {               
+            {
                 if (i != row)
                 {
                     ProbTriple trip = new ProbTriple();
@@ -1964,13 +1958,13 @@ namespace PRDB_Sqlite.GUI
             }
 
 
-            if (double.Parse(txtMinProb.Text.Trim()) < 0 )
+            if (double.Parse(txtMinProb.Text.Trim()) < 0)
             {
                 errorProvider.SetError(txtMinProb, "  Sum of MinProb have to more than 0");
                 return false;
             }
 
-            if (double.Parse(txtMinProb.Text.Trim()) >1 )
+            if (double.Parse(txtMinProb.Text.Trim()) > 1)
             {
                 errorProvider.SetError(txtMinProb, "  Sum of MinProb have to less than 1");
                 return false;
@@ -2104,14 +2098,14 @@ namespace PRDB_Sqlite.GUI
                     }
 
 
-                   
-                    triple.MinProb =Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMinProb"].Value);
-                    triple.MaxProb= Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMaxProb"].Value);
+
+                    triple.MinProb = Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMinProb"].Value);
+                    triple.MaxProb = Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMaxProb"].Value);
 
                     if (currentRelationOpen.Scheme.Attributes[GridViewData.CurrentCell.ColumnIndex].Type.TypeName != "String")
                     {
                         GridViewValue.Rows[i].Cells["ColumnValue"].Value = GridViewValue.Rows[i].Cells["ColumnValue"].Value.ToString().Trim().Replace(" ", "");
-                      
+
                     }
                     triple.Value.Add(GridViewValue.Rows[i].Cells["ColumnValue"].Value.ToString().Trim());
                 }
@@ -2134,11 +2128,11 @@ namespace PRDB_Sqlite.GUI
                 if (!triple.isProbTripleValue(triple.GetStrValue()))
                 {
 
-                    MessageBox.Show("Syntax Error! Cannot convert this value to a Probabilistic Triple!","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Syntax Error! Cannot convert this value to a Probabilistic Triple!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
-     
+
                 }
-              
+
                 GridViewData.CurrentCell.Value = triple.GetStrValue();
 
 
@@ -2229,9 +2223,9 @@ namespace PRDB_Sqlite.GUI
                 GridViewValue.Rows.Add();
                 UpdateValueRowNumber();
             }
-            catch 
+            catch
             {
-            
+
             }
         }
 
@@ -2245,9 +2239,9 @@ namespace PRDB_Sqlite.GUI
                     lblValueRowNumberIndicator.Text = (GridViewValue.CurrentRow.Index + 1) + " / " + GridViewValue.Rows.Count;
                 else lblValueRowNumberIndicator.Text = "1 / " + GridViewValue.Rows.Count;
             }
-            catch 
+            catch
             {
-               
+
             }
         }
 
@@ -2297,15 +2291,15 @@ namespace PRDB_Sqlite.GUI
         {
             try
             {
-                if(GridViewValue.Rows.Count > 0)
+                if (GridViewValue.Rows.Count > 0)
                 {
-                GridViewValue.Rows.Remove(GridViewValue.CurrentRow);
-                UpdateValueRowNumber();
-                    }
+                    GridViewValue.Rows.Remove(GridViewValue.CurrentRow);
+                    UpdateValueRowNumber();
+                }
             }
-            catch 
+            catch
             {
-              
+
             }
         }
 
@@ -2425,7 +2419,7 @@ namespace PRDB_Sqlite.GUI
         {
             try
             {
-               
+
                 if (this.probDatabase == null)
                 {
                     MessageBox.Show("Error : Cannot find the Database, please try again!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2441,7 +2435,7 @@ namespace PRDB_Sqlite.GUI
                     LoadQueryNode();
                 }
 
-                      
+
             }
             catch (Exception Ex)
             {
@@ -2478,7 +2472,7 @@ namespace PRDB_Sqlite.GUI
             {
                 barButtonItemExcuteQuery.Enabled = true;
 
-                txtQuery.ForeColor = Color.Black;      
+                txtQuery.ForeColor = Color.Black;
             }
         }
 
@@ -2496,7 +2490,7 @@ namespace PRDB_Sqlite.GUI
                 {
                     MessageBox.Show("The first, you must create some query, please try again!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                     return;
+                    return;
                 }
 
                 frm_open_query frm = new frm_open_query(this.probDatabase);
@@ -2541,7 +2535,7 @@ namespace PRDB_Sqlite.GUI
             LoadQueryNode();
         }
 
-      
+
 
         private void barButtonItemCloseCurrentQuery_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -2554,7 +2548,7 @@ namespace PRDB_Sqlite.GUI
                 barButtonItemExcuteQuery.Enabled = false;
                 barButtonItemSaveQuery.Enabled = false;
                 barButtonItemCloseCurrentQuery.Enabled = false;
-             
+
                 ribbonPageGroupEquality.Visible = false;
                 ribbonPageGroupConjuntion.Visible = false;
                 ribbonPageGroupDisjunction.Visible = false;
@@ -2609,7 +2603,7 @@ namespace PRDB_Sqlite.GUI
                     barButtonItemExcuteQuery.Enabled = false;
                     barButtonItemSaveQuery.Enabled = false;
                     barButtonItemCloseCurrentQuery.Enabled = false;
-                
+
                     ribbonPageGroupEquality.Visible = false;
                     ribbonPageGroupConjuntion.Visible = false;
                     ribbonPageGroupDisjunction.Visible = false;
@@ -2620,7 +2614,7 @@ namespace PRDB_Sqlite.GUI
                     GridViewResult.Rows.Clear();
                     GridViewResult.Columns.Clear();
                     txtQuery.Text = "";
-                  
+
                     barButtonItemExcuteQuery.Enabled = false;
 
                 }
@@ -2672,16 +2666,16 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
+
             }
 
 
         }
 
         private void CTMenuQueryNode_OpenQuery_Click(object sender, EventArgs e)
-        {   
-                string QueryName = TreeView.SelectedNode.Name;
-                OpenQueryByName(QueryName);
+        {
+            string QueryName = TreeView.SelectedNode.Name;
+            OpenQueryByName(QueryName);
         }
 
         private void CTMenuQuery_DeleteQuery_Click(object sender, EventArgs e)
@@ -2695,9 +2689,9 @@ namespace PRDB_Sqlite.GUI
                 }
 
                 string QueryName = TreeView.SelectedNode.Name;
-             
 
-                frm_delete_query frm = new frm_delete_query(this.probDatabase,QueryName);
+
+                frm_delete_query frm = new frm_delete_query(this.probDatabase, QueryName);
                 frm.ShowDialog();
                 this.probDatabase = frm.probDatabase;
 
@@ -2713,7 +2707,7 @@ namespace PRDB_Sqlite.GUI
 
                     GridViewResult.Rows.Clear();
                     GridViewResult.Columns.Clear();
-                 
+
                     barButtonItemExcuteQuery.Enabled = false;
                 }
 
@@ -2732,7 +2726,7 @@ namespace PRDB_Sqlite.GUI
             try
             {
                 string queryName = TreeView.SelectedNode.Name;
-                frm_rename_query frm = new frm_rename_query(this.probDatabase,queryName);
+                frm_rename_query frm = new frm_rename_query(this.probDatabase, queryName);
                 frm.ShowDialog();
 
 
@@ -2742,7 +2736,7 @@ namespace PRDB_Sqlite.GUI
                     if (xtraTabDatabase.TabPages[2].Text.Contains(frm.QueryNameRename))
                     {
                         xtraTabDatabase.TabPages[2].Text = "Query" + frm.queryName;
-                      
+
                     }
 
 
@@ -2752,8 +2746,8 @@ namespace PRDB_Sqlite.GUI
             }
             catch (Exception)
             {
-                
-             
+
+
             }
         }
 
@@ -2765,7 +2759,7 @@ namespace PRDB_Sqlite.GUI
                 ribbonControl.SelectedPage = ribbonPageDB;
                 return;
             }
-           
+
         }
 
         private void barButtonItemExcuteQuery_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -2794,8 +2788,6 @@ namespace PRDB_Sqlite.GUI
                     }
                     else
                     {
-                        GridViewResult.Columns.Add("NoNumber", "  Number ");
-                      
                         foreach (ProbAttribute attribute in query.selectedAttributes)
                         {
                             GridViewResult.Columns.Add(attribute.AttributeName, attribute.AttributeName);
@@ -2807,12 +2799,11 @@ namespace PRDB_Sqlite.GUI
                         {
                             GridViewResult.Rows.Add();
 
-                            i++; j = 1;
-                            GridViewResult.Rows[i].Cells[0].Value = i + 1;
+                            i++; j = 0;
 
                             foreach (ProbTriple triple in tuple.Triples)
                             {
-                                GridViewResult.Rows[i].Cells[j++].Value =  triple.GetStrValue();
+                                GridViewResult.Rows[i].Cells[j++].Value = triple.GetStrValue();
                             }
                         }
 
@@ -2842,7 +2833,7 @@ namespace PRDB_Sqlite.GUI
         }
 
 
-    
+
 
         private void txtQuery_TextChanged_1(object sender, EventArgs e)
         {
@@ -2880,9 +2871,9 @@ namespace PRDB_Sqlite.GUI
                         {
                             count += array[j].Length + 1;
                         }
-                        
+
                         txtQuery.Select(count, array[i].Length + 1);
-                        txtQuery.SelectionColor = Color.Blue;  
+                        txtQuery.SelectionColor = Color.Blue;
                     }
                 }
 
@@ -2893,22 +2884,22 @@ namespace PRDB_Sqlite.GUI
                     txtQuery.Select(indexNaturalJoin, 17);
                     txtQuery.SelectionColor = Color.Blue;
                 }
-                else  
-                    if( tmp.IndexOf(" natural join ig") != -1)
-                    {
-                        
-                           indexNaturalJoin = tmp.IndexOf(" natural join ig");
-                            txtQuery.Select(indexNaturalJoin, 17);
-                            txtQuery.SelectionColor = Color.Blue;
-                    
-                    }
-                    if( tmp.IndexOf(" natural join me") != -1)
-                    {
-                           indexNaturalJoin = tmp.IndexOf(" natural join me");
-                            txtQuery.Select(indexNaturalJoin, 17);
-                            txtQuery.SelectionColor = Color.Blue;
-                    }
-              
+                else
+                    if (tmp.IndexOf(" natural join ig") != -1)
+                {
+
+                    indexNaturalJoin = tmp.IndexOf(" natural join ig");
+                    txtQuery.Select(indexNaturalJoin, 17);
+                    txtQuery.SelectionColor = Color.Blue;
+
+                }
+                if (tmp.IndexOf(" natural join me") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" natural join me");
+                    txtQuery.Select(indexNaturalJoin, 17);
+                    txtQuery.SelectionColor = Color.Blue;
+                }
+
                 if (indexSelect != -1)
                 {
                     if (indexSelect != 0)
@@ -2936,14 +2927,14 @@ namespace PRDB_Sqlite.GUI
                         if (t.Length == 0)
                         {
                             txtQuery.Select(indexFrom, 5);
-                            txtQuery.SelectionColor = Color.Blue; 
+                            txtQuery.SelectionColor = Color.Blue;
                         }
                     }
                     else
                     {
 
                         txtQuery.Select(indexFrom, 5);
-                        txtQuery.SelectionColor = Color.Blue; 
+                        txtQuery.SelectionColor = Color.Blue;
                     }
                 }
 
@@ -2956,48 +2947,48 @@ namespace PRDB_Sqlite.GUI
                         if (t.Length == 0)
                         {
                             txtQuery.Select(indexWhere, 6);
-                            txtQuery.SelectionColor = Color.Blue; 
+                            txtQuery.SelectionColor = Color.Blue;
                         }
                     }
                     else
                     {
                         txtQuery.Select(indexWhere, 6);
-                        txtQuery.SelectionColor = Color.Blue; 
-                      
+                        txtQuery.SelectionColor = Color.Blue;
+
                     }
                 }
 
                 if (tmp.Contains("where "))
                 {
                     string tmpWhere = tmp.Substring(tmp.IndexOf("where") + 6);
-                    for (int i = 0; i < tmpWhere.Length - 1; )
+                    for (int i = 0; i < tmpWhere.Length - 1;)
                     {
                         int j = i + 1;
                         if (tmpWhere[i] == '\'')
                         {
 
-                            for (int k = j; k <  tmpWhere.Length; k++)
+                            for (int k = j; k < tmpWhere.Length; k++)
                             {
-                                if(tmpWhere[k] == '\'')
+                                if (tmpWhere[k] == '\'')
                                 {
                                     j = k + 1;
-                                    txtQuery.Select(i + tmp.IndexOf("where") + 6, j - i );
+                                    txtQuery.Select(i + tmp.IndexOf("where") + 6, j - i);
                                     txtQuery.SelectionColor = Color.Red;
                                     break;
                                 }
                                 else
-                                    if (tmpWhere[k] != '\'' && k == tmpWhere.Length -1)
-                                    {
-                                        txtQuery.Select(i + tmp.IndexOf("where") + 6, k - i +1);
-                                        txtQuery.SelectionColor = Color.Red;
-                                    }
+                                    if (tmpWhere[k] != '\'' && k == tmpWhere.Length - 1)
+                                {
+                                    txtQuery.Select(i + tmp.IndexOf("where") + 6, k - i + 1);
+                                    txtQuery.SelectionColor = Color.Red;
+                                }
                             }
                         }
                         i = j;
                     }
                 }
 
-                txtQuery.Select(index,1);
+                txtQuery.Select(index, 1);
                 txtQuery.SelectionLength = 0;
                 txtQuery.SelectionStart = index;
             }
@@ -3008,8 +2999,8 @@ namespace PRDB_Sqlite.GUI
         {
 
 
-           
-         
+
+
             if (txtQuery.Text == "") txtQuery.Text = @" ⊗_ig ";
 
             else
@@ -3019,7 +3010,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.Text = txtQuery.Text.Insert(index, @" ⊗_ig ");
                 txtQuery.SelectionStart = index + 6;
             }
-         
+
 
         }
 
@@ -3048,7 +3039,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.Text = txtQuery.Text.Insert(index, @" ⊗_me ");
                 txtQuery.SelectionStart = index + 6;
             }
-          
+
         }
 
         private void barButtonItem_Tuyen_ignorance_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -3062,7 +3053,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.Text = txtQuery.Text.Insert(index, @" ⊕_ig ");
                 txtQuery.SelectionStart = index + 6;
             }
-         }
+        }
 
         private void barButtonItem_Tuyen_independence_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -3076,7 +3067,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.SelectionStart = index + 6;
             }
 
-         }
+        }
 
         private void barButtonItem_Tuyen_mutualexclusion_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -3089,7 +3080,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.Text = txtQuery.Text.Insert(index, @" ⊕_me ");
                 txtQuery.SelectionStart = index + 6;
             }
-         
+
 
         }
 
@@ -3104,7 +3095,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.Text = txtQuery.Text.Insert(index, @" ⊖_ig ");
                 txtQuery.SelectionStart = index + 6;
             }
-           
+
         }
 
         private void barButtonItem_Tru_independence_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -3119,7 +3110,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.SelectionStart = index + 6;
             }
 
-         }
+        }
 
         private void barButtonItem_Tru_mutualexclusion_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -3132,7 +3123,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.Text = txtQuery.Text.Insert(index, @" ⊖_me ");
                 txtQuery.SelectionStart = index + 6;
             }
-          
+
         }
 
 
@@ -3150,7 +3141,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.Text = txtQuery.Text.Insert(index, @" EQUAL_ig ");
                 txtQuery.SelectionStart = index + 10;
             }
-   
+
         }
 
         private void barButtonItem_Bang_independence_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -3164,7 +3155,7 @@ namespace PRDB_Sqlite.GUI
                 txtQuery.Text = txtQuery.Text.Insert(index, @" EQUAL_in ");
                 txtQuery.SelectionStart = index + 10;
             }
-           }
+        }
 
         private void barButtonItem_Bang_mutualexclusion_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -3197,7 +3188,7 @@ namespace PRDB_Sqlite.GUI
                 }
             }
 
-         
+
 
         }
 
@@ -3209,7 +3200,7 @@ namespace PRDB_Sqlite.GUI
         private void GridViewData_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
 
-          
+
 
 
         }
@@ -3237,10 +3228,10 @@ namespace PRDB_Sqlite.GUI
             catch (Exception)
             {
                 errorProvider.SetError(txtMinProb, "Sum of minProb value must be a real number!");
-           
+
             }
-          
-            
+
+
         }
 
         private void txtMaxProb_TextChanged(object sender, EventArgs e)

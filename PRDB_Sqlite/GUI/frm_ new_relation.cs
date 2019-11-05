@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Linq;
+using System.Windows.Forms;
 namespace PRDB_Sqlite.GUI
 {
     public partial class frm__new_relation : DevExpress.XtraEditors.XtraForm
@@ -56,7 +50,7 @@ namespace PRDB_Sqlite.GUI
 
                 foreach (var item in this.probDatabase.ListOfRelationNameToLower())
                 {
-                    if (item.Equals(txtRelationName.Text.ToLower(),StringComparison.OrdinalIgnoreCase))
+                    if (item.Equals(txtRelationName.Text.ToLower(), StringComparison.OrdinalIgnoreCase))
                     {
                         errorProvider.SetError(txtRelationName, "This relation name has already existed in the database, please try again !");
                         return;
@@ -85,7 +79,7 @@ namespace PRDB_Sqlite.GUI
             {
                 MessageBox.Show(EX.Message);
             }
-        
+
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

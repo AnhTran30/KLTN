@@ -1,13 +1,8 @@
-﻿using System;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace PRDB_Sqlite.GUI
 {
@@ -77,7 +72,7 @@ namespace PRDB_Sqlite.GUI
             ProbQuery query = this.probDatabase.Queries.SingleOrDefault(c => c.QueryName == this.listNameQuery[cbo_QueryName.SelectedIndex]);
             QueryNameRename = query.QueryName;
             query.QueryName = txtNewName.Text.Trim().ToLower();
-          
+
             query.Update();
 
             queryName = query.QueryName;
