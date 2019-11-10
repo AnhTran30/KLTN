@@ -187,7 +187,7 @@ namespace PRDB_Sqlite.BLL
         {
             for(int i = 0; i < conditionModels.Count(); i++)
             {
-                if(conditionModels[i].OperatorStrategy.Count > 0)
+                if(conditionModels[i].OperatorStrategy != null)
                 {
                     var listProb = new List<double>();
                     for (int j = 0; j < conditionModels[i].StrategyModels.Count; j++)
