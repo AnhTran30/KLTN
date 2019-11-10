@@ -50,7 +50,9 @@ namespace PRDB_Sqlite.BLL
             this.tuple = tuple;
             dictProb = new Dictionary<string, bool>();
             dictCon = new Dictionary<string, bool>();
-            CalculateConditionProb();   
+
+            CalculateConditionProb();
+
             CalculateConditionStr(subCondition);
             var listConditionProb = GetArrayCondition(this.conditionString);
 
@@ -67,6 +69,7 @@ namespace PRDB_Sqlite.BLL
 
             var conditionProbabilities = regexPro.Matches(conditionStr);
             subConditionHaveProbability = new string[conditionProbabilities.Count];
+            //create subcondition array
             for (int i = 0; i < conditionProbabilities.Count; i++)
             {
                 subConditionHaveProbability[i] = conditionProbabilities[i].ToString();
@@ -108,6 +111,7 @@ namespace PRDB_Sqlite.BLL
             subCondition = new string[totalLength];
 
             var timeCondition = 1;
+            //creatre group condition array 
             for (int i = 0; i < degree; i++)
             {
                 var listCondition = regexCondition.Matches(conditionStr);
@@ -183,8 +187,57 @@ namespace PRDB_Sqlite.BLL
         {
             for(int i = 0; i < conditionModels.Count(); i++)
             {
-                dictProb.Add("ConditionProb_" + i.ToString(), GetProbIntervalV2(conditionModels[i].AttributeName, conditionModels[i].AttributeValue, conditionModels[i].OperatorStrOfTriple, conditionModels[i].MaxProb, conditionModels[i].MinProb));
+                if(conditionModels[i].OperatorStrategy.Count > 0)
+                {
+                    var listProb = new List<double>();
+                    for (int j = 0; j < conditionModels[i].StrategyModels.Count; j++)
+                    {
+                        var strategyModel = conditionModels[i].StrategyModels[j];
+                        var prob = GetProbIntervalV3(strategyModel.AttributeName, strategyModel.AttributeValue, strategyModel.OperatorStrOfTriple);
+
+                        if (prob == null)
+                        {
+                            return;
+                        }
+
+                        listProb.Add(prob[0]);
+                        listProb.Add(prob[1]);
+                    }
+
+                    if (listProb.Count == 4)
+                    {
+                        var result = CalcultionStrategy(conditionModels[i].OperatorStrategy[0], conditionModels[i].MinProb.Value, conditionModels[i].MaxProb.Value, listProb[0], listProb[1], listProb[2], listProb[3]);
+                        dictProb.Add("ConditionProb_" + i.ToString(), result);
+                    }
+                    else
+                    {
+                        dictProb.Add("ConditionProb_" + i.ToString(), false);
+                    }
+                }
+                else
+                {
+                    dictProb.Add("ConditionProb_" + i.ToString(), GetProbIntervalV2(conditionModels[i].StrategyModels[0].AttributeName, conditionModels[i].StrategyModels[0].AttributeValue, conditionModels[i].StrategyModels[0].OperatorStrOfTriple, conditionModels[i].MaxProb, conditionModels[i].MinProb));
+                }
             }
+        }
+
+        private bool CalcultionStrategy(string operation, double minProbCon, double maxProbCon ,double minProbOne, double maxProbOne, double minProbTwo, double maxProbTwo)
+        {
+            double minProb, maxProb;
+            switch (operation)
+            {
+                case "⊗_ig": minProb = Math.Max(0, minProbOne + minProbTwo - 1); maxProb = Math.Min(maxProbOne, maxProbTwo); break;
+                case "⊗_in": minProb = minProbOne * minProbTwo; maxProb = maxProbOne * maxProbTwo; break;
+                case "⊗_me": minProb = 0; maxProb = 0; break;
+                case "⊕_ig": minProb = Math.Max(minProbOne, minProbTwo); maxProb = Math.Min(1, maxProbOne + maxProbTwo); break;
+                case "⊕_in": minProb = minProbOne + minProbTwo - (minProbOne * minProbTwo); maxProb = maxProbOne + maxProbTwo - (maxProbOne * maxProbTwo); break;
+                case "⊕_me": minProb = Math.Min(1, minProbOne + minProbTwo); maxProb = Math.Min(1, maxProbOne + maxProbTwo); break;
+                default:
+                    MessageError = "Incorrect syntax near 'where'.";
+                    return false;
+            }
+
+            return minProbCon <= minProb && maxProb <= maxProbCon;
         }
 
         public void ConvertStringToModel(string[] subConditionHaveProbability)
@@ -200,6 +253,7 @@ namespace PRDB_Sqlite.BLL
                         return;
                     }
 
+
                     var j1 = subConditionHaveProbability[i].IndexOf('(');
                     var j2 = subConditionHaveProbability[i].IndexOf(')');
                     var j3 = subConditionHaveProbability[i].IndexOf('[');
@@ -210,33 +264,115 @@ namespace PRDB_Sqlite.BLL
                     var maxProb = double.Parse(subConditionHaveProbability[i].Substring(j4 + 1, j5 - j4 - 1));
                     var valueString = subConditionHaveProbability[i].Substring(j1 + 1, j2 - j1 - 1);
 
-                    var operatorStrOfTriple = IsOperatior(valueString);
-                    if (string.IsNullOrEmpty(operatorStrOfTriple))
+
+                    var listStrategyModel = new List<StrategyModel>();
+                    if (!string.IsNullOrEmpty(IsOperatiorStrategy(valueString)))
                     {
-                        MessageError = string.Format("Incorrect syntax near the keyword {0}.", valueString);
-                        return;
+                        var listOperatorStrategy = new List<string>();
+
+                        var listStrategy = valueString.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        int totalStrategy = 0;
+
+                        foreach (var item in listStrategy)
+                        {
+                            if (!string.IsNullOrEmpty(IsOperatiorStrategy(item)))
+                            {
+                                totalStrategy++;
+                            }
+                        }
+
+                        string[] listConditionStrategy = new string[(totalStrategy*2)+1];
+                        var tmp = 0;
+                        for (int k = 0; k < listStrategy.Length; k++)
+                        {
+                            if (!string.IsNullOrEmpty(IsOperatiorStrategy(listStrategy[k])))
+                            {
+                                tmp++;
+                                listConditionStrategy[tmp] = listStrategy[k];
+                                tmp++;
+                            }
+                            else
+                            {
+                                listConditionStrategy[tmp] += listStrategy[k];
+                            }
+                        }
+
+                        for (int l = 0; l < listConditionStrategy.Length; l++)
+                        {
+                            var checkStrategy = IsOperatiorStrategy(listConditionStrategy[l]);
+                            if (string.IsNullOrEmpty(checkStrategy))
+                            {
+                                var operatorStrTwo = IsOperatior(listConditionStrategy[l]);
+                                if (!string.IsNullOrEmpty(operatorStrTwo))
+                                {
+                                    string[] seperatorTwo = { operatorStrTwo };
+                                    string[] attributeTwo = listConditionStrategy[l].Split(seperatorTwo, StringSplitOptions.RemoveEmptyEntries);
+                                    if (attributeTwo.Length != 2)
+                                    {
+                                        MessageError = string.Format("Incorrect syntax near the keyword {0}.", listConditionStrategy[l]);
+                                        return;
+                                    }
+
+                                    listStrategyModel.Add(new StrategyModel { AttributeName = attributeTwo[0] , AttributeValue = attributeTwo[1], OperatorStrOfTriple = operatorStrTwo });
+                                }
+                                else
+                                {
+                                    MessageError = string.Format("Incorrect syntax near the keyword {0}.", listConditionStrategy[l]);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                listOperatorStrategy.Add(listConditionStrategy[l]);
+                            }  
+                        }
+
+                        var model = new ConditionModel
+                        {
+                            StrategyModels = listStrategyModel,
+                            OperatorStrategy = listOperatorStrategy,
+                            MaxProb = maxProb,
+                            MinProb = minProb
+                        };
+
+                        conditionModels.Add(model);
                     }
-                    string[] seperator = { operatorStrOfTriple };
-                    string[] attribute = valueString.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (attribute.Count() != 2)
+                    else
                     {
-                        MessageError = string.Format("Incorrect syntax near the keyword {0}.", operatorStrOfTriple);
-                        return;
+                        var operatorStrOfTriple = IsOperatior(valueString);
+                        if (string.IsNullOrEmpty(operatorStrOfTriple))
+                        {
+                            MessageError = string.Format("Incorrect syntax near the keyword {0}.", valueString);
+                            return;
+                        }
+                        string[] seperator = { operatorStrOfTriple };
+                        string[] attribute = valueString.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (attribute.Count() != 2)
+                        {
+                            MessageError = string.Format("Incorrect syntax near the keyword {0}.", operatorStrOfTriple);
+                            return;
+                        }
+                        var attributeName = attribute[0];
+                        var attributeValue = attribute[1];
+
+                        listStrategyModel.Add(new StrategyModel
+                        {
+                            AttributeName = attributeName.Trim(),
+                            AttributeValue = attributeValue.Trim(),
+                            OperatorStrOfTriple = operatorStrOfTriple.Trim()
+                        });
+
+                        var model = new ConditionModel
+                        {
+                            StrategyModels = listStrategyModel,
+                            MaxProb = maxProb,
+                            MinProb = minProb
+                        };
+
+                        conditionModels.Add(model);
                     }
-                    var attributeName = attribute[0];
-                    var attributeValue = attribute[1];
-
-                    var model = new ConditionModel
-                    {
-                        AttributeName = attributeName.Trim(),
-                        AttributeValue = attributeValue.Trim(),
-                        OperatorStrOfTriple = operatorStrOfTriple.Trim(),
-                        MaxProb = maxProb,
-                        MinProb = minProb
-                    };
-
-                    conditionModels.Add(model);
                 }
                 catch
                 {
@@ -406,6 +542,17 @@ namespace PRDB_Sqlite.BLL
             }
             return string.Empty;
         }
+
+        private string IsOperatiorStrategy(string s)
+        {
+            for (int i = 6; i < 12; i++)
+            {
+                if (s.Contains(Operator[i]))
+                    return Operator[i];
+            }
+            return string.Empty;
+        }
+
         private string CompareCharacters(string s)
         {
             switch (s)
@@ -497,7 +644,7 @@ namespace PRDB_Sqlite.BLL
 
                             if (maxProbOfCon.HasValue && minProbOfCon.HasValue)
                             {
-                                return minProb <= minProbOfCon.Value &&  maxProbOfCon <= maxProb ;
+                                return minProbOfCon.Value <= minProb  && maxProb <= maxProbOfCon;
                             }
                         }
                         return false;
@@ -543,6 +690,92 @@ namespace PRDB_Sqlite.BLL
                 return false;
             }
             return false;
+        }
+
+        private List<double> GetProbIntervalV3(string valueOne, string valueTwo, string operaterStr)
+        {
+            double minProb = 0, maxProb = 0;
+            int indexOne, countTripleOne;
+            ProbTuple tuple = this.tuple;
+
+            try
+            {
+                if (SelectCondition.isCompareOperator(operaterStr))     // Biểu thức so sánh giữa một thuộc tính với một giá trị
+                {
+                    indexOne = this.IndexOfAttribute(valueOne); // vị trí của thuộc tính trong ds các thuộc tính
+                    if (indexOne == -1)
+                        return null;
+
+                    if (valueTwo.Contains("'"))
+                    {
+                        int count = valueTwo.Split(new char[] { '\'' }).Length - 1;
+
+                        if (valueTwo.Substring(0, 1) != "'")
+                        {
+                            MessageError = "Unclosed quotation mark before the character string " + valueTwo;
+                            return null;
+                        }
+
+                        if (valueTwo.Substring(valueTwo.Length - 1, 1) != "'")
+                        {
+                            MessageError = "Unclosed quotation mark after the character string " + valueTwo;
+                            return null;
+                        }
+
+
+                        if (count != 2)
+                        {
+                            MessageError = "Unclosed quotation mark at the character string " + valueTwo;
+                            return null;
+                        }
+
+                        valueTwo = valueTwo.Remove(0, 1);
+                        valueTwo = valueTwo.Remove(valueTwo.Length - 1, 1);
+                    }
+
+                    #region ProbDataType
+                    ProbDataType dataType = new ProbDataType();
+                    dataType.TypeName = Attributes[indexOne].Type.TypeName;
+                    dataType.DataType = Attributes[indexOne].Type.DataType;
+                    dataType.Domain = Attributes[indexOne].Type.Domain;
+                    dataType.DomainString = Attributes[indexOne].Type.DomainString;
+                    #endregion
+
+                    if (!dataType.CheckDataTypeOfVariables(valueTwo))
+                    {
+                        MessageError = String.Format("Conversion failed when converting the varchar value {0} to data type {1}.", valueTwo, dataType.DataType);
+                        return null;
+                    }
+
+                    #region ProbDataType
+                    countTripleOne = tuple.Triples[indexOne].Value.Count; // số lượng các cặp xác xuất trong thuộc tính
+                    var listValue = tuple.Triples[indexOne].Value;
+                    var minProbV = tuple.Triples[indexOne].MinProb;
+                    var maxProbV = tuple.Triples[indexOne].MaxProb;
+                    #endregion
+
+                    var result = listValue.Where(x => CompareTriple(x, valueTwo, operaterStr, dataType.TypeName)).Count();
+
+                    if (result > 0)
+                    {
+                        minProb = (result / (float)countTripleOne) * minProbV;
+                        maxProb = (result / (float)countTripleOne) * maxProbV;
+
+                        return new List<double> { minProb, maxProb };
+                    }
+                    else
+                    {
+                        return new List<double> { 0, 0 };
+                    }
+                }
+
+                return null;
+            }
+            catch
+            {
+                MessageError = "Incorrect syntax near 'where'.";
+                return null;
+            }
         }
 
         public int IndexOfAttribute(string S)
@@ -769,7 +1002,6 @@ namespace PRDB_Sqlite.BLL
 
         }
         #endregion
-        
-
+  
     }
 }
