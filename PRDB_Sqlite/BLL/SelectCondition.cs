@@ -156,18 +156,18 @@ namespace PRDB_Sqlite.BLL
         {
             string[] listConditionProb;
             var option = conditionStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            listConditionProb = new string[option.Count()];
+            
+            var count = 0;
             for (int i = 0; i < option.Count(); i++)
             {
                 if (Common.ConditionNormalString.Contains(option[i]))
                 {
-                    listConditionProb[i] = option[i];
-                    continue;
+                    count++;
                 }
-
             }
 
             var count3 = 0;
+            listConditionProb = new string[(count*2)+1];
             foreach (var item in option)
             {
                 if (Common.ConditionNormalString.Contains(item))
