@@ -12,7 +12,6 @@ namespace PRDB_Sqlite.BLL
         public string RelationName { get; set; }
         public string ConditionKey { get; set; }
         public string AcronymRelationName { get; set; }
-        public int Stage { get; set; }
 
     }
 }
