@@ -82,7 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\ConditionModel.cs" />
-    <Compile Include="BLL\JoinRelationModel.cs" />
     <Compile Include="BLL\ProbAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -134,12 +133,6 @@
     </Compile>
     <Compile Include="GUI\frm_ new_relation.Designer.cs">
       <DependentUpon>frm_ new_relation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\frm_About.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\frm_About.Designer.cs">
-      <DependentUpon>frm_About.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\frm_delete_query.cs">
       <SubType>Form</SubType>
@@ -228,10 +221,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\frm_ new_relation.resx">
       <DependentUpon>frm_ new_relation.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\frm_About.resx">
-      <DependentUpon>frm_About.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\frm_delete_query.resx">

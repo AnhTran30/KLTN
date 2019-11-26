@@ -45,7 +45,7 @@ namespace PRDB_Sqlite.BLL
         }
 
         #region kiểm tra bộ có thỏa mãn điều kiện chọn
-        public bool Satisfiedv2(ProbTuple tuple)
+        public bool Satisfied(ProbTuple tuple)
         {
             this.tuple = tuple;
             dictProb = new Dictionary<string, bool>();
@@ -63,7 +63,6 @@ namespace PRDB_Sqlite.BLL
         {
             string conditionStr = this.conditionString;
             string[] subConditionHaveProbability;
-
 
             Regex regexPro = new Regex(@"\([^\(\)]+\)\[[^\(\)]+\]");
 
@@ -130,7 +129,7 @@ namespace PRDB_Sqlite.BLL
 
             this.conditionString = conditionStr;
 
-            if(subConditionHaveProbability.Count() > 0)
+            if (subConditionHaveProbability.Count() > 0)
             {
                 ConvertStringToModel(subConditionHaveProbability);
             }
@@ -156,7 +155,7 @@ namespace PRDB_Sqlite.BLL
         {
             string[] listConditionProb;
             var option = conditionStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            
+
             var count = 0;
             for (int i = 0; i < option.Count(); i++)
             {
@@ -167,7 +166,7 @@ namespace PRDB_Sqlite.BLL
             }
 
             var count3 = 0;
-            listConditionProb = new string[(count*2)+1];
+            listConditionProb = new string[(count * 2) + 1];
             foreach (var item in option)
             {
                 if (Common.ConditionNormalString.Contains(item))
@@ -185,11 +184,14 @@ namespace PRDB_Sqlite.BLL
 
         private void CalculateConditionProb()
         {
-            for(int i = 0; i < conditionModels.Count(); i++)
+            for (int i = 0; i < conditionModels.Count(); i++)
             {
-                if(conditionModels[i].OperatorStrategy != null)
+                if (conditionModels[i].OperatorStrategy != null)
                 {
+                    string[] conditionArray = new string[conditionModels[i].OperatorStrategy.Count * 2 + 1];
+
                     var listProb = new List<double>();
+                    int k = 0;
                     for (int j = 0; j < conditionModels[i].StrategyModels.Count; j++)
                     {
                         var strategyModel = conditionModels[i].StrategyModels[j];
@@ -200,19 +202,48 @@ namespace PRDB_Sqlite.BLL
                             return;
                         }
 
-                        listProb.Add(prob[0]);
-                        listProb.Add(prob[1]);
+                        conditionArray[k] = prob[0].ToString() + "-" + prob[1].ToString();
+                        if (j != (conditionModels[i].StrategyModels.Count - 1))
+                            conditionArray[k + 1] = conditionModels[i].OperatorStrategy[j];
+                        k = k + 2;
                     }
 
-                    if (listProb.Count == 4)
+                    List<string[]> listResult = new List<string[]>();
+                    int d = 0;
+                    for (int j = 0; j < conditionArray.Length; j++)
                     {
-                        var result = CalcultionStrategy(conditionModels[i].OperatorStrategy[0], conditionModels[i].MinProb.Value, conditionModels[i].MaxProb.Value, listProb[0], listProb[1], listProb[2], listProb[3]);
-                        dictProb.Add("ConditionProb_" + i.ToString(), result);
+                        if (conditionArray[j].Contains("⊕"))
+                        {
+                            listResult.Add(conditionArray.Skip(j - d).Take(d).ToArray());
+                            listResult.Add(conditionArray.Skip(j).Take(1).ToArray());
+                            d = 0;
+                        }
+                        else
+                        {
+                            if (j == conditionArray.Length - 1)
+                            {
+                                listResult.Add(conditionArray.Skip(j - d).Take(d + 1).ToArray());
+                                break;
+                            }
+                            d++;
+                        }
                     }
-                    else
+
+                    var listString = new List<string>();
+                    foreach (var item in listResult)
                     {
-                        dictProb.Add("ConditionProb_" + i.ToString(), false);
+
+                        if (item.Length > 1)
+                        {
+                            listString.Add(ConjunctionStrategy(item));
+                        }
+                        else
+                        {
+                            listString.Add(item[0]);
+                        }
                     }
+
+                    dictProb.Add("ConditionProb_" + i.ToString(), DisjunctionStrategy(listString, conditionModels[i].MinProb.Value, conditionModels[i].MaxProb.Value));
                 }
                 else
                 {
@@ -221,23 +252,74 @@ namespace PRDB_Sqlite.BLL
             }
         }
 
-        private bool CalcultionStrategy(string operation, double minProbCon, double maxProbCon ,double minProbOne, double maxProbOne, double minProbTwo, double maxProbTwo)
+        public string ConjunctionStrategy(string[] arrayInput)
         {
-            double minProb, maxProb;
-            switch (operation)
+            var tmpOne = arrayInput[0].Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+            double maxProb = double.Parse(tmpOne[1]);
+            double minProb = double.Parse(tmpOne[0]);
+            double minProbOne = 0; double maxProbOne = 0;
+
+            for (int i = 1; i < arrayInput.Length; i++)
             {
-                case "⊗_ig": minProb = Math.Max(0, minProbOne + minProbTwo - 1); maxProb = Math.Min(maxProbOne, maxProbTwo); break;
-                case "⊗_in": minProb = minProbOne * minProbTwo; maxProb = maxProbOne * maxProbTwo; break;
-                case "⊗_me": minProb = 0; maxProb = 0; break;
-                case "⊕_ig": minProb = Math.Max(minProbOne, minProbTwo); maxProb = Math.Min(1, maxProbOne + maxProbTwo); break;
-                case "⊕_in": minProb = minProbOne + minProbTwo - (minProbOne * minProbTwo); maxProb = maxProbOne + maxProbTwo - (maxProbOne * maxProbTwo); break;
-                case "⊕_me": minProb = Math.Min(1, minProbOne + minProbTwo); maxProb = Math.Min(1, maxProbOne + maxProbTwo); break;
-                default:
-                    MessageError = "Incorrect syntax near 'where'.";
-                    return false;
+                if (arrayInput[i].Contains("⊗"))
+                {
+                    var tmp = arrayInput[i + 1].Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                    minProbOne = double.Parse(tmp[0]);
+                    maxProbOne = double.Parse(tmp[1]);
+
+                    if (arrayInput[i].Contains("⊗_ig"))
+                    {
+                        minProb = Math.Max(0, minProbOne + minProb - 1); maxProb = Math.Min(maxProbOne, maxProb);
+                    }
+                    else if (arrayInput[i].Contains("⊗_in"))
+                    {
+                        minProb = minProbOne * minProb; maxProb = maxProbOne * maxProb;
+                    }
+                    else
+                    {
+                        minProb = 0; maxProb = 0;
+                    }
+
+                    i = i + 1;
+                }
             }
 
-            return minProbCon <= minProb && maxProb <= maxProbCon;
+            return minProb.ToString() + "-" + maxProb.ToString();
+        }
+
+        public bool DisjunctionStrategy(List<string> listDisjunction, double minProd, double maxProb)
+        {
+            var tmpOne = listDisjunction[0].Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+            double minProbOne = double.Parse(tmpOne[1]);
+            double maxProbOne = double.Parse(tmpOne[0]);
+            double minProbTwo = 0; double maxProbTwo = 0;
+
+            for (int i = 1; i < listDisjunction.Count; i++)
+            {
+                if (listDisjunction[i].Contains("⊕"))
+                {
+                    var tmp = listDisjunction[i + 1].Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                    minProbTwo = double.Parse(tmp[0]);
+                    maxProbTwo = double.Parse(tmp[1]);
+
+                    if (listDisjunction[i].Contains("⊕_ig"))
+                    {
+                        minProbOne = Math.Max(minProbOne, minProbTwo); maxProbOne = Math.Min(1, maxProbOne + maxProbTwo);
+                    }
+                    else if (listDisjunction[i].Contains("⊕_in"))
+                    {
+                        minProbOne = minProbOne + minProbTwo - (minProbOne * minProbTwo); maxProbOne = maxProbOne + maxProbTwo - (maxProbOne * maxProbTwo);
+                    }
+                    else
+                    {
+                        minProbOne = Math.Min(1, minProbOne + minProbTwo); maxProbOne = Math.Min(1, maxProbOne + maxProbTwo);
+                    }
+
+                    i = i + 1;
+                }
+            }
+
+            return minProd <= minProbOne && maxProbOne <= maxProb;
         }
 
         public void ConvertStringToModel(string[] subConditionHaveProbability)
@@ -252,7 +334,6 @@ namespace PRDB_Sqlite.BLL
                         MessageError = "Incorrect syntax near 'where'.";
                         return;
                     }
-
 
                     var j1 = subConditionHaveProbability[i].IndexOf('(');
                     var j2 = subConditionHaveProbability[i].IndexOf(')');
@@ -282,7 +363,7 @@ namespace PRDB_Sqlite.BLL
                             }
                         }
 
-                        string[] listConditionStrategy = new string[(totalStrategy*2)+1];
+                        string[] listConditionStrategy = new string[(totalStrategy * 2) + 1];
                         var tmp = 0;
                         for (int k = 0; k < listStrategy.Length; k++)
                         {
@@ -314,7 +395,7 @@ namespace PRDB_Sqlite.BLL
                                         return;
                                     }
 
-                                    listStrategyModel.Add(new StrategyModel { AttributeName = attributeTwo[0] , AttributeValue = attributeTwo[1], OperatorStrOfTriple = operatorStrTwo });
+                                    listStrategyModel.Add(new StrategyModel { AttributeName = attributeTwo[0], AttributeValue = attributeTwo[1], OperatorStrOfTriple = operatorStrTwo });
                                 }
                                 else
                                 {
@@ -325,7 +406,7 @@ namespace PRDB_Sqlite.BLL
                             else
                             {
                                 listOperatorStrategy.Add(listConditionStrategy[l]);
-                            }  
+                            }
                         }
 
                         var model = new ConditionModel
@@ -644,7 +725,7 @@ namespace PRDB_Sqlite.BLL
 
                             if (maxProbOfCon.HasValue && minProbOfCon.HasValue)
                             {
-                                return minProbOfCon.Value <= minProb  && maxProb <= maxProbOfCon;
+                                return minProbOfCon.Value <= minProb && maxProb <= maxProbOfCon;
                             }
                         }
                         return false;
@@ -1002,6 +1083,6 @@ namespace PRDB_Sqlite.BLL
 
         }
         #endregion
-  
+
     }
 }

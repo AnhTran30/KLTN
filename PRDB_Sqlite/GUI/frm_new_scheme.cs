@@ -55,16 +55,11 @@ namespace PRDB_Sqlite.GUI
             }
             errorProvider.SetError(txtSchemeName, null);
 
-
-
             if (txtSchemeName.Text.ToLower() == "select" || txtSchemeName.Text.ToLower() == "from" || txtSchemeName.Text.ToLower() == "where")
             {
                 errorProvider.SetError(txtSchemeName, "Schema name is not valid ( not match with keyword 'select', 'from', 'where')  ");
                 return;
-
             }
-
-
 
             foreach (var item in this.probDatabase.ListOfSchemeNameToLower())
             {
@@ -75,24 +70,18 @@ namespace PRDB_Sqlite.GUI
                 }
             }
 
-
-
             errorProvider.SetError(txtSchemeName, null);
-
-
 
             if (CheckValidatedDataGridView(this.GridViewDesign) == false)
             {
                 return;
             }
 
-
             //insert scheme
             ProbScheme scheme = new ProbScheme(txtSchemeName.Text);
             scheme.IDScheme = scheme.getMaxIdinTable();
             scheme.Insert();
             scheme.Attributes = getAllAttributeFromDataGridView(GridViewDesign);
-
 
             //insert attribute
             int attributeID = new ProbAttribute().getMaxIdinTable();
@@ -104,24 +93,14 @@ namespace PRDB_Sqlite.GUI
                 attributeID++;
             }
 
-
             /// add scheme 
             this.listProbScheme.Add(scheme);
 
-
-
-            if (MessageBox.Show("Add successfully. Do you want add new schema ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-            {
-
-                txtSchemeName.Text = "";
-                GridViewDesign.Rows.Clear();
-                txtSchemeName.Focus();
-            }
-            else
-                this.Close();
-
-
-
+            MessageBox.Show("Add successfully.", "Message");
+            txtSchemeName.Text = "";
+            GridViewDesign.Rows.Clear();
+            txtSchemeName.Focus();
+            this.Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -141,15 +120,11 @@ namespace PRDB_Sqlite.GUI
                 return false;
             }
 
-
-
-
             for (int i = 0; i < nRow; i++)
             {
 
                 gridView.Rows[i].Cells[1].ErrorText = null;
                 gridView.Rows[i].Cells[2].ErrorText = null;
-
 
                 if (gridView.Rows[i].Cells[1].Value == null)
                 {
@@ -158,16 +133,12 @@ namespace PRDB_Sqlite.GUI
                     return false;
                 }
 
-
-
                 string attributeName = gridView.Rows[i].Cells[1].Value.ToString().Trim();
                 if (attributeName.ToLower() == "select" || attributeName.ToLower() == "from" || attributeName.ToLower() == "where")
                 {
                     gridView.Rows[i].Cells[1].ErrorText = "Attribute name is not valid ( not match with keyword 'select', 'from', 'where')";
                     return false;
                 }
-
-
 
                 for (int j = 0; j < gridView.Rows.Count - 1; j++)
                 {
@@ -178,10 +149,7 @@ namespace PRDB_Sqlite.GUI
                         gridView.CurrentCell = gridView.Rows[i].Cells[1];
                         return false;
                     }
-
                 }
-
-
 
                 if (gridView.Rows[i].Cells[2].Value == null)
                 {
@@ -189,13 +157,9 @@ namespace PRDB_Sqlite.GUI
                     gridView.CurrentCell = gridView.Rows[i].Cells[1];
                     return false;
                 }
-
-
-
             }
 
             return true;
-
         }
 
 
@@ -205,7 +169,6 @@ namespace PRDB_Sqlite.GUI
             {
                 if (e.ColumnIndex == 2)
                 {
-
                     Form_InputType frm;
 
                     if (GridViewDesign.Rows[e.RowIndex].Cells[2].Value != null)
@@ -216,8 +179,6 @@ namespace PRDB_Sqlite.GUI
                     {
                         frm = new Form_InputType();
                     }
-
-
 
                     frm.ShowDialog();
                     if (frm.dataType.DataType != new ProbDataType().DataType)
@@ -231,13 +192,11 @@ namespace PRDB_Sqlite.GUI
                         GridViewDesign.Rows[e.RowIndex].Cells[e.ColumnIndex + 1].Value = frm.dataType.DomainString;
                     }
                 }
-
             }
             catch (Exception)
             {
 
             }
-
         }
 
         private void GridViewDesign_Click(object sender, EventArgs e)
@@ -298,11 +257,9 @@ namespace PRDB_Sqlite.GUI
 
         private void GridViewDesign_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-
             try
             {
                 GridViewDesign.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = null;
-
 
                 if (GridViewDesign.CurrentCell.Value != null)
                 {
@@ -335,22 +292,10 @@ namespace PRDB_Sqlite.GUI
                     return;
 
                 }
-
-
-
-
-
             }
             catch (Exception)
             {
-
-
             }
-
-
-
-
-
         }
 
         private void GridViewDesign_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -393,12 +338,5 @@ namespace PRDB_Sqlite.GUI
         {
 
         }
-
-
-
-
-
-
-
     }
 }

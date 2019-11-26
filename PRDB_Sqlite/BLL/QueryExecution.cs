@@ -14,10 +14,8 @@ namespace PRDB_Sqlite.BLL
         public string conditionString { get; set; }
         public bool flagNaturalJoin { get; set; }
         public string MessageError { get; set; }
-        public ProbRelation DescartesAndNaturalJoin { get; set; }
 
         public List<ProbAttribute> selectedAttributes;
-        public List<JoinRelationModel> joinRelationModel = new List<JoinRelationModel>();
         private List<string> OperationNaturalJoin = new List<string>();
 
         public QueryExecution(string queryString, ProbDatabase probDatabase)
@@ -63,7 +61,7 @@ namespace PRDB_Sqlite.BLL
             GenerateNewRelation(relation, relationTwo);
 
             JoinTwoRelation(relation, relationOne, relationTwo);
-            
+
             return relation;
         }
 
@@ -81,129 +79,6 @@ namespace PRDB_Sqlite.BLL
             }
         }
 
-        private void NatureJoinTwoRelation(ProbRelation relation, ProbRelation relationInput)
-        {
-            var model =  joinRelationModel.FirstOrDefault(x=>x.RelationName == relationInput.RelationName || x.AcronymRelationName == relationInput.RelationName);
-
-            if(model == null)
-            {
-                var tmpRelation = relation;
-                foreach (ProbTuple tupleOne in tmpRelation.tuples)
-                {
-                    foreach (ProbTuple tupleTwo in relationInput.tuples)
-                    {
-                        ProbTuple value = new ProbTuple();
-                        value.Triples.AddRange(tupleOne.Triples);
-                        value.Triples.AddRange(tupleTwo.Triples);
-                        relation.tuples.Add(value);
-                    }
-                }
-            }
-            else
-            {
-                var listValue = model.ConditionKey.Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
-
-                switch (model.Operation)
-                {
-                    case "inner join":
-                        var tmpRelation = relation;
-
-                        var indexOne = IndexOfAttribute(listValue[0].Trim(), relation);
-                        var indexTwo = IndexOfAttribute(listValue[0].Trim(), relation);
-
-                        foreach (ProbTuple tupleOne in tmpRelation.tuples)
-                        {
-                            foreach (ProbTuple tupleTwo in relationInput.tuples)
-                            {
-                                ProbTuple value = new ProbTuple();
-                                value.Triples.AddRange(tupleOne.Triples);
-                                value.Triples.AddRange(tupleTwo.Triples);
-                                relation.tuples.Add(value);
-                            }
-                        }
-                        break;
-                    case "left join":
-                        break;
-                    case "right join":
-                        break;
-                    case "full outer join":
-                        break;
-                    case "natural join in":
-                        break;
-                    case "natural join ig":
-                        break;
-                    case "natural join me":
-                        break;
-                    default:
-                        return;
-                }
-
-
-            }
-
-
-            return;
-        }
-
-        public int IndexOfAttribute(string attribute, ProbRelation probRelation)
-        {
-            string value = attribute.Trim().ToLower();
-            int indexAttributeS = -1;
-            if (value.IndexOf(".") != -1)
-            {
-                string[] arr = value.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-                int count = 0;
-                foreach (string item in probRelation.ListRenameRelation)
-                {
-                    if (item != arr[0])
-                        count++;
-                }
-                if (count == 2)
-                {
-                    MessageError = String.Format("The multi-part identifier {0} could not be bound.", value);
-                    return -1;
-                }
-
-                for (int i = 0; i < probRelation.Scheme.Attributes.Count; i++)
-                {
-                    if (value == probRelation.Scheme.Attributes[i].AttributeName.ToLower())
-                    {
-                        return i;
-                    }
-                }
-
-                MessageError = String.Format("Invalid attribute name '{0}'.", arr[1]);
-                return -1;
-            }
-            else
-            {
-                int count = 0;
-                for (int i = 0; i < probRelation.Scheme.Attributes.Count; i++)
-                {
-                    string[] arr = probRelation.Scheme.Attributes[i].AttributeName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (value == arr[1].ToLower().Trim())
-                    {
-                        count++;
-                        indexAttributeS = i;
-                    }
-                }
-
-                if (count >= 2)
-                {
-                    MessageError = String.Format("Ambiguous attribute name '{0}'.", value);
-                    return -1;
-                }
-                if (count == 0)
-                {
-                    MessageError = String.Format("Invalid attribute name '{0}'.", value);
-                    return -1;
-                }
-
-                return indexAttributeS;
-            }
-
-        }
-
         private void GenerateNewRelation(ProbRelation relation, ProbRelation relationInput)
         {
             relation.ListRenameRelation.Add(relationInput.RelationName);
@@ -214,18 +89,6 @@ namespace PRDB_Sqlite.BLL
             }
             relation.Scheme.Attributes.AddRange(relationInput.Scheme.Attributes);
         }
-
-        private void GenerateNewRelationV2(ProbRelation relation, ProbRelation relationInput)
-        {
-            relation.ListRenameRelation.Add(relationInput.RelationName);
-            foreach (ProbAttribute attr in relationInput.Scheme.Attributes)
-            {
-                if (attr.AttributeName.IndexOf(".") == -1)
-                    attr.AttributeName = relationInput.RelationName + "." + attr.AttributeName;
-            }
-            relation.Scheme.Attributes.AddRange(relationInput.Scheme.Attributes);
-        }
-
 
         private static ProbTriple JoinTwoTriple(ProbTriple tripleOne, ProbTriple tripleTwo, ProbAttribute attribute, string OperationNaturalJoin)
         {
@@ -242,7 +105,7 @@ namespace PRDB_Sqlite.BLL
                 }
             }
 
-            if(triple.Value.Count > 0)
+            if (triple.Value.Count > 0)
             {
                 switch (OperationNaturalJoin)
                 {
@@ -264,22 +127,6 @@ namespace PRDB_Sqlite.BLL
                 }
             }
             return triple.Value.Count <= 0 ? null : triple;
-        }
-        private ProbRelation NaturalJoinV2()
-        {
-            ProbRelation relation = new ProbRelation();
-
-            //var conditionString = joinRelationModel.Where(x=>x.RelationName.Contains(selectedRelations[1].RelationName)).FirstOrDefault();
-
-            GenerateNewRelationV2(relation, selectedRelations[0]);
-
-            for (int i = 1; i < this.selectedRelations.Count; i++)
-            {
-                GenerateNewRelationV2(relation, selectedRelations[i]);
-
-            }
-
-            return relation;
         }
 
         private ProbRelation NaturalJoin(ProbRelation relationResult, ProbRelation relationInput, string operationRa)
@@ -334,7 +181,6 @@ namespace PRDB_Sqlite.BLL
             flagNaturalJoin = false;
             return relation;
         }
-        
 
         private static ProbRelation getRelationBySelectAttribute(ProbRelation probRelation, List<ProbAttribute> attributes)
         {
@@ -373,11 +219,11 @@ namespace PRDB_Sqlite.BLL
             return relation;
         }
 
-        internal bool ExcuteQueryV2()
+        internal bool ExcuteQuery()
         {
             try
             {
-                if (!QueryAnalyzeV2()) return false;
+                if (!QueryAnalyze()) return false;
 
                 if (this.selectedRelations.Count == 1)
                 {
@@ -392,7 +238,7 @@ namespace PRDB_Sqlite.BLL
                     if (flagNaturalJoin != true)
                     {
                         var relationRes = this.selectedRelations[0];
-                        for(int i = 1; i< this.selectedRelations.Count(); i++)
+                        for (int i = 1; i < this.selectedRelations.Count(); i++)
                         {
                             relationRes = Descartes(relationRes, this.selectedRelations[i]);
                         }
@@ -403,10 +249,10 @@ namespace PRDB_Sqlite.BLL
                         var relationRes = this.selectedRelations[0];
                         for (int i = 1; i < this.selectedRelations.Count(); i++)
                         {
-                            relationRes = NaturalJoin(relationRes, this.selectedRelations[i],this.OperationNaturalJoin[i]);
+                            relationRes = NaturalJoin(relationRes, this.selectedRelations[i], this.OperationNaturalJoin[i - 1]);
                         }
                         this.selectedRelations[0] = relationRes;
-                    }    
+                    }
                 }
 
                 if (!this.queryString.Contains(Common.Where))
@@ -427,7 +273,7 @@ namespace PRDB_Sqlite.BLL
                     }
 
                     foreach (ProbTuple tuple in this.selectedRelations[0].tuples)
-                        if (Condition.Satisfiedv2(tuple))
+                        if (Condition.Satisfied(tuple))
                             this.relationResult.tuples.Add(tuple);
 
                     if (Condition.MessageError != string.Empty)
@@ -453,30 +299,30 @@ namespace PRDB_Sqlite.BLL
             return true;
         }
 
-        internal bool QueryAnalyzeV2()
+        internal bool QueryAnalyze()
         {
             try
             {
                 string s = this.queryString;
                 //Kiểm tra câu truy vấn có hợp lệ
-                if (!this.CheckStringQueryV2(s))
+                if (!this.CheckStringQuery(s))
                 {
                     return false;
                 }
 
                 //Get All Relation
-                this.selectedRelations = GetAllRelationV2(s);
+                this.selectedRelations = GetAllRelation(s);
                 if (this.selectedRelations == null)
                 {
                     return false;
                 }
 
                 //Get All Attribute
-                this.selectedAttributes = GetAttributeV2(s);
+                this.selectedAttributes = GetAttribute(s);
                 if (this.selectedAttributes == null)
                     return false;
 
-                this.conditionString = GetConditionV2(s);
+                this.conditionString = GetCondition(s);
 
                 return true;
 
@@ -487,7 +333,7 @@ namespace PRDB_Sqlite.BLL
             }
         }
 
-        internal bool CheckStringQueryV2(string query)
+        internal bool CheckStringQuery(string query)
         {
             try
             {
@@ -532,7 +378,7 @@ namespace PRDB_Sqlite.BLL
 
         }
 
-        private List<ProbRelation> GetAllRelationV2(string valueString)
+        private List<ProbRelation> GetAllRelation(string valueString)
         {
             int posOne;
             int posTwo;
@@ -566,96 +412,39 @@ namespace PRDB_Sqlite.BLL
             {
                 if (relationsString.Contains(Common.NaturalJoinIn) || relationsString.Contains(Common.NaturalJoinIg) || relationsString.Contains(Common.NaturalJoinMe))
                 {
-                    
+
                     var listRaltion = relationsString.Split(new string[] { "natural join" }, StringSplitOptions.RemoveEmptyEntries);
 
                     relations = new string[listRaltion.Length];
 
-                    for(int i = 0 ; i < listRaltion.Length; i++ )
+                    for (int i = 0; i < listRaltion.Length; i++)
                     {
-                        if(i == 0)
+                        if (i == 0)
                         {
                             relations[i] = listRaltion[i];
                         }
                         else
                         {
                             string[] listTmp = listRaltion[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                            if((listTmp.Length != 2 || listTmp.Length != 3) && (!listTmp[0].Contains("in") && !listTmp[0].Contains("ig") && !listTmp[0].Contains("me")))
+                            if ((listTmp.Length != 2 || listTmp.Length != 3) && (!listTmp[0].Contains("in") && !listTmp[0].Contains("ig") && !listTmp[0].Contains("me")))
                             {
                                 MessageError = "Incorrect syntax.";
                                 return null;
                             }
                             OperationNaturalJoin.Add(listTmp[0]);
-                            if(listTmp.Length == 2)
+                            if (listTmp.Length == 2)
                             {
                                 relations[i] = listTmp[1];
                             }
                             else
                             {
-                                relations[i] = listTmp[1]+" "+listTmp[2];
+                                relations[i] = listTmp[1] + " " + listTmp[2];
                             }
                         }
                     }
 
-                    //if (relationsString.Contains(Common.NaturalJoinIn))
-                    //{
-                    //    relations[0] = relationsString.Substring(0, relationsString.IndexOf(Common.NaturalJoinIn)).Trim();
-                    //    relations[1] = relationsString.Substring(relationsString.IndexOf(Common.NaturalJoinIn) + 16).Trim();
-                    //    OperationNaturalJoin = "in";
-                    //}
-                    //else if (relationsString.Contains(Common.NaturalJoinIg))
-                    //{
-                    //    relations[0] = relationsString.Substring(0, relationsString.IndexOf(Common.NaturalJoinIg)).Trim();
-                    //    relations[1] = relationsString.Substring(relationsString.IndexOf(Common.NaturalJoinIg) + 16).Trim();
-                    //    OperationNaturalJoin = "ig";
-                    //}
-                    //else
-                    //{
-                    //    relations[0] = relationsString.Substring(0, relationsString.IndexOf(Common.NaturalJoinMe)).Trim();
-                    //    relations[1] = relationsString.Substring(relationsString.IndexOf(Common.NaturalJoinMe) + 16).Trim();
-                    //    OperationNaturalJoin = "me";
-                    //}
                     flagNaturalJoin = true;
                 }
-                //else if(relationsString.Contains(Common.InnerJoin) || relationsString.Contains(Common.LeftJoin) || relationsString.Contains(Common.ReightJoin) || relationsString.Contains(Common.FullJoin))
-                //{
-                //    var regexRelation1 = new Regex(@"^(?<relationOne>([\w\.\-]+)(?<acronym>[ ][\w\-]+)?)");
-                //    var regex = new Regex(@"(?<operation>([ ][i][n][n][e][r][ ][j][o][i][n][ ])|([ ][l][e][f][t][ ][j][o][i][n][ ])|([ ][r][i][g][h][t][ ][j][o][i][n][ ])|([ ][f][u][l][l][ ][o][u][t][e][r][ ][j][o][i][n][ ]))(?<relationTwo>(?<relationName>[\w\-]+)(?<acronym2>[ ][\w\-]+)?)(?<on>[ ][o][n][ ])(?<condition>[\w\.\-]+[=][\w\.\-]+)");
-
-                //    var mathOne = regexRelation1.Match(relationsString);
-                //    var mathTwo = regex.Matches(relationsString);
-
-                //    relations = new string[mathTwo.Count+1];
-                //    relations[0] = mathOne.ToString();
-                //    var joinRelationModelOne = new JoinRelationModel
-                //    {
-                //        RelationName = mathOne.Groups["relationOne"].ToString().Trim(),
-                //        AcronymRelationName = mathOne.Groups["acronym"].ToString().Trim()
-                //    };
-
-                //    relationsString = relationsString.Replace(mathOne.ToString(), "");
-
-                //    for (int i=0; i < mathTwo.Count; i++)
-                //    {
-                //        var joinRelationModel = new JoinRelationModel
-                //        {
-                //            RelationName = mathTwo[i].Groups["relationName"].ToString(),
-                //            ConditionKey = mathTwo[i].Groups["condition"].ToString(),
-                //            Operation = mathTwo[i].Groups["operation"].ToString(),
-                //            AcronymRelationName = mathTwo[i].Groups["acronym2"].ToString(),
-                //            Stage = i 
-                //        };
-
-                //        relationsString = relationsString.Replace(mathTwo[i].ToString(), "");
-                //        relations[i + 1] = mathTwo[i].Groups["relationTwo"].ToString();
-                //    }
-
-                //    if (!string.IsNullOrEmpty(relationsString.Trim()))
-                //    {
-                //        MessageError = "Incorrect syntax.";
-                //        return null;
-                //    }
-                //}
                 else
                 {
                     relations = new string[1];
@@ -693,25 +482,16 @@ namespace PRDB_Sqlite.BLL
 
                 probRelations.Add(rela);
             }
-            //if (probRelations.Count == 2)
-            //{
-            //    if (probRelations[0].RelationName == probRelations[1].RelationName)
-            //    {
-            //        MessageError = String.Format("The correlation name '{0}' is specified multiple times in a FROM clause.", probRelations[0].RenameRelationName);
-            //        return null;
-            //    }
-            //}
 
             return probRelations;
 
         }
 
-        private List<ProbAttribute> GetAttributeV2(string valueString)
+        private List<ProbAttribute> GetAttribute(string valueString)
         {
             List<ProbAttribute> listProbAttribute = new List<ProbAttribute>();
             //////////////////////// Get Attributes //////////////////////
             int posOne, posTwo, posThree;
-
 
             // * là chọn tất cả các thuộc tính
             if (valueString.Contains("*"))
@@ -776,7 +556,7 @@ namespace PRDB_Sqlite.BLL
                 string attributes = valueString.Substring(posOne, posTwo - posOne + 1);
 
                 //kiểm tra cú pháp của chuổi thuộc tính
-                if (!QueryExecution.CheckStringAttributeV2(attributes))
+                if (!QueryExecution.CheckStringAttribute(attributes))
                 {
                     MessageError = "Incorrect syntax near 'select'.";
                     return null;
@@ -856,9 +636,8 @@ namespace PRDB_Sqlite.BLL
             }
         }
 
-        private static bool CheckStringAttributeV2(string stringAttribute)
+        private static bool CheckStringAttribute(string stringAttribute)
         {
-
             string subString = stringAttribute;
 
             if (subString.Trim().Length <= 0)
@@ -875,9 +654,8 @@ namespace PRDB_Sqlite.BLL
             return true;
         }
 
-        private static string GetConditionV2(string valueString)
+        private static string GetCondition(string valueString)
         {
-
             string conditionString = string.Empty;
             int posOne;
 

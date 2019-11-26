@@ -66,14 +66,12 @@ namespace PRDB_Sqlite.GUI
                 this.probDatabase.Relations.Add(relation);
 
 
-                if (MessageBox.Show("Add successfully.Do you want add a new relation name ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                {
-                    txtRelationName.Focus();
-                    txtRelationName.Text = null;
-                    this.frm__new_relation_Load(sender, e);
-                }
-                else
-                    this.Close();
+                MessageBox.Show("Add successfully.", "Message");
+                txtRelationName.Focus();
+                txtRelationName.Text = null;
+                this.frm__new_relation_Load(sender, e);
+                this.Close();
+
             }
             catch (Exception EX)
             {

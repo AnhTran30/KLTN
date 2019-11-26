@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace PRDB_Sqlite.BLL
 {
@@ -19,6 +15,5 @@ namespace PRDB_Sqlite.BLL
         public string AttributeName { get; set; }
         public string AttributeValue { get; set; }
         public string OperatorStrOfTriple { get; set; }
-        
     }
 }

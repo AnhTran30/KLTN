@@ -39,27 +39,18 @@ namespace PRDB_Sqlite.GUI
                 }
             }
 
-
             this.queryName = txtQueryName.Text.Trim().ToLower();
 
             ProbQuery query = new ProbQuery(this.queryName);
             query.Insert();
             query = query.getQueryByName();
 
-
             this.probDatabase.Queries.Add(query);
 
-
-            if (MessageBox.Show("Add successfully. Do you want add a new query name ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-            {
-                txtQueryName.Text = "";
-                txtQueryName.Focus();
-            }
-            else
-                this.Close();
-
-
-
+            MessageBox.Show("Add successfully.", "Message");
+            txtQueryName.Text = "";
+            txtQueryName.Focus();
+            this.Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

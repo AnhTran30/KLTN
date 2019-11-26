@@ -29,7 +29,6 @@ namespace PRDB_Sqlite.BLL
         {
             this.IDAttribute = -1;
             Type = new ProbDataType();
-
         }
 
         public ProbAttribute(ProbAttribute attr)
@@ -43,7 +42,6 @@ namespace PRDB_Sqlite.BLL
         }
 
         #endregion
-
 
         internal List<ProbAttribute> getListAttributeByIDScheme(int IDScheme)
         {
