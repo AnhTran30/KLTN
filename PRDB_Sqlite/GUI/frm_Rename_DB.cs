@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
 using System.IO;
+using System.Windows.Forms;
 
 namespace PRDB_Sqlite.GUI
 {
@@ -28,7 +22,7 @@ namespace PRDB_Sqlite.GUI
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            errorProvider.SetError(txtNewNameDB,null);
+            errorProvider.SetError(txtNewNameDB, null);
 
             if (txtNewNameDB.Text.Trim().Length <= 0)
             {
@@ -40,13 +34,13 @@ namespace PRDB_Sqlite.GUI
 
             if (MessageBox.Show(" Do you want save this database name ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
             {
-             
+
                 try
                 {
                     string oldPath = this.probDatabase.DBPath;
                     string oldName = this.probDatabase.DBName;
                     this.probDatabase.DBName = txtNewNameDB.Text.Trim();
-                    File.Move(this.probDatabase.DBPath, this.probDatabase.DBPath.Replace(oldName,this.probDatabase.DBName) ); // Try to move
+                    File.Move(this.probDatabase.DBPath, this.probDatabase.DBPath.Replace(oldName, this.probDatabase.DBName)); // Try to move
                     this.Close();
                 }
                 catch (IOException ex)
@@ -54,14 +48,14 @@ namespace PRDB_Sqlite.GUI
                     MessageBox.Show(ex.Message);
                 }
 
-                
+
             }
             else
             {
                 this.Close();
             }
 
-            
+
 
 
 

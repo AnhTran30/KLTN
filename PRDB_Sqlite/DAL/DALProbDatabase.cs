@@ -1,25 +1,22 @@
-﻿using System;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.SQLite;
 using System.Windows.Forms;
-using PRDB_Sqlite.BLL;
-using System.Data;
 
 namespace PRDB_Sqlite.DAL
 {
-    public static class DALProbDatabase 
-    {       
-        
+    public static class DALProbDatabase
+    {
+
         internal static bool CreateNewDatabase(BLL.ProbDatabase probDatabase)
         {
             try
-            {                
-                SQLiteConnection.CreateFile(probDatabase.DBPath);                   
+            {
+                SQLiteConnection.CreateFile(probDatabase.DBPath);
 
                 DataBase db = new DataBase(probDatabase.ConnectString);
-               
+
                 string strSQL = "";
 
                 // Record set of schemes to the database system
@@ -65,10 +62,10 @@ namespace PRDB_Sqlite.DAL
         {
             ProbDatabase newProbDatabase = new ProbDatabase(probDatabase);
             try
-            {              
-          
+            {
+
                 List<ProbScheme> Schemes = new List<ProbScheme>();
-                Schemes = new ProbScheme().getAllScheme();  
+                Schemes = new ProbScheme().getAllScheme();
                 newProbDatabase.Schemes = Schemes;
 
 
@@ -92,7 +89,7 @@ namespace PRDB_Sqlite.DAL
         internal static bool SaveDatabase(ProbDatabase probDatabase)
         {
             try
-            {               
+            {
                 //Drop data base
                 DropDatabaseData();
                 int schemeID = 0;
@@ -159,7 +156,7 @@ namespace PRDB_Sqlite.DAL
             catch (Exception Ex)
             {
                 MessageBox.Show(Ex.Message);
-                return false;   
+                return false;
             }
             return true;
         }
@@ -167,26 +164,26 @@ namespace PRDB_Sqlite.DAL
         {
             try
             {
-                    List<ProbRelation> relations = new List<ProbRelation>();
-                    relations = new ProbRelation().getAllRelation();
+                List<ProbRelation> relations = new List<ProbRelation>();
+                relations = new ProbRelation().getAllRelation();
 
-                    foreach (ProbRelation item in relations)
-                    {
-                        item.DropTableByTableName();
-                    }
-                
-                    ProbScheme probScheme = new ProbScheme();
-                    probScheme.DeleteAllScheme();
+                foreach (ProbRelation item in relations)
+                {
+                    item.DropTableByTableName();
+                }
 
-                    ProbRelation probRelation = new ProbRelation();
-                    probRelation.DeleteAllRelation();
+                ProbScheme probScheme = new ProbScheme();
+                probScheme.DeleteAllScheme();
 
-                    ProbAttribute probAttribute = new ProbAttribute();
-                    probAttribute.DeleteAllAttribute();
+                ProbRelation probRelation = new ProbRelation();
+                probRelation.DeleteAllRelation();
 
-                    ProbQuery probQuery = new ProbQuery();
-                    probQuery.DeleteAllQuery();
-                
+                ProbAttribute probAttribute = new ProbAttribute();
+                probAttribute.DeleteAllAttribute();
+
+                ProbQuery probQuery = new ProbQuery();
+                probQuery.DeleteAllQuery();
+
             }
             catch (Exception EX)
             {

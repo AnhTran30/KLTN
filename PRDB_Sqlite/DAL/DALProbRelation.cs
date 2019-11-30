@@ -1,14 +1,11 @@
-﻿using System;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PRDB_Sqlite.BLL;
 using System.Data;
-using System.Windows.Forms;
 
 namespace PRDB_Sqlite.DAL
 {
-   public class DALProbRelation
+    public class DALProbRelation
     {
         internal static List<BLL.ProbRelation> getAllRelation()
         {
@@ -31,10 +28,10 @@ namespace PRDB_Sqlite.DAL
                 relations.Add(relation);
             }
 
-            return relations;            
+            return relations;
         }
 
-       
+
 
         internal static void DropTableByTableName(ProbRelation probRelation)
         {
@@ -50,8 +47,8 @@ namespace PRDB_Sqlite.DAL
             if (!db.Update("DELETE FROM SystemRelation"))
                 throw new Exception(db.errorMessage);
         }
-     
-       internal static void InsertSystemRelation(ProbRelation probRelation)
+
+        internal static void InsertSystemRelation(ProbRelation probRelation)
         {
 
             if (probRelation.IDRelation == -1)
@@ -70,62 +67,62 @@ namespace PRDB_Sqlite.DAL
             SQL += " );";
             if (!db.Update(SQL))
             {
-             
+
                 throw new Exception(db.errorMessage);
             }
         }
 
-       internal static void CreateTableRelation(ProbRelation probRelation)
-       {
-           if (probRelation.Scheme.Attributes.Count > 0)
-           {
-               DataBase db = new DataBase();
-               string SQL = "";
-               SQL += "CREATE TABLE " + probRelation.RelationName + " ( ";
-               foreach (ProbAttribute attribute in probRelation.Scheme.Attributes)
-               {
-                   SQL += attribute.AttributeName + " " + "TEXT" + ", ";
-               }
-               SQL = SQL.Remove(SQL.LastIndexOf(','), 1);
-               SQL += " ); ";
+        internal static void CreateTableRelation(ProbRelation probRelation)
+        {
+            if (probRelation.Scheme.Attributes.Count > 0)
+            {
+                DataBase db = new DataBase();
+                string SQL = "";
+                SQL += "CREATE TABLE " + probRelation.RelationName + " ( ";
+                foreach (ProbAttribute attribute in probRelation.Scheme.Attributes)
+                {
+                    SQL += attribute.AttributeName + " " + "TEXT" + ", ";
+                }
+                SQL = SQL.Remove(SQL.LastIndexOf(','), 1);
+                SQL += " ); ";
 
-               if (!db.CreateTable(SQL))
-                   throw new Exception(db.errorMessage);
-           }
+                if (!db.CreateTable(SQL))
+                    throw new Exception(db.errorMessage);
+            }
         }
 
-       internal static void InsertTupleIntoTableRelation(ProbRelation probRelation)
-       {
-           DataBase db = new DataBase();
-           if (probRelation.tuples.Count > 0)
-           {
-               foreach (ProbTuple tuple in probRelation.tuples)
-               {
-                  string SQL = "";
-                  SQL += "INSERT INTO " + probRelation.RelationName + " VALUES (";
-                   foreach (ProbTriple triple in tuple.Triples)
-                   {
-                       SQL += "'" + triple.GetStrValue() + "'" + ",";
-                   }
-                   SQL = SQL.Remove(SQL.LastIndexOf(','), 1);
-                   SQL += " );  ";
+        internal static void InsertTupleIntoTableRelation(ProbRelation probRelation)
+        {
+            DataBase db = new DataBase();
+            if (probRelation.tuples.Count > 0)
+            {
+                foreach (ProbTuple tuple in probRelation.tuples)
+                {
+                    string SQL = "";
+                    SQL += "INSERT INTO " + probRelation.RelationName + " VALUES (";
+                    foreach (ProbTriple triple in tuple.Triples)
+                    {
+                        SQL += "'" + triple.GetStrValue() + "'" + ",";
+                    }
+                    SQL = SQL.Remove(SQL.LastIndexOf(','), 1);
+                    SQL += " );  ";
 
-                   if (!db.Update(SQL))
-                       throw new Exception(db.errorMessage);
-               }
-           
-           }
+                    if (!db.Update(SQL))
+                        throw new Exception(db.errorMessage);
+                }
+
+            }
 
 
-       
-       }
 
-       internal static void DeleteRelationById(ProbRelation probRelation)
-       {
-         
-           DataBase db = new DataBase();
-           if (!db.Update("DELETE FROM SystemRelation where ID = " + probRelation.IDRelation))
-               throw new Exception(db.errorMessage);
-       }
+        }
+
+        internal static void DeleteRelationById(ProbRelation probRelation)
+        {
+
+            DataBase db = new DataBase();
+            if (!db.Update("DELETE FROM SystemRelation where ID = " + probRelation.IDRelation))
+                throw new Exception(db.errorMessage);
+        }
     }
 }

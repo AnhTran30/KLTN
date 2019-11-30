@@ -1,23 +1,16 @@
-﻿using System;
+﻿using PRDB_Sqlite.BLL;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PRDB_Sqlite.BLL;
 using System.Data;
 
 namespace PRDB_Sqlite.DAL
 {
-   public class DALProbTuple
+    public class DALProbTuple
     {
-       
-
         internal static List<ProbTuple> getAllTypleByRelationName(string relationname, int nTriples)
         {
             List<ProbTuple> probTuple = new List<ProbTuple>();
             DataBase db = new DataBase();
             DataTable dtb = db.GetDataTable("Select * From " + relationname);
-            
-
 
             foreach (DataRow tuplerow in dtb.Rows)
             {
@@ -36,7 +29,7 @@ namespace PRDB_Sqlite.DAL
 
         internal static void DeleteTypeById(ProbTuple probTuple)
         {
-           
+
         }
     }
 }

@@ -1,14 +1,11 @@
-﻿using System;
+﻿using PRDB_Sqlite.DAL;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PRDB_Sqlite.DAL;
 
 namespace PRDB_Sqlite.BLL
 {
-    public  class ProbTuple
+    public class ProbTuple
     {
-           #region Properties
+        #region Properties
         // Tập các giá trị bộ ba xác suất trên một tuple
         public List<ProbTriple> Triples { get; set; }
         #endregion
@@ -27,17 +24,13 @@ namespace PRDB_Sqlite.BLL
             {
                 ProbTriple triple = new ProbTriple(item);
                 this.Triples.Add(triple);
-
             }
-
-
         }
         #endregion
-        
-     
+
         internal List<ProbTuple> getAllTypleByRelationName(string relationname, int nTriples)
         {
-            return DALProbTuple.getAllTypleByRelationName(relationname,nTriples);
+            return DALProbTuple.getAllTypleByRelationName(relationname, nTriples);
         }
 
         internal void DeleteTypeById()

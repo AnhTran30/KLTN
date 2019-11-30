@@ -1,15 +1,12 @@
-﻿using System;
+﻿using PRDB_Sqlite.DAL;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PRDB_Sqlite.DAL;
 
 namespace PRDB_Sqlite.BLL
 {
     public class ProbAttribute
     {
         #region Properties
-        public bool PrimaryKey { get;  set; }
+        public bool PrimaryKey { get; set; }
 
         public int IDAttribute { get; set; }
         // Tên thuộc tính
@@ -21,7 +18,7 @@ namespace PRDB_Sqlite.BLL
 
         public ProbScheme probScheme { get; set; }
 
-        public string TypeName { get { return this.Type.TypeName; } set { }  }
+        public string TypeName { get { return this.Type.TypeName; } set { } }
         public string DomainString { get { return this.Type.DomainString; } set { } }
 
         #endregion
@@ -32,9 +29,7 @@ namespace PRDB_Sqlite.BLL
         {
             this.IDAttribute = -1;
             Type = new ProbDataType();
-           
         }
-
 
         public ProbAttribute(ProbAttribute attr)
         {
@@ -44,14 +39,12 @@ namespace PRDB_Sqlite.BLL
             this.PrimaryKey = attr.PrimaryKey;
             this.AttributeName = attr.AttributeName;
             this.probScheme = attr.probScheme;
-
         }
 
         #endregion
 
-
         internal List<ProbAttribute> getListAttributeByIDScheme(int IDScheme)
-        {         
+        {
             return DALProbAttribute.getListAttributeByIDScheme(IDScheme);
         }
 
@@ -64,11 +57,6 @@ namespace PRDB_Sqlite.BLL
         {
             DALProbAttribute.Insert(this);
         }
-
-
-
-      
-
 
         internal int getMaxIdinTable()
         {

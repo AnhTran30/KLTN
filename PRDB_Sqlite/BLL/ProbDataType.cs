@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace PRDB_Sqlite.BLL
 {
-   public class ProbDataType
+    public class ProbDataType
     {
         #region Properties
 
@@ -20,7 +18,6 @@ namespace PRDB_Sqlite.BLL
 
         #endregion
         #region Methods
-
         public ProbDataType()
         {
             this.TypeName = "No Name";
@@ -28,7 +25,6 @@ namespace PRDB_Sqlite.BLL
             this.DomainString = "No Domain String";
             Domain = new List<string>();
         }
-
 
         public ProbDataType(ProbDataType type)
         {
@@ -39,11 +35,10 @@ namespace PRDB_Sqlite.BLL
 
             foreach (string item in type.Domain)
             {
-                Domain.Add(item);   
+                Domain.Add(item);
             }
         }
 
-       
         public void GetDomain(string str)
         {
             try
@@ -78,9 +73,7 @@ namespace PRDB_Sqlite.BLL
             foreach (string v in temp)
                 this.Domain.Add(v.Trim().ToLower());
             return this.Domain.Contains(value.ToLower());
-
         }
-
 
         private static bool isBinaryType(object V)
         {
@@ -119,13 +112,9 @@ namespace PRDB_Sqlite.BLL
         {
             try
             {
-
-              
-
                 this.GetDataType();
-                
 
-                 switch (this.DataType)
+                switch (this.DataType)
                 {
                     case "Int16": Convert.ToInt16(value); break;
                     case "Int32": Convert.ToInt32(value); break;
@@ -142,9 +131,7 @@ namespace PRDB_Sqlite.BLL
                     case "UserDefined":
                         return CheckDomain(value.ToString().Trim());
                     default: break;
-
                 }
-                
             }
             catch
             {
@@ -153,63 +140,53 @@ namespace PRDB_Sqlite.BLL
             return true;
         }
 
-        public bool CheckDataType(string V)
+        public bool CheckDataType(string value)
         {
             try
             {
-               
-                List<object> values = new List<object>();
                 this.GetDataType();
 
                 if (this.DataType != "String")
                 {
-                    V = V.Replace(" ", "");
+                    value = value.Replace(" ", "");
                 }
 
-               
-                string[] seperator = { "||" };
-                string[] temp = V.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
-
-                int j1, j2;
-                for (int i = 0; i < temp.Length; i++)
+                if (value.Contains("{") && value.Contains("}") && value.Contains("[") && value.Contains("]"))
                 {
-
-                    j1 = temp[i].IndexOf('{');
-                    j2 = temp[i].IndexOf('}');
-                     values.Add(temp[i].Substring(j1 + 1, j2 - j1 - 1).Trim());
-
+                    var j1 = value.IndexOf('{');
+                    var j2 = value.IndexOf('}');
+                    value = value.Substring(j1 + 1, j2 - j1 - 1).Trim();
                 }
-                
-              
-           
 
-                foreach (object value in values)
+                string[] seperator = { "," };
+
+                object[] listValue = value.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (object tem in listValue)
                 {
                     switch (this.DataType)
                     {
-                        case "Int16": Convert.ToInt16(value); break;
-                        case "Int32": Convert.ToInt32(value); break;
-                        case "Int64": Convert.ToInt64(value); break;
-                        case "Byte": Convert.ToByte(value); break;
-                        case "String": Convert.ToString(value); break;
-                        case "DateTime": Convert.ToDateTime(value); break;
-                        case "Decimal": Convert.ToDecimal(value); break;
-                        case "Single": Convert.ToSingle(value); break;
-                        case "Double": Convert.ToDouble(value); break;
-                        case "Boolean": Convert.ToBoolean(value); break;
-                        case "Binary": return (isBinaryType(value));
-                        case "Currency": return (isCurrencyType(value));
+                        case "Int16": Convert.ToInt16(tem); break;
+                        case "Int32": Convert.ToInt32(tem); break;
+                        case "Int64": Convert.ToInt64(tem); break;
+                        case "Byte": Convert.ToByte(tem); break;
+                        case "String": Convert.ToString(tem); break;
+                        case "DateTime": Convert.ToDateTime(tem); break;
+                        case "Decimal": Convert.ToDecimal(tem); break;
+                        case "Single": Convert.ToSingle(tem); break;
+                        case "Double": Convert.ToDouble(tem); break;
+                        case "Boolean": Convert.ToBoolean(tem); break;
+                        case "Binary": return (isBinaryType(tem));
+                        case "Currency": return (isCurrencyType(tem));
                         case "UserDefined":
-                              
-                               return CheckDomain(value.ToString().Trim());
+                            return CheckDomain(tem.ToString().Trim());
                         default: break;
-                                
                     }
                 }
             }
-            catch 
-            { 
-                return false; 
+            catch
+            {
+                return false;
             }
             return true;
         }
@@ -245,17 +222,14 @@ namespace PRDB_Sqlite.BLL
         }
 
         #endregion
-
-
-
         internal string getDefaultValue()
         {
             this.GetDataType();
 
             switch (this.DataType)
             {
-                case "Int16": 
-                case "Int32": 
+                case "Int16":
+                case "Int32":
                 case "Int64":
                 case "Byte": return "{ 0 }[ 0,0]";
                 case "String": return "{ Empty }[ 0,0]";
@@ -273,9 +247,6 @@ namespace PRDB_Sqlite.BLL
                 default: return "{ 0 }[ 0,0]";
 
             }
-
-
-
         }
     }
 }

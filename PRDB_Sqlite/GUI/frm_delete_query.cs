@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Linq;
+using System.Windows.Forms;
 namespace PRDB_Sqlite.GUI
 {
     public partial class frm_delete_query : DevExpress.XtraEditors.XtraForm
     {
         public BLL.ProbDatabase probDatabase;
-       
+
         private string QueryName = string.Empty;
 
         public frm_delete_query()
@@ -53,8 +47,8 @@ namespace PRDB_Sqlite.GUI
 
             }
             else
-            { 
-                 cbo_QueryName.SelectedIndex = 0;
+            {
+                cbo_QueryName.SelectedIndex = 0;
             }
 
 
@@ -64,20 +58,20 @@ namespace PRDB_Sqlite.GUI
         private void btnOk_Click(object sender, EventArgs e)
         {
 
-                DialogResult result = new DialogResult();
-                result = MessageBox.Show("Are you sure want to delete this query ?", "Delete  Queries", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
-                {
+            DialogResult result = new DialogResult();
+            result = MessageBox.Show("Are you sure want to delete this query ?", "Delete  Queries", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
 
-                    string selectName = cbo_QueryName.Properties.Items[cbo_QueryName.SelectedIndex].ToString();
-                    ProbQuery query = this.probDatabase.Queries.SingleOrDefault(c => c.QueryName.ToLower() == selectName);
-                    query.DeleteById();
-                    QueryNameRemove = query.QueryName;
-                    this.probDatabase.Queries.Remove(query);
-                    MessageBox.Show(" Delete successfully !", "Infomation ", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.Close();
-                
-                }
+                string selectName = cbo_QueryName.Properties.Items[cbo_QueryName.SelectedIndex].ToString();
+                ProbQuery query = this.probDatabase.Queries.SingleOrDefault(c => c.QueryName.ToLower() == selectName);
+                query.DeleteById();
+                QueryNameRemove = query.QueryName;
+                this.probDatabase.Queries.Remove(query);
+                MessageBox.Show(" Delete successfully !", "Infomation ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+
+            }
 
 
         }

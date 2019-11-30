@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Linq;
+using System.Windows.Forms;
 namespace PRDB_Sqlite.GUI
 {
     public partial class frm__new_relation : DevExpress.XtraEditors.XtraForm
@@ -46,8 +40,6 @@ namespace PRDB_Sqlite.GUI
                     return;
                 }
 
-
-
                 if (txtRelationName.Text.ToLower() == "select" || txtRelationName.Text.ToLower() == "from" || txtRelationName.Text.ToLower() == "where")
                 {
                     errorProvider.SetError(txtRelationName, "Relation name is not valid ( not match with keyword 'select', 'from', 'where')  ");
@@ -58,15 +50,12 @@ namespace PRDB_Sqlite.GUI
 
                 foreach (var item in this.probDatabase.ListOfRelationNameToLower())
                 {
-                    if (item.Equals(txtRelationName.Text.ToLower(),StringComparison.OrdinalIgnoreCase))
+                    if (item.Equals(txtRelationName.Text.ToLower(), StringComparison.OrdinalIgnoreCase))
                     {
                         errorProvider.SetError(txtRelationName, "This relation name has already existed in the database, please try again !");
                         return;
                     }
                 }
-
-
-
 
                 ProbScheme scheme = this.probDatabase.Schemes.SingleOrDefault(c => c.SchemeName.ToLower() == cbo_SchemeName.Properties.Items[cbo_SchemeName.SelectedIndex].ToString());
                 ProbRelation relation = new ProbRelation();
@@ -77,24 +66,17 @@ namespace PRDB_Sqlite.GUI
                 this.probDatabase.Relations.Add(relation);
 
 
-                if (MessageBox.Show("Add successfully.Do you want add a new relation name ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                {
-                    txtRelationName.Focus();
-                    txtRelationName.Text = null;
-                    this.frm__new_relation_Load(sender, e);
-                }
-                else
-                    this.Close();
+                MessageBox.Show("Add successfully.", "Message");
+                txtRelationName.Focus();
+                txtRelationName.Text = null;
+                this.frm__new_relation_Load(sender, e);
+                this.Close();
+
             }
             catch (Exception EX)
             {
                 MessageBox.Show(EX.Message);
             }
-         
-                
-
-
-
 
         }
 

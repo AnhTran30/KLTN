@@ -1,13 +1,8 @@
-﻿using System;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace PRDB_Sqlite.GUI
 {
@@ -50,7 +45,7 @@ namespace PRDB_Sqlite.GUI
             else
                 cbo_schemeName.SelectedIndex = this.list.IndexOf(SchemeName);
 
-            
+
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -63,19 +58,19 @@ namespace PRDB_Sqlite.GUI
             if (cbo_schemeName.SelectedIndex != -1)
             {
                 ProbScheme currentScheme = this.probDatabase.Schemes.SingleOrDefault(c => c.SchemeName.ToLower() == cbo_schemeName.Properties.Items[cbo_schemeName.SelectedIndex].ToString());
-                
-                 if (currentScheme.isInherited(this.probDatabase.Relations))
-                    {
-                        MessageBox.Show(" Cannot delete this schema because it is inherited by some relations, please try again !", "Infomation ", MessageBoxButtons.OK, MessageBoxIcon.Error);        
-                    }
-                 else 
-                     if (MessageBox.Show(" Are you sure delete this schema  ?", "Delete Schema " + currentScheme.SchemeName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                     {
-                         this.probDatabase.Schemes.Remove(currentScheme);
-                         currentScheme.DeleteSchemeById();
-                         MessageBox.Show(" Delete successfully !", "Infomation ", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                         this.Close();
-                     }             
+
+                if (currentScheme.isInherited(this.probDatabase.Relations))
+                {
+                    MessageBox.Show(" Cannot delete this schema because it is inherited by some relations, please try again !", "Infomation ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                    if (MessageBox.Show(" Are you sure delete this schema  ?", "Delete Schema " + currentScheme.SchemeName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    this.probDatabase.Schemes.Remove(currentScheme);
+                    currentScheme.DeleteSchemeById();
+                    MessageBox.Show(" Delete successfully !", "Infomation ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Close();
+                }
             }
             else
                 this.Close();

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using PRDB_Sqlite.BLL;
+using System;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using PRDB_Sqlite.BLL;
 using System.Linq;
 
 namespace PRDB_Sqlite.GUI
@@ -17,7 +11,7 @@ namespace PRDB_Sqlite.GUI
 
         #region Properties
 
-        private char[]  SpecialCharacter = new char[] {'~', '!', '@', '#', '$', '%', '^', '&', '*', '(',')', '+', '`', ';', ',', '<', '>', '?', '/', ':', '\"', '\'', '=', '{', '}', '[', ']', '\\', '|'};
+        private char[] SpecialCharacter = new char[] { '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '`', ';', ',', '<', '>', '?', '/', ':', '\"', '\'', '=', '{', '}', '[', ']', '\\', '|' };
         public string specialcharacter { get; set; }
         public ProbDataType dataType = new ProbDataType();
         public string valueType = "";
@@ -34,7 +28,7 @@ namespace PRDB_Sqlite.GUI
         {
             // TODO: Complete member initialization
             InitializeComponent();
-            
+
             if (SetDomain(dataType) == "")
             {
                 this.dataType.DomainString = domainString;
@@ -106,12 +100,12 @@ namespace PRDB_Sqlite.GUI
                     }
                     errorProvider.SetError(txtListValue, null);
 
-                 
+
 
                     dataType.TypeName = txtUserDefined.Text;
                     dataType.DataType = ComboBox_DataType.Properties.Items[ComboBox_DataType.SelectedIndex].ToString();
                     dataType.DomainString = String.Format("{{{0}}}", Stdize(txtListValue.Text.Replace(Environment.NewLine, ",")));
-                    
+
 
                 }
                 else
@@ -124,7 +118,7 @@ namespace PRDB_Sqlite.GUI
                 }
                 this.Close();
             }
-            
+
         }
 
         private void Form_InputType_Load(object sender, EventArgs e)
@@ -155,7 +149,7 @@ namespace PRDB_Sqlite.GUI
                 specialcharacter += SpecialCharacter[i];
         }
 
-       
+
 
         private void txtListValue_TextChanged_1(object sender, EventArgs e)
         {
@@ -173,11 +167,11 @@ namespace PRDB_Sqlite.GUI
                 else
                     errorProvider.SetError(txtListValue, null);
 
-              
 
-   
 
-                
+
+
+
 
 
             }
@@ -218,13 +212,13 @@ namespace PRDB_Sqlite.GUI
         {
             txtListValue.Lines = (from c in txtListValue.Lines
                                   select c.ToUpper()).ToArray();
-            txtListValue.Lines = txtListValue.Lines.Distinct().ToArray(); 
+            txtListValue.Lines = txtListValue.Lines.Distinct().ToArray();
 
         }
 
 
 
 
-      
+
     }
 }
