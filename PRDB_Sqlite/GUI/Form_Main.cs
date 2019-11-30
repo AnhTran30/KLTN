@@ -94,18 +94,9 @@ namespace PRDB_Sqlite.GUI
 
         private void ResetInputValue(bool state)
         {
-            txtMinProb.Text = "";
-            txtMaxProb.Text = "";
             txtValue.ResetText();
             GridViewValue.Rows.Clear();
             UpdateValueRowNumber();
-
-            Checkbox_UUD.Enabled = state;
-            Checkbox_UD.Enabled = state;
-
-            txtMinProb.Enabled = state;
-            txtMaxProb.Enabled = state;
-
 
             btn_Value_AddNewRow.Enabled = state;
             btn_Value_DeleteRow.Enabled = state;
@@ -658,7 +649,7 @@ namespace PRDB_Sqlite.GUI
                 gridColumnAttribute.FieldName = "AttributeName";
 
                 barButtonItemCloseCurrentScheme.Enabled = true;
-                ribbonControl1.SelectedPage = ribbonPageScheme;
+                ribbonControl_Tuyen_Independence.SelectedPage = ribbonPageScheme;
             }
             catch
             {
@@ -684,7 +675,7 @@ namespace PRDB_Sqlite.GUI
                     OpenSchemeByNameScheme(schemeSelected);
                     barButtonItemCloseCurrentScheme.Enabled = true;
                 }
-                ribbonControl1.SelectedPage = ribbonPageScheme;
+                ribbonControl_Tuyen_Independence.SelectedPage = ribbonPageScheme;
             }
             catch (Exception)
             {
@@ -1135,7 +1126,7 @@ namespace PRDB_Sqlite.GUI
 
                 }
                 barButtonItemCloseCurrentRelation.Enabled = true;
-                ribbonControl1.SelectedPage = ribbonPageRelation;
+                ribbonControl_Tuyen_Independence.SelectedPage = ribbonPageRelation;
 
             }
             catch (Exception)
@@ -1795,16 +1786,9 @@ namespace PRDB_Sqlite.GUI
             }
         }
 
-        private void Checkbox_UD_CheckedChanged(object sender, EventArgs e)
-        {
-            if (Checkbox_UD.Checked) SwitchValueState(false);
-        }
-
         private void SwitchValueState(bool state)
         {
             GridViewValue.Visible = state;
-            errorProvider.SetError(txtMinProb, null);
-            errorProvider.SetError(txtMaxProb, null);
 
             btn_Value_Home.Enabled = state;
             btn_Value_Pre.Enabled = state;
@@ -1813,286 +1797,8 @@ namespace PRDB_Sqlite.GUI
             btn_Value_DeleteRow.Enabled = state;
             btn_Value_AddNewRow.Enabled = state;
             lblValueRowNumberIndicator.Enabled = state;
-            Checkbox_UUD.Checked = state;
-            Checkbox_UD.Checked = !state;
-            label1.Enabled = !state;
-            label2.Enabled = !state;
-            txtMinProb.Enabled = !state;
-            txtMaxProb.Enabled = !state;
 
             txtValue.Visible = !state;
-        }
-
-        private void Checkbox_UUD_CheckedChanged(object sender, EventArgs e)
-        {
-            if (Checkbox_UUD.Checked) SwitchValueState(true);
-        }
-
-        public bool CheckMinProbAndMaxProb()
-        {
-            errorProvider.SetError(txtMinProb, null);
-            errorProvider.SetError(txtMaxProb, null);
-
-            if (txtMinProb.Text == "")
-            {
-                errorProvider.SetError(txtMinProb, " Sum of MinProb is missing!");
-                return false;
-            }
-
-            if (txtMaxProb.Text == "")
-            {
-                errorProvider.SetError(txtMaxProb, " Sum of MaxProb is missing!");
-                return false;
-            }
-
-            try
-            {
-                double minPro = double.Parse(txtMinProb.Text.Trim());
-
-            }
-            catch (Exception)
-            {
-                errorProvider.SetError(txtMinProb, "  Sum of MaxProb value must be a real number! ");
-                return false;
-            }
-
-            try
-            {
-                double maxPro = double.Parse(txtMaxProb.Text.Trim());
-            }
-            catch (Exception)
-            {
-
-                errorProvider.SetError(txtMaxProb, " Sum of MaxProb value must be a real number!");
-                return false;
-            }
-
-            if (double.Parse(txtMinProb.Text.Trim()) < 0)
-            {
-                errorProvider.SetError(txtMinProb, "  Sum of MinProb have to more than 0");
-                return false;
-            }
-
-            if (double.Parse(txtMinProb.Text.Trim()) > 1)
-            {
-                errorProvider.SetError(txtMinProb, "  Sum of MinProb have to less than 1");
-                return false;
-            }
-
-            if (double.Parse(txtMaxProb.Text.Trim()) < 0)
-            {
-                errorProvider.SetError(txtMaxProb, "  Sum of MaxProb have to more than 0 ");
-                return false;
-            }
-
-            if (double.Parse(txtMinProb.Text.Trim()) > double.Parse(txtMaxProb.Text.Trim()))
-            {
-                errorProvider.SetError(txtMinProb, "  Sum of MinProb must less than Sum of MaxProb ");
-                return false;
-            }
-
-            return true;
-        }
-
-        private string Stdize(string S)     // Chuẩn hóa chuỗi cắt bỏ các dấu , dư thừa
-        {
-            string R = "";
-            int i = 0;
-            while (S[i] == ',') i++;
-            int k = S.Length - 1;
-            while (S[k] == ',') k--;
-            for (int j = i; j <= k; j++)
-                if (S[j] != ',') R += S[j];
-                else if (S[j - 1] != ',') R += S[j];
-            return R;
-        }
-
-        private void btn_Value_UpdateValue_Click(object sender, EventArgs e)
-        {
-            int UpdateRow, UpdateCell;
-            if (Checkbox_UUD.Checked)
-            {
-
-                if (GridViewValue.Rows.Count == 0)
-                {
-                    MessageBox.Show("The value is not entered!");
-                    return;
-                }
-
-                int n = GridViewValue.Rows.Count;
-                ProbTriple triple = new ProbTriple();
-                GridViewValue.CurrentCell = GridViewValue.CurrentRow.Cells[0];
-
-                for (int i = 0; i < n; i++)
-                {
-                    GridViewValue.Rows[i].Cells["ColumnValue"].ErrorText = null;
-                    GridViewValue.Rows[i].Cells["ColumnMaxProb"].ErrorText = null;
-                    GridViewValue.Rows[i].Cells["ColumnMinProb"].ErrorText = null;
-
-                    if (GridViewValue.Rows[i].Cells["ColumnValue"].Value == null)
-                    {
-                        GridViewValue.Rows[i].Cells["ColumnValue"].ErrorText = "Required";
-                        GridViewValue.CurrentCell = GridViewValue.Rows[i].Cells["ColumnValue"];
-                        return;
-                    }
-
-                    if (GridViewValue.Rows[i].Cells["ColumnMinProb"].Value == null)
-                    {
-                        GridViewValue.Rows[i].Cells["ColumnMinProb"].ErrorText = "Required";
-                        GridViewValue.CurrentCell = GridViewValue.Rows[i].Cells["ColumnMinProb"];
-                        return;
-                    }
-
-                    if (GridViewValue.Rows[i].Cells["ColumnMaxProb"].Value == null)
-                    {
-                        GridViewValue.Rows[i].Cells["ColumnMaxProb"].ErrorText = "Required";
-                        GridViewValue.CurrentCell = GridViewValue.Rows[i].Cells["ColumnMaxProb"];
-                        return;
-                    }
-
-                    try
-                    {
-                        double value = Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMinProb"].Value);
-                        if (value < 0.0 || value > 1.0)
-                        {
-                            GridViewValue.Rows[i].Cells["ColumnMinProb"].ErrorText = "Probabilistic value must belong to [0,1]!";
-                            GridViewValue.CurrentCell = GridViewValue.Rows[i].Cells["ColumnMinProb"];
-                            return;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        GridViewValue.Rows[i].Cells["ColumnMinProb"].ErrorText = "Probabilistic value must be a real number!";
-                        GridViewValue.CurrentCell = GridViewValue.Rows[i].Cells["ColumnMinProb"];
-                        return;
-                    }
-
-                    try
-                    {
-                        double value = Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMaxProb"].Value);
-                        if (value < 0.0 || value > 1.0)
-                        {
-                            GridViewValue.Rows[i].Cells["ColumnMaxProb"].ErrorText = "Probabilistic value must belong to [0,1]!";
-                            GridViewValue.CurrentCell = GridViewValue.Rows[i].Cells["ColumnMaxProb"];
-                            return;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        GridViewValue.Rows[i].Cells["ColumnMaxProb"].ErrorText = "Probabilistic value must be a real number!";
-                        GridViewValue.CurrentCell = GridViewValue.Rows[i].Cells["ColumnMaxProb"];
-
-                        return;
-                    }
-
-                    if (Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMaxProb"].Value) < Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMinProb"].Value))
-                    {
-                        GridViewValue.Rows[i].Cells["ColumnMinProb"].ErrorText = "MinProb must less than MaxProb ";
-                        GridViewValue.CurrentCell = GridViewValue.Rows[i].Cells["ColumnMinProb"];
-
-                        return;
-                    }
-
-                    triple.MinProb = Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMinProb"].Value);
-                    triple.MaxProb = Convert.ToDouble(GridViewValue.Rows[i].Cells["ColumnMaxProb"].Value);
-
-                    if (currentRelationOpen.Scheme.Attributes[GridViewData.CurrentCell.ColumnIndex].Type.TypeName != "String")
-                    {
-                        GridViewValue.Rows[i].Cells["ColumnValue"].Value = GridViewValue.Rows[i].Cells["ColumnValue"].Value.ToString().Trim().Replace(" ", "");
-                    }
-                    triple.Value.Add(GridViewValue.Rows[i].Cells["ColumnValue"].Value.ToString().Trim());
-                }
-
-                UpdateRow = GridViewData.CurrentRow.Index;
-                UpdateCell = GridViewData.CurrentCell.ColumnIndex;
-
-                if (UpdateRow == GridViewData.Rows.Count - 1)
-                {
-                    GridViewData.Rows.Add();
-                    UpdateDataRowNumber();
-                }
-
-                GridViewData.CurrentCell.ErrorText = null;
-                GridViewData.CurrentCell = GridViewData.Rows[UpdateRow].Cells[UpdateCell];
-
-                if (!triple.isProbTripleValue(triple.GetStrValue()))
-                {
-                    MessageBox.Show("Syntax Error! Cannot convert this value to a Probabilistic Triple!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                GridViewData.CurrentCell.Value = triple.GetStrValue();
-            }
-            else
-            {
-                if (!CheckMinProbAndMaxProb())
-                    return;
-
-                if (txtValue.Text == "")
-                {
-                    MessageBox.Show("Attribute values are not entered!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                try
-                {
-                    errorProvider.SetError(txtMinProb, null);
-                    errorProvider.SetError(txtMaxProb, null);
-                    double minprob, maxprob;
-                    string[] value;
-                    value = Stdize(txtValue.Text.Replace(Environment.NewLine, ",")).Split(',');
-
-                    for (int i = 0; i < value.Length; i++)
-                    {
-                        value[i] = value[i].Trim();
-                    }
-
-                    minprob = Convert.ToDouble(txtMinProb.Text);
-                    maxprob = Convert.ToDouble(txtMaxProb.Text);
-                    int n = value.Length;
-
-                    if (minprob > 1.0)
-                    {
-                        //The sum of minProb must be less or equal than 1
-                        errorProvider.SetError(txtMinProb, "The sum of minProb must be less or equal than 1");
-                        return;
-                    }
-
-                    if (maxprob / n > 1.0)
-                    {
-                        errorProvider.SetError(txtMaxProb, "Upper bound of the value is larger than 1:  " + (maxprob / n));
-                        return;
-                    }
-
-                    ProbTriple triple = new ProbTriple();
-                    for (int i = 0; i < n; i++)
-                    {
-                        triple.Value.Add(value[i]);
-                        triple.MinProb = (minprob / n);
-                        triple.MaxProb = (maxprob / n);
-                    }
-
-                    UpdateRow = GridViewData.CurrentRow.Index;
-                    UpdateCell = GridViewData.CurrentCell.ColumnIndex;
-
-                    if (UpdateRow == GridViewData.Rows.Count - 1)
-                    {
-                        GridViewData.Rows.Add();
-                        UpdateDataRowNumber();
-                    }
-
-                    if (!triple.isProbTripleValue(triple.GetStrValue()))
-                    {
-                        MessageBox.Show("Syntax Error! Cannot convert this value to a Probabilistic Triple!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    GridViewData.CurrentCell = GridViewData.Rows[UpdateRow].Cells[UpdateCell];
-                    GridViewData.CurrentCell.Value = triple.GetStrValue();
-                }
-                catch
-                {
-                }
-            }
         }
 
         private void btn_Value_AddNewRow_Click(object sender, EventArgs e)
@@ -2184,17 +1890,8 @@ namespace PRDB_Sqlite.GUI
 
         private void Btn_Value_ClearData_Click(object sender, EventArgs e)
         {
-            if (Checkbox_UUD.Checked)
-            {
-                GridViewValue.Rows.Clear();
-                UpdateValueRowNumber();
-            }
-            else
-            {
-                txtMaxProb.Text = "";
-                txtMinProb.Text = "";
-                txtValue.Text = "";
-            }
+            GridViewValue.Rows.Clear();
+            UpdateValueRowNumber();
         }
 
         private void GridViewValue_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -2234,45 +1931,19 @@ namespace PRDB_Sqlite.GUI
             {
                 GridViewValue.Rows.Clear();
 
-                if (Checkbox_UUD.Checked)
+                ProbTriple triple = new ProbTriple(GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+
+                GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = triple.GetStrValue();
+
+                for (int i = 0; i < triple.Value.Count; i++)
                 {
-                    ProbTriple triple = new ProbTriple(GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-
-                    GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = triple.GetStrValue();
-
-                    for (int i = 0; i < triple.Value.Count; i++)
-                    {
-                        GridViewValue.Rows.Add();
-                        GridViewValue.Rows[i].Cells[0].Value = triple.Value[i];
-                        GridViewValue.Rows[i].Cells[1].Value = Math.Round(triple.MinProb / triple.Value.Count, 3);
-                        GridViewValue.Rows[i].Cells[2].Value = Math.Round(triple.MaxProb / triple.Value.Count, 3);
-                    }
-
-                    UpdateValueRowNumber();
+                    GridViewValue.Rows.Add();
+                    GridViewValue.Rows[i].Cells[0].Value = triple.Value[i];
+                    GridViewValue.Rows[i].Cells[1].Value = triple.MinProb;
+                    GridViewValue.Rows[i].Cells[2].Value = triple.MaxProb;
                 }
-                else
-                {
-                    txtValue.Text = "";
-                    txtMaxProb.Text = "";
-                    txtMinProb.Text = "";
-                    ProbTriple triple = new ProbTriple(GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                    GridViewData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = triple.GetStrValue();
 
-
-                    double minProb = 0.0;
-                    double maxProb = 0.0;
-
-                    for (int i = 0; i < triple.Value.Count; i++)
-                    {
-                        txtValue.Text += triple.Value[i] + System.Environment.NewLine;
-                        minProb += triple.MinProb;
-                        maxProb += triple.MaxProb;
-
-                    }
-                    txtMinProb.Text = minProb.ToString();
-                    txtMaxProb.Text = maxProb.ToString();
-
-                }
+                UpdateValueRowNumber();
             }
             catch (Exception)
             {
@@ -2317,7 +1988,7 @@ namespace PRDB_Sqlite.GUI
             currentQuery = this.probDatabase.Queries.SingleOrDefault(c => c.QueryName == NameQuery);
             xtraTabPageQuery.Text = "Query " + currentQuery.QueryName;
             xtraTabDatabase.SelectedTabPage = xtraTabDatabase.TabPages[2];
-            ribbonControl1.SelectedPage = ribbonPageQuery;
+            ribbonControl_Tuyen_Independence.SelectedPage = ribbonPageQuery;
 
             txtQuery.Clear();
             txtQuery.Text = currentQuery.QueryString == "Empty" ? "" : currentQuery.QueryString;
@@ -2972,47 +2643,6 @@ namespace PRDB_Sqlite.GUI
         {
         }
 
-        private void txtMinProb_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (txtMinProb.Text.Length <= 0)
-                    return;
-                double minprob = double.Parse(txtMinProb.Text);
-                errorProvider.SetError(txtMinProb, null);
-                if (minprob > 1.0)
-                {
-                    // The sum of minProb must be less or equal than 1
-                    errorProvider.SetError(txtMinProb, "The sum of minProb must be less or equal than 1");
-                    return;
-                }
-            }
-            catch (Exception)
-            {
-                errorProvider.SetError(txtMinProb, "Sum of minProb value must be a real number!");
-
-            }
-
-
-        }
-
-        private void txtMaxProb_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (txtMaxProb.Text.Length <= 0)
-                    return;
-
-                double maxprob = double.Parse(txtMaxProb.Text);
-
-                errorProvider.SetError(txtMaxProb, null);
-            }
-            catch (Exception)
-            {
-                // errorProvider.SetError(txtMinProb, "The sum of minProb must be less or equal than 1");                   
-                errorProvider.SetError(txtMaxProb, "Sum of MaxProb value must be a real number!");
-            }
-        }
     }
 }
 
