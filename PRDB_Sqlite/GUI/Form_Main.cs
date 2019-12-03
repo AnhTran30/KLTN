@@ -315,26 +315,11 @@ namespace PRDB_Sqlite.GUI
                         }
                         NodeRelation.Nodes[i].Nodes.Add(NodeAttribute);
                     }
-
                 }
-
-
-
-
-
-
             }
             catch
             {
-
-
             }
-
-
-
-
-
-
         }
 
         public void LoadSchemeNode()
@@ -1614,7 +1599,7 @@ namespace PRDB_Sqlite.GUI
                                 break;
                         }
 
-                        if (k == indexPrimaryKey.Count)
+                        if (k == indexPrimaryKey.Count && indexPrimaryKey.Count != 0)
                         {
                             GridViewData.Rows[i].Cells[indexPrimaryKey[k - 1]].ErrorText = " Cannot insert duplicate key in this object ";
                             GridViewData.Rows[j].Cells[indexPrimaryKey[k - 1]].ErrorText = " Cannot insert duplicate key in this object ";
