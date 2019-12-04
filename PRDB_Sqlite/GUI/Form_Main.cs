@@ -2344,28 +2344,35 @@ namespace PRDB_Sqlite.GUI
                         txtQuery.SelectionColor = Color.Blue;
                     }
                 }
-
-                int indexNaturalJoin = tmp.IndexOf(" natural join in");
-                if (tmp.IndexOf(" natural join in") != -1)
+                int indexcon = 0;
+                while (indexcon >= 0)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" natural join in");
-                    txtQuery.Select(indexNaturalJoin, 17);
-                    txtQuery.SelectionColor = Color.Blue;
-                }
-                else
-                    if (tmp.IndexOf(" natural join ig") != -1)
-                {
-
-                    indexNaturalJoin = tmp.IndexOf(" natural join ig");
-                    txtQuery.Select(indexNaturalJoin, 17);
-                    txtQuery.SelectionColor = Color.Blue;
-
-                }
-                if (tmp.IndexOf(" natural join me") != -1)
-                {
-                    indexNaturalJoin = tmp.IndexOf(" natural join me");
-                    txtQuery.Select(indexNaturalJoin, 17);
-                    txtQuery.SelectionColor = Color.Blue;
+                    var flat = false;
+                    if (tmp.IndexOf(" natural join in", indexcon) != -1)
+                    {
+                        var indexNaturalJoin = tmp.IndexOf(" natural join in", indexcon);
+                        txtQuery.Select(indexNaturalJoin, 17);
+                        txtQuery.SelectionColor = Color.Blue;
+                        indexcon = indexNaturalJoin + 17;
+                        flat = true;
+                    }
+                    if (tmp.IndexOf(" natural join ig", indexcon) != -1)
+                    {
+                        var indexNaturalJoin = tmp.IndexOf(" natural join ig", indexcon);
+                        txtQuery.Select(indexNaturalJoin, 17);
+                        txtQuery.SelectionColor = Color.Blue;
+                        indexcon = indexNaturalJoin + 17;
+                        flat = true;
+                    }
+                    if (tmp.IndexOf(" natural join me", indexcon) != -1)
+                    {
+                        var indexNaturalJoin = tmp.IndexOf(" natural join me", indexcon);
+                        txtQuery.Select(indexNaturalJoin, 17);
+                        txtQuery.SelectionColor = Color.Blue;
+                        indexcon = indexNaturalJoin + 17;
+                        flat = true;
+                    }
+                    if (!flat || indexcon >= tmp.Length) break;
                 }
 
                 if (indexSelect != -1)
@@ -2381,7 +2388,6 @@ namespace PRDB_Sqlite.GUI
                     }
                     else
                     {
-
                         txtQuery.Select(indexSelect, 6);
                         txtQuery.SelectionColor = Color.Blue;
                     }
