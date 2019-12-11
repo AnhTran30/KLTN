@@ -113,7 +113,7 @@ namespace PRDB_Sqlite.BLL
             var totalLength = GetTotalSubCondition(conditionStr, degree, regexCondition);
             subCondition = new string[totalLength];
 
-            var timeCondition = 1;
+            var timeCondition = 0;
             //creatre group condition array 
             for (int i = 0; i < degree; i++)
             {
@@ -529,23 +529,22 @@ namespace PRDB_Sqlite.BLL
                         {
                             if (listConditionProb[j].Contains("ConditionProb_"))
                             {
-                                var position = "ConditionProb_" + j.ToString();
                                 foreach (var item in dictProb)
                                 {
-                                    if (item.Key == position)
+                                    if (item.Key == listConditionProb[j].Trim())
                                     {
                                         result += item.Value ? "1" : "0";
                                     }
                                 }
+
                             }
                             else
                             {
                                 if (listConditionProb[j].Contains("Condition_"))
                                 {
-                                    var position = "Condition_" + j.ToString();
-                                    foreach (var item in dict)
+                                    foreach (var item in dictCon)
                                     {
-                                        if (item.Key == position)
+                                        if (item.Key == listConditionProb[j].Trim())
                                         {
                                             result += item.Value ? "1" : "0";
                                         }
