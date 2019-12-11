@@ -55,6 +55,10 @@ namespace PRDB_Sqlite.BLL
 
             CalculateConditionStr(subCondition);
             var listConditionProb = GetArrayCondition(this.conditionString);
+            if (listConditionProb == null)
+            {
+                return false;
+            }
 
             return CalculateTotalCondition(listConditionProb);
         }
@@ -156,6 +160,11 @@ namespace PRDB_Sqlite.BLL
             string[] listConditionProb;
             var option = conditionStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
+            if (option.Count() == 1 && !option[0].Contains("ConditionProb_") && !option[0].Contains("Condition_"))
+            {
+                MessageError = string.Format("An expression of non-boolean type specified in a context where a condition is expected, near '{0}'.", option[0]);
+                return null;
+            }
             var count = 0;
             for (int i = 0; i < option.Count(); i++)
             {
@@ -177,6 +186,29 @@ namespace PRDB_Sqlite.BLL
                     continue;
                 }
                 listConditionProb[count3] += item;
+            }
+
+            foreach (string item in listConditionProb)
+            {
+                if (Common.ConditionNormalString.Contains(item)) continue;
+
+                if(item.Contains("ConditionProb_") && item.Trim().Length > 15)
+                {
+                    MessageError = string.Format("An expression of non-boolean type specified in a context where a condition is expected, near 'Where'.");
+                    return null;
+                }
+
+                if (item.Contains("Condition_") && item.Trim().Length > 11)
+                {
+                    MessageError = string.Format("An expression of non-boolean type specified in a context where a condition is expected, near 'Where'.");
+                    return null;
+                }
+
+                if (!item.Contains("Condition_") && !item.Contains("ConditionProb_") && string.IsNullOrEmpty(IsOperatior(item)))
+                {
+                    MessageError = string.Format("An expression of non-boolean type specified in a context where a condition is expected, near 'Where'.");
+                    return null;
+                }
             }
 
             return listConditionProb.Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -479,12 +511,13 @@ namespace PRDB_Sqlite.BLL
                 for (int i = 0; i < subCondition.Count(); i++)
                 {
                     var listConditionProb = GetArrayCondition(subCondition[i]);
+
                     string result = string.Empty;
                     for (int j = 0; j < listConditionProb.Count(); j++)
                     {
-                        if (Common.ConditionNormalString.Contains(listConditionProb[i]))
+                        if (Common.ConditionNormalString.Contains(listConditionProb[j]))
                         {
-                            var s = CompareCharacters(listConditionProb[i]);
+                            var s = CompareCharacters(listConditionProb[j]);
                             if (string.IsNullOrEmpty(s))
                             {
                                 MessageError = string.Format("Incorrect syntax near the keyword.");
@@ -494,7 +527,7 @@ namespace PRDB_Sqlite.BLL
                         }
                         else
                         {
-                            if (listConditionProb[i].Contains("ConditionProb_"))
+                            if (listConditionProb[j].Contains("ConditionProb_"))
                             {
                                 var position = "ConditionProb_" + j.ToString();
                                 foreach (var item in dictProb)
@@ -507,7 +540,7 @@ namespace PRDB_Sqlite.BLL
                             }
                             else
                             {
-                                if (listConditionProb[i].Contains("Condition_"))
+                                if (listConditionProb[j].Contains("Condition_"))
                                 {
                                     var position = "Condition_" + j.ToString();
                                     foreach (var item in dict)
@@ -520,11 +553,11 @@ namespace PRDB_Sqlite.BLL
                                 }
                                 else
                                 {
-                                    var operatorStr = IsOperatior(listConditionProb[i]);
+                                    var operatorStr = IsOperatior(listConditionProb[j]);
                                     if (!string.IsNullOrEmpty(operatorStr))
                                     {
                                         string[] seperator = { operatorStr };
-                                        string[] attribute = listConditionProb[i].Split(seperator, StringSplitOptions.RemoveEmptyEntries);
+                                        string[] attribute = listConditionProb[j].Split(seperator, StringSplitOptions.RemoveEmptyEntries);
 
                                         if (attribute.Count() != 2)
                                         {

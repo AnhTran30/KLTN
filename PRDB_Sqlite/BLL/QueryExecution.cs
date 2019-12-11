@@ -275,6 +275,14 @@ namespace PRDB_Sqlite.BLL
                     foreach (ProbTuple tuple in this.selectedRelations[0].tuples)
                         if (Condition.Satisfied(tuple))
                             this.relationResult.tuples.Add(tuple);
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(Condition.MessageError))
+                            {
+                                MessageError = Condition.MessageError;
+                                return false;
+                            }
+                        }
 
                     if (Condition.MessageError != string.Empty)
                     {
@@ -426,11 +434,17 @@ namespace PRDB_Sqlite.BLL
                         else
                         {
                             string[] listTmp = listRaltion[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                            if ((listTmp.Length != 2 || listTmp.Length != 3) && (!listTmp[0].Contains("in") && !listTmp[0].Contains("ig") && !listTmp[0].Contains("me")))
+                            if (listTmp.Length != 2 && listTmp.Length != 3)
                             {
-                                MessageError = "Incorrect syntax.";
+                                MessageError = String.Format("Incorrect syntax near '{0}'.", listRaltion[i]);
                                 return null;
                             }
+                            if (!listTmp[0].Contains("in") && !listTmp[0].Contains("ig") && !listTmp[0].Contains("me"))
+                            {
+                                MessageError = String.Format("Incorrect syntax near '{0}'.", listRaltion[i]);
+                                return null;
+                            }
+
                             OperationNaturalJoin.Add(listTmp[0]);
                             if (listTmp.Length == 2)
                             {
@@ -459,6 +473,12 @@ namespace PRDB_Sqlite.BLL
                 if (!listOfRelationName.Contains(listTmp[0].ToLower()))
                 {
                     MessageError = String.Format("Invalid relation name '{0}'.", listTmp[0]);
+                    return null;
+                }
+
+                if(listTmp.Length > 2)
+                {
+                    MessageError = String.Format("Invalid relation name '{0}'.", relations[i]);
                     return null;
                 }
 
@@ -568,6 +588,11 @@ namespace PRDB_Sqlite.BLL
 
                     foreach (string str in attribute)
                     {
+                        if (str.Trim().Contains(' '))
+                        {
+                            MessageError = "Incorrect syntax near 'select'.";
+                            return null;
+                        }
                         if (!str.Contains("."))
                         {
                             string attributeName = str.Trim();

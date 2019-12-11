@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace PRDB_Sqlite.GUI
@@ -2344,37 +2345,32 @@ namespace PRDB_Sqlite.GUI
                         txtQuery.SelectionColor = Color.Blue;
                     }
                 }
-                int indexcon = 0;
-                while (indexcon >= 0)
-                {
-                    var flat = false;
-                    if (tmp.IndexOf(" natural join in", indexcon) != -1)
-                    {
-                        var indexNaturalJoin = tmp.IndexOf(" natural join in", indexcon);
-                        txtQuery.Select(indexNaturalJoin, 17);
-                        txtQuery.SelectionColor = Color.Blue;
-                        indexcon = indexNaturalJoin + 17;
-                        flat = true;
-                    }
-                    if (tmp.IndexOf(" natural join ig", indexcon) != -1)
-                    {
-                        var indexNaturalJoin = tmp.IndexOf(" natural join ig", indexcon);
-                        txtQuery.Select(indexNaturalJoin, 17);
-                        txtQuery.SelectionColor = Color.Blue;
-                        indexcon = indexNaturalJoin + 17;
-                        flat = true;
-                    }
-                    if (tmp.IndexOf(" natural join me", indexcon) != -1)
-                    {
-                        var indexNaturalJoin = tmp.IndexOf(" natural join me", indexcon);
-                        txtQuery.Select(indexNaturalJoin, 17);
-                        txtQuery.SelectionColor = Color.Blue;
-                        indexcon = indexNaturalJoin + 17;
-                        flat = true;
-                    }
-                    if (!flat || indexcon >= tmp.Length) break;
-                }
 
+                for (int i = 0; i < tmp.Length; i++)
+                {
+                    if (i < tmp.Length && (tmp.IndexOf(" natural join in",i) != -1))
+                    {
+                        var indexNaturalJoin = tmp.IndexOf(" natural join in",i);
+                        txtQuery.Select(indexNaturalJoin, 17);
+                        txtQuery.SelectionColor = Color.Blue;
+                        i += 16;
+                    }
+                    if (i < tmp.Length && (tmp.IndexOf(" natural join ig",i) != -1))
+                    {
+                        var indexNaturalJoin = tmp.IndexOf(" natural join ig",i);
+                        txtQuery.Select(indexNaturalJoin, 17);
+                        txtQuery.SelectionColor = Color.Blue;
+                        i += 16;
+                    }
+                    if (i < tmp.Length && (tmp.IndexOf(" natural join me",i) != -1))
+                    {
+                        var indexNaturalJoin = tmp.IndexOf(" natural join me",i);
+                        txtQuery.Select(indexNaturalJoin, 17);
+                        txtQuery.SelectionColor = Color.Blue;
+                        i += 16;
+                    }
+                }
+                
                 if (indexSelect != -1)
                 {
                     if (indexSelect != 0)
