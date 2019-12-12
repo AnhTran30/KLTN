@@ -167,18 +167,21 @@ namespace PRDB_Sqlite.BLL
                 }
             }
 
-            for (int i = 0; i < indexsRemove.Count; i++)
+            var check = relation.Scheme.Attributes.Count() == this.selectedAttributes.Count();
+            if (check)
             {
-
-                foreach (ProbTuple tuple in relation.tuples)
+                for (int i = 0; i < indexsRemove.Count; i++)
                 {
-                    tuple.Triples.RemoveAt(indexsRemove[i]);
+
+                    foreach (ProbTuple tuple in relation.tuples)
+                    {
+                        tuple.Triples.RemoveAt(indexsRemove[i]);
+                    }
+                    relation.Scheme.Attributes.RemoveAt(indexsRemove[i]);
+                    this.selectedAttributes.RemoveAt(indexsRemove[i]);
                 }
-                relation.Scheme.Attributes.RemoveAt(indexsRemove[i]);
-                this.selectedAttributes.RemoveAt(indexsRemove[i]);
             }
-
-
+            
             //OperationNaturalJoin = string.Empty;
             flagNaturalJoin = false;
             return relation;
