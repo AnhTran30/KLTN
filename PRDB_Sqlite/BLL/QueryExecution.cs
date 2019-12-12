@@ -134,9 +134,11 @@ namespace PRDB_Sqlite.BLL
             ProbRelation relation = Descartes(relationResult, relationInput);
             List<int> indexsRemove = new List<int>();
 
-            for (int i = 0; i < relation.Scheme.Attributes.Count - relationInput.Scheme.Attributes.Count; i++)
+            var totalAttributesOne = relation.Scheme.Attributes.Count - relationInput.Scheme.Attributes.Count;
+
+            for (int i = 0; i < totalAttributesOne; i++)
             {
-                for (int j = relationInput.Scheme.Attributes.Count; j < relation.Scheme.Attributes.Count; j++)
+                for (int j = totalAttributesOne; j < relation.Scheme.Attributes.Count; j++)
                 {
                     if (i != j && relation.Scheme.Attributes[i].Type.DataType == relation.Scheme.Attributes[j].Type.DataType)
                     {
