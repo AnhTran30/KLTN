@@ -66,7 +66,6 @@ namespace PRDB_Sqlite.GUI
         private void LoadPRDB()
         {
             BindingNavigatorData.Visible = true;
-            BindingNavigatorValue.Visible = true;
             SwitchValueState(true);
             ActivateDatabase(false);
         }
@@ -77,7 +76,6 @@ namespace PRDB_Sqlite.GUI
             ResetSchemePage(state);
             ResetRelationPage(state);
             ResetQueryPage(state);
-            ResetInputValue(state);
             ResetMenuBar(state);
 
         }
@@ -91,18 +89,6 @@ namespace PRDB_Sqlite.GUI
             ribbonPageRelation.Visible = state;
             ribbonPageQuery.Visible = state;
 
-        }
-
-        private void ResetInputValue(bool state)
-        {
-            txtValue.ResetText();
-            GridViewValue.Rows.Clear();
-            UpdateValueRowNumber();
-
-            btn_Value_AddNewRow.Enabled = state;
-            btn_Value_DeleteRow.Enabled = state;
-            Btn_Value_ClearData.Enabled = state;
-            btn_Value_UpdateValue.Enabled = state;
         }
 
         private void ResetQueryPage(bool state)
@@ -127,7 +113,6 @@ namespace PRDB_Sqlite.GUI
             GridViewData.Columns.Clear();
             UpdateDataRowNumber();
             GridViewValue.Rows.Clear();
-            UpdateValueRowNumber();
             Btn_Data_DeleteRow.Enabled = state;
             Btn_Data_ClearData.Enabled = state;
             Btn_Data_UpdateData.Enabled = state;
@@ -1776,86 +1761,7 @@ namespace PRDB_Sqlite.GUI
         {
             GridViewValue.Visible = state;
 
-            btn_Value_Home.Enabled = state;
-            btn_Value_Pre.Enabled = state;
-            btn_Value_Next.Enabled = state;
-            btn_Value_End.Enabled = state;
-            btn_Value_DeleteRow.Enabled = state;
-            btn_Value_AddNewRow.Enabled = state;
-            lblValueRowNumberIndicator.Enabled = state;
-
             txtValue.Visible = !state;
-        }
-
-        private void btn_Value_AddNewRow_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                GridViewValue.Rows.Add();
-                UpdateValueRowNumber();
-            }
-            catch
-            {
-
-            }
-        }
-
-        private void UpdateValueRowNumber()
-        {
-            try
-            {
-                if (GridViewValue.Rows.Count == 0)
-                    lblValueRowNumberIndicator.Text = "0 / 0";
-                else if (GridViewValue.CurrentRow != null)
-                    lblValueRowNumberIndicator.Text = (GridViewValue.CurrentRow.Index + 1) + " / " + GridViewValue.Rows.Count;
-                else lblValueRowNumberIndicator.Text = "1 / " + GridViewValue.Rows.Count;
-            }
-            catch
-            {
-
-            }
-        }
-
-        private void btn_Value_Pre_Click(object sender, EventArgs e)
-        {
-            if (GridViewValue.Rows.Count > 0)
-            {
-                int PreRow = GridViewValue.CurrentRow.Index - 1;
-                PreRow = (PreRow > 0 ? PreRow : 0);
-                GridViewValue.CurrentCell = GridViewValue.Rows[PreRow].Cells[0];
-                lblValueRowNumberIndicator.Text = (PreRow + 1).ToString() + " / " + GridViewValue.Rows.Count.ToString();
-            }
-        }
-
-        private void btn_Value_Home_Click(object sender, EventArgs e)
-        {
-            if (GridViewValue.Rows.Count > 0)
-            {
-                GridViewValue.CurrentCell = GridViewValue.Rows[0].Cells[0];
-                lblValueRowNumberIndicator.Text = "1 / " + GridViewValue.Rows.Count.ToString();
-            }
-        }
-
-        private void btn_Value_Next_Click(object sender, EventArgs e)
-        {
-            if (GridViewValue.Rows.Count > 0)
-            {
-                int nRow = GridViewValue.Rows.Count;
-                int NextRow = GridViewValue.CurrentRow.Index + 1;
-                NextRow = (NextRow < nRow - 1 ? NextRow : nRow - 1);
-                GridViewValue.CurrentCell = GridViewValue.Rows[NextRow].Cells[0];
-                lblValueRowNumberIndicator.Text = (NextRow + 1).ToString() + " / " + GridViewValue.Rows.Count.ToString();
-            }
-        }
-
-        private void btn_Value_End_Click(object sender, EventArgs e)
-        {
-            if (GridViewValue.Rows.Count > 0)
-            {
-                int nRow = GridViewValue.Rows.Count;
-                GridViewValue.CurrentCell = GridViewValue.Rows[nRow - 1].Cells[0];
-                lblValueRowNumberIndicator.Text = nRow.ToString() + " / " + nRow.ToString();
-            }
         }
 
         private void btn_Value_DeleteRow_Click(object sender, EventArgs e)
@@ -1865,7 +1771,6 @@ namespace PRDB_Sqlite.GUI
                 if (GridViewValue.Rows.Count > 0)
                 {
                     GridViewValue.Rows.Remove(GridViewValue.CurrentRow);
-                    UpdateValueRowNumber();
                 }
             }
             catch
@@ -1877,7 +1782,6 @@ namespace PRDB_Sqlite.GUI
         private void Btn_Value_ClearData_Click(object sender, EventArgs e)
         {
             GridViewValue.Rows.Clear();
-            UpdateValueRowNumber();
         }
 
         private void GridViewValue_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -1906,11 +1810,6 @@ namespace PRDB_Sqlite.GUI
             }
         }
 
-        private void GridViewValue_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            UpdateValueRowNumber();
-        }
-
         private void GridViewData_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -1928,8 +1827,6 @@ namespace PRDB_Sqlite.GUI
                     GridViewValue.Rows[i].Cells[1].Value = triple.MinProb;
                     GridViewValue.Rows[i].Cells[2].Value = triple.MaxProb;
                 }
-
-                UpdateValueRowNumber();
             }
             catch (Exception)
             {
